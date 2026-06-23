@@ -34,6 +34,12 @@ export const courses: Course[] = [
       // DRAFT: high-level outcome summary expanded from the course overview note.
       "You will connect the motors and power on the system, then move on to the app workflow once it is confirmed. The focus is on getting the system running with minimal setup.",
     ],
+    helpsWith: [
+      "Set up the Morpheus Drive hardware",
+      "Confirm the motors and power are connected correctly",
+      "Prepare for the updated app connection workflow",
+      "Keep the guide ready for future lessons",
+    ],
     lessons: [
       // ----------------------------------------------------------------------
       // LESSON 1 — fully built (content available)
@@ -45,48 +51,62 @@ export const courses: Course[] = [
         summary:
           "Connect two motors and a battery to the Morpheus Drive and confirm the system powers on.",
         contentStatus: "available",
-        durationLabel: "~15 min",
+        // NOTE: no per-lesson duration shown — a time estimate for this lesson
+        // is not source-confirmed. (The video's own 3:14 runtime is reference-
+        // sourced and lives on the video block below.)
         sections: [
           {
+            // Reference-sourced (morpheus-final-section-1.png).
             type: "paragraph",
             heading: "Overview",
             text: "This walkthrough shows how to connect two motors and a battery to the Morpheus Drive. Follow along with the video to complete the setup.",
           },
           {
+            // Reference-sourced title + runtime (3:14, from the screenshot).
+            // Real setup video. The embed URL is
+            // https://www.youtube.com/embed/<youtubeId>.
             type: "video",
-            title: "Morpheus Drive Setup",
+            title: "Steven – Morpheus Drive Setup",
+            youtubeId: "Ay3YeL9tJZM",
             durationLabel: "3:14",
-            note: "Video walkthrough placeholder — final recording to be embedded here.",
+            note: "Additional reference photos can be added later if needed.",
           },
           {
-            // DRAFT: practical step list derived from the setup key notes.
-            // Replace with the finalized hardware steps when confirmed.
+            // DRAFT / CONFIRMABLE: action sequence derived from the setup notes.
+            // Kept deliberately generic. Specific terminal labels, wiring,
+            // battery specs, and reset behavior are NOT invented here — they
+            // live in "Key notes" (reference-sourced) and should be confirmed
+            // with the client before this reads as final.
             type: "steps",
-            heading: "Setup steps",
+            heading: "Hardware setup checklist",
             steps: [
+              {
+                title: "Prepare the components",
+                detail:
+                  "Have the two motors and the battery ready before you begin.",
+              },
               {
                 title: "Connect the motors",
                 detail:
-                  "Each motor connects to one pair of terminals labeled M+ and M-. Connect both motors to their terminal pairs.",
-              },
-              {
-                title: "Secure the wiring",
-                detail:
-                  "Make sure all wires are secured tightly before powering the system.",
+                  "Connect each motor to its terminal pair on the Morpheus Drive.",
               },
               {
                 title: "Connect the battery and power on",
-                detail:
-                  "Connect the battery, then press the reset button after connecting power.",
+                detail: "Connect the battery, then power on the system.",
               },
               {
                 title: "Confirm the system is ready",
                 detail:
-                  "A blinking blue light indicates the system is ready.",
+                  "Check the status light to confirm the system is ready before moving on.",
               },
             ],
           },
           {
+            // Reference-sourced cautions, reminders, and specific details
+            // (morpheus-final-section-1.png). These hold the specifics so the
+            // checklist above can stay generic and avoid duplication.
+            // ("main" power wire softened to "power wire" — the source text was
+            // partially cut off in the screenshot.)
             type: "keyNotes",
             heading: "Key notes",
             notes: [
@@ -95,14 +115,16 @@ export const courses: Course[] = [
               "Press the reset button after connecting power.",
               "A blinking blue light indicates the system is ready.",
               "If a motor spins in the wrong direction, swap the two wires.",
-              "Optional: add a switch to the main power wire for easy on/off control.",
+              "Optional: add a switch to the power wire for easy on/off control.",
             ],
           },
           {
+            // CONFIRMABLE: ready indicator attributed to the setup notes rather
+            // than stated as a hard guarantee.
             type: "callout",
             tone: "tip",
-            heading: "Before you continue",
-            text: "Confirm the blinking blue light before moving on. If the light does not appear, recheck the battery connection and the reset button.",
+            heading: "Ready check",
+            text: "Confirm the system shows it is ready before continuing. The setup notes describe a blinking blue light as the ready indicator — check this matches your unit.",
           },
         ],
       },

@@ -4,20 +4,22 @@ import { courses } from "../data/courses";
 export default function DirectoryPage() {
   return (
     <div>
-      <header className="mb-8">
-        <p className="text-sm font-medium text-accent">Robocore Guide Library</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+      <header className="mb-9 max-w-2xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+          Robocor Guide Library
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-[34px]">
           Course Directory
         </h1>
-        <p className="mt-2 max-w-2xl text-[15px] text-slate-600">
-          Step-by-step setup and reference guides for Robocore hardware. Open a
+        <p className="mt-3 text-[15px] leading-relaxed text-slate-700">
+          Step-by-step setup and reference guides for Robocor hardware. Open a
           course to follow the lessons and track your progress on this device.
         </p>
       </header>
 
       <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-3">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
             All courses
           </h2>
           <span className="text-sm text-slate-400">

@@ -1,6 +1,6 @@
-# Robocore Guide Library
+# Robocor Guide Library
 
-A polished, course-style web guide library for Robocore, starting with the
+A polished, course-style web guide library for Robocor, starting with the
 **Morpheus Drive** course. Static frontend — no backend, accounts, or database.
 
 ## Stack

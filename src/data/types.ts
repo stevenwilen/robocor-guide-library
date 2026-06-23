@@ -1,4 +1,4 @@
-// Content model for the Robocore Guide Library.
+// Content model for the Robocor Guide Library.
 //
 // IMPORTANT distinction:
 //   - `contentStatus` describes whether the LESSON CONTENT exists yet
@@ -16,13 +16,13 @@ export type ContentStatus = "available" | "pending";
 export type LessonSection =
   | { type: "paragraph"; heading?: string; text: string }
   | {
-      // Styled video placeholder. No real media asset is bundled; `poster`
-      // is an optional image URL if one is added later.
+      // Video block rendered as a responsive YouTube embed.
+      // `youtubeId` is the id in https://www.youtube.com/embed/<youtubeId>.
       type: "video";
       title: string;
+      youtubeId: string;
       durationLabel?: string;
       note?: string;
-      poster?: string;
     }
   | { type: "keyNotes"; heading?: string; notes: string[] }
   | {
@@ -65,5 +65,7 @@ export interface Course {
   description: string;
   /** "About this course" body paragraphs on the overview page. */
   about: string[];
+  /** Optional bullet list rendered in the "What this guide helps with" card. */
+  helpsWith?: string[];
   lessons: Lesson[];
 }

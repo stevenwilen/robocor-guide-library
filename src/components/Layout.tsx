@@ -16,19 +16,19 @@ export default function Layout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between bg-ink-900 px-4 py-3 text-white">
+      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-ink-950 px-4 py-3 text-white">
         <div className="flex items-center gap-2.5">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-white text-sm font-bold">
             R
           </div>
           <span className="text-sm font-semibold tracking-wide">
-            ROBOCORE Guide Library
+            ROBOCOR Guide Library
           </span>
         </div>
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="rounded-md p-1.5 hover:bg-ink-700"
+          className="rounded-md p-1.5 text-slate-300 hover:bg-white/10 hover:text-white"
           aria-label="Open navigation"
         >
           <MenuIcon className="h-6 w-6" />
@@ -47,7 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-slate-300 hover:bg-ink-700 hover:text-white"
+              className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-slate-300 hover:bg-white/10 hover:text-white"
               aria-label="Close navigation"
             >
               <CloseIcon className="h-6 w-6" />
@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* Content canvas */}
       <main className="flex-1 lg:pl-64">
-        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        <div className="mx-auto max-w-6xl px-4 py-7 sm:px-6 lg:px-12 lg:py-12">
           {children}
         </div>
       </main>

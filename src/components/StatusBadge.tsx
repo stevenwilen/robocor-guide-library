@@ -7,7 +7,7 @@ type Kind = "completed" | "available" | "pending";
 
 const styles: Record<Kind, string> = {
   completed: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  available: "bg-blue-50 text-blue-700 ring-blue-600/20",
+  available: "bg-blue-50 text-accent ring-accent/20",
   pending: "bg-amber-50 text-amber-700 ring-amber-600/20",
 };
 
@@ -26,10 +26,13 @@ export default function StatusBadge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${styles[kind]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 ring-inset ${styles[kind]}`}
     >
       {kind === "completed" && <CheckCircleIcon className="h-3.5 w-3.5" />}
       {kind === "pending" && <ClockIcon className="h-3.5 w-3.5" />}
+      {kind === "available" && (
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+      )}
       {label ?? labels[kind]}
     </span>
   );
