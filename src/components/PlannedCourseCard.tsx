@@ -14,7 +14,7 @@ export default function PlannedCourseCard({
   return (
     <div
       aria-disabled="true"
-      className="flex flex-col rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-5"
+      className="flex flex-col rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-5 dark:border-slate-700 dark:bg-slate-800/40"
     >
       <div className="flex items-start justify-between gap-3">
         <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-slate-400">
@@ -25,10 +25,10 @@ export default function PlannedCourseCard({
         </span>
       </div>
 
-      <h3 className="mt-2 text-[15px] font-semibold text-slate-700">
+      <h3 className="mt-2 text-[15px] font-semibold text-slate-700 dark:text-slate-200">
         {course.title}
       </h3>
-      <p className="mt-1 text-sm leading-relaxed text-slate-500">
+      <p className="mt-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
         {course.description}
       </p>
 

@@ -2,8 +2,8 @@ import { useState, type ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import { CloseIcon, MenuIcon } from "./icons";
 
-// App shell: fixed dark sidebar on desktop, a top bar + slide-in drawer on
-// mobile/tablet. The light content canvas scrolls independently.
+// App shell: fixed light sidebar on desktop, a top bar + slide-in drawer on
+// mobile/tablet. The content canvas scrolls independently.
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -11,24 +11,24 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen lg:flex">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+      <aside className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <Sidebar />
       </aside>
 
       {/* Mobile top bar */}
-      <header className="lg:hidden sticky top-0 z-30 flex items-center justify-between border-b border-white/5 bg-ink-950 px-4 py-3 text-white">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900 lg:hidden">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-white text-sm font-bold">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-sm font-bold text-white">
             R
           </div>
-          <span className="text-sm font-semibold tracking-wide">
-            ROBOCOR Guide Library
+          <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white">
+            Robocor
           </span>
         </div>
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="rounded-md p-1.5 text-slate-300 hover:bg-white/10 hover:text-white"
+          className="rounded-md p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
           aria-label="Open navigation"
         >
           <MenuIcon className="h-6 w-6" />
@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
+        <div className="fixed inset-0 z-40 lg:hidden">
           <div
             className="absolute inset-0 bg-slate-900/50"
             onClick={() => setMobileOpen(false)}
@@ -47,7 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-slate-300 hover:bg-white/10 hover:text-white"
+              className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
               aria-label="Close navigation"
             >
               <CloseIcon className="h-6 w-6" />

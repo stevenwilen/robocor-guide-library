@@ -14,7 +14,7 @@ export default function CourseCard({ course }: { course: Course }) {
   return (
     <Link
       to={`/course/${course.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lift"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lift dark:border-slate-800 dark:bg-slate-800/50"
     >
       {/* Cover */}
       <div className="relative h-40 overflow-hidden bg-ink-900">
@@ -49,12 +49,12 @@ export default function CourseCard({ course }: { course: Course }) {
       {/* Body */}
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-[17px] font-semibold text-slate-900 transition-colors group-hover:text-accent">
+          <h3 className="text-[17px] font-semibold text-slate-900 transition-colors group-hover:text-accent dark:text-slate-100">
             {course.title}
           </h3>
           <ArrowRightIcon className="mt-1 h-4 w-4 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent" />
         </div>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+        <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           {course.description}
         </p>
 
@@ -73,9 +73,11 @@ export default function CourseCard({ course }: { course: Course }) {
           </span>
         </div>
 
-        <div className="mt-5 border-t border-slate-100 pt-4">
+        <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-700">
           <div className="mb-2 flex items-center justify-between text-xs">
-            <span className="font-medium text-slate-600">Your progress</span>
+            <span className="font-medium text-slate-600 dark:text-slate-300">
+              Your progress
+            </span>
             <span className="font-medium text-slate-500">{percent}%</span>
           </div>
           <ProgressBar percent={percent} />

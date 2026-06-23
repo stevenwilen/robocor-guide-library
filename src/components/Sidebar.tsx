@@ -1,100 +1,144 @@
-import { NavLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { courses } from "../data/courses";
-import { CourseIcon, LibraryIcon } from "./icons";
+import {
+  CertificateIcon,
+  CourseIcon,
+  DashboardIcon,
+  QuizIcon,
+  SettingsIcon,
+} from "./icons";
 
-// Calm dark technical sidebar that ties into the course hero. Honest navigation
-// only — links route to pages that exist. No admin/users/reports placeholders.
+// Clean light LMS-style shell. Honest navigation only — every item routes to a
+// page that exists. No Users / Enrollments / Reports, no backend implied.
 
-type SidebarProps = {
-  onNavigate?: () => void;
+type SidebarProps = { onNavigate?: () => void };
+
+type NavItem = {
+  to: string;
+  label: string;
+  icon: (p: { className?: string }) => JSX.Element;
+  isActive: (pathname: string) => boolean;
 };
 
-function navClass({ isActive }: { isActive: boolean }) {
-  return [
-    "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-    isActive
-      ? "bg-accent/15 text-white ring-1 ring-inset ring-accent/25 shadow-[0_0_16px_-9px_rgba(59,130,246,0.4)]"
-      : "text-slate-200 hover:bg-white/[0.07] hover:text-white",
-  ].join(" ");
-}
+const NAV: NavItem[] = [
+  {
+    to: "/",
+    label: "Dashboard",
+    icon: DashboardIcon,
+    isActive: (p) => p === "/",
+  },
+  {
+    to: "/courses",
+    label: "Courses",
+    icon: CourseIcon,
+    // Also active while browsing a course or lesson.
+    isActive: (p) => p.startsWith("/courses") || p.startsWith("/course"),
+  },
+  {
+    to: "/quizzes",
+    label: "Quizzes",
+    icon: QuizIcon,
+    isActive: (p) => p.startsWith("/quizzes"),
+  },
+  {
+    to: "/certificates",
+    label: "Certificates",
+    icon: CertificateIcon,
+    isActive: (p) => p.startsWith("/certificates"),
+  },
+  {
+    to: "/settings",
+    label: "Settings",
+    icon: SettingsIcon,
+    isActive: (p) => p.startsWith("/settings"),
+  },
+];
 
-function ActiveBar({ isActive }: { isActive: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-accent-soft transition-opacity ${
-        isActive ? "opacity-100" : "opacity-0"
-      }`}
-    />
-  );
-}
+// Honest, derived stats — never fabricated.
+const activeCourseCount = courses.length;
+const pendingLessonCount = courses
+  .flatMap((c) => c.lessons)
+  .filter((l) => l.contentStatus === "pending").length;
 
 export default function Sidebar({ onNavigate }: SidebarProps) {
+  const { pathname } = useLocation();
+
   return (
-    <div className="relative flex h-full flex-col border-r border-white/10 bg-gradient-to-b from-[#0c1322] via-[#111a2b] to-[#0f1828] text-slate-200">
-      <div className="relative flex flex-col">
-        {/* Brand */}
-        <div className="flex items-center gap-3 px-5 py-5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-[15px] font-bold text-white shadow-[0_2px_8px_-3px_rgba(37,99,235,0.35)] ring-1 ring-inset ring-white/10">
-            R
+    <div className="flex h-full flex-col border-r border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+      {/* Brand */}
+      <div className="flex items-center gap-3 px-5 py-5">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-[15px] font-bold text-white">
+          R
+        </div>
+        <div className="leading-tight">
+          <div className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">
+            Robocor
           </div>
-          <div className="leading-tight">
-            <div className="text-[15px] font-bold tracking-wide text-white">
-              ROBOCOR
-            </div>
-            <div className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-slate-300">
-              Guide Library
-            </div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+            LMS Admin
           </div>
         </div>
-
-        <div className="mx-5 mb-1 border-t border-white/10" />
-
-        <nav className="space-y-1 px-3 py-3">
-          <NavLink to="/" end onClick={onNavigate} className={navClass}>
-            {({ isActive }) => (
-              <>
-                <ActiveBar isActive={isActive} />
-                <LibraryIcon
-                  className={`h-[18px] w-[18px] ${isActive ? "text-accent-soft" : "text-slate-300 group-hover:text-white"}`}
-                />
-                Library
-              </>
-            )}
-          </NavLink>
-
-          <div className="px-3 pb-1.5 pt-6 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            Courses
-          </div>
-
-          {courses.map((course) => (
-            <NavLink
-              key={course.id}
-              to={`/course/${course.id}`}
-              onClick={onNavigate}
-              className={navClass}
-            >
-              {({ isActive }) => (
-                <>
-                  <ActiveBar isActive={isActive} />
-                  <CourseIcon
-                    className={`h-[18px] w-[18px] ${isActive ? "text-accent-soft" : "text-slate-300 group-hover:text-white"}`}
-                  />
-                  <span className="truncate">{course.title}</span>
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
       </div>
 
-      <div className="relative mt-auto px-5 py-4">
-        <div className="rounded-xl border border-white/10 bg-white/[0.05] px-3.5 py-3">
-          <p className="text-[11px] font-semibold text-slate-100">
-            Progress saves locally
+      <div className="mx-5 mb-1 border-t border-slate-100 dark:border-slate-800" />
+
+      <nav className="flex-1 space-y-1 px-3 py-3">
+        {NAV.map((item) => {
+          const active = item.isActive(pathname);
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
+              className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                active
+                  ? "bg-blue-50 text-accent dark:bg-accent/15 dark:text-white"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-accent transition-opacity ${
+                  active ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              <Icon
+                className={`h-[18px] w-[18px] ${active ? "text-accent dark:text-accent-soft" : "text-slate-400 group-hover:text-slate-500 dark:group-hover:text-slate-300"}`}
+              />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Honest stats — derived from course data, not fabricated. */}
+      <div className="px-4 pb-5">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-800/50">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+            Library status
           </p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">
-            Your completion is kept on this device only.
+          <dl className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <dt className="text-slate-500 dark:text-slate-400">
+                Active courses
+              </dt>
+              <dd className="font-semibold text-slate-900 dark:text-slate-100">
+                {activeCourseCount}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <dt className="text-slate-500 dark:text-slate-400">
+                Pending lessons
+              </dt>
+              <dd className="font-semibold text-slate-900 dark:text-slate-100">
+                {pendingLessonCount}
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-2.5 border-t border-slate-200 pt-2 text-[10.5px] leading-relaxed text-slate-400 dark:border-slate-700">
+            Progress is saved on this device only.
           </p>
         </div>
       </div>

@@ -62,10 +62,10 @@ export default function LessonPage() {
             {isPending && <StatusBadge kind="pending" />}
           </div>
 
-          <h1 className="mt-3 text-[28px] font-semibold leading-tight tracking-tight text-slate-900 sm:text-[34px]">
+          <h1 className="mt-3 text-[28px] font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 sm:text-[34px]">
             {lesson.title}
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-slate-700">
+          <p className="mt-3 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">
             {lesson.summary}
           </p>
 

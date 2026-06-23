@@ -44,11 +44,11 @@ export default function CourseOverviewPage() {
   return (
     <div>
       <Link
-        to="/"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-accent"
+        to="/courses"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-accent dark:text-slate-400"
       >
         <ArrowLeftIcon className="h-4 w-4" />
-        Back to library
+        Back to courses
       </Link>
 
       {/* Hero */}
@@ -296,7 +296,7 @@ function SectionHeader({
         <Icon className={inline ? "h-3.5 w-3.5" : "h-4 w-4"} />
       </span>
       <h2
-        className={`font-semibold text-slate-900 ${inline ? "text-base" : "text-lg"}`}
+        className={`font-semibold text-slate-900 ${inline ? "text-base dark:text-slate-100" : "text-lg"}`}
       >
         {title}
       </h2>
