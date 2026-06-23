@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CertificateIcon,
   CheckCircleIcon,
+  CloseIcon,
   LockIcon,
-  PrintIcon,
+  MaximizeIcon,
 } from "../components/icons";
 import { courses } from "../data/courses";
 import { useProgress } from "../hooks/useProgress";
@@ -39,12 +40,24 @@ export default function CertificatesPage() {
     dateIssued: null,
   });
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+
   // Record the completion date once, the first time the lesson is complete.
   useEffect(() => {
     if (lesson1Done && !cert.dateIssued) {
       setCert({ dateIssued: new Date().toISOString() });
     }
   }, [lesson1Done, cert.dateIssued, setCert]);
+
+  // Close the full-screen preview with Escape.
+  useEffect(() => {
+    if (!previewOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [previewOpen]);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -85,8 +98,8 @@ export default function CertificatesPage() {
         </div>
       ) : (
         <>
-          {/* Controls (not printed) */}
-          <div className="no-print mt-7 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-row sm:items-end sm:justify-between">
+          {/* Controls */}
+          <div className="mt-7 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-row sm:items-end sm:justify-between">
             <label className="flex-1">
               <span className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
                 Your name (optional)
@@ -101,70 +114,126 @@ export default function CertificatesPage() {
             </label>
             <button
               type="button"
-              onClick={() => window.print()}
+              onClick={() => setPreviewOpen(true)}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
             >
-              <PrintIcon className="h-4 w-4" />
-              Print / Save
+              <MaximizeIcon className="h-4 w-4" />
+              Preview
             </button>
           </div>
 
-          {/* Completion card (print target) */}
-          <div className="print-area mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-panel dark:border-slate-700">
-            <div className="border-b border-slate-100 bg-slate-50/80 px-6 py-4 dark:border-slate-700 dark:bg-slate-800/60">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/20">
-                  <CheckCircleIcon className="h-4 w-4" />
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                  Completion card
-                </span>
-              </div>
-            </div>
-
-            <div className="px-6 py-7 text-slate-900 dark:text-slate-100">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                This confirms completion of
-              </p>
-              <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-                Morpheus Drive Hardware Setup
-              </h2>
-              {course && (
-                <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
-                  {course.title} · Lesson 1
-                </p>
-              )}
-
-              <div className="mt-6 grid gap-4 border-t border-slate-100 pt-5 dark:border-slate-700 sm:grid-cols-2">
-                <Field label="Completed by">
-                  {name.trim() || (
-                    <span className="text-slate-400">— (add your name)</span>
-                  )}
-                </Field>
-                <Field label="Completed on">
-                  {cert.dateIssued ? formatDate(cert.dateIssued) : "—"}
-                </Field>
-                <Field label="Status">Completed on this device</Field>
-                {quizScore && (
-                  <Field label="Knowledge check">
-                    {quizScore.score} / {quizScore.total}
-                  </Field>
-                )}
-              </div>
-
-              <p className="mt-6 border-t border-slate-100 pt-4 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
-                This completion card is saved locally and can be shown for
-                review.
-              </p>
-            </div>
+          {/* Inline completion card */}
+          <div className="mt-5">
+            <CompletionCard
+              name={name}
+              dateIssued={cert.dateIssued}
+              quizScore={quizScore}
+              courseTitle={course?.title}
+            />
           </div>
 
-          <p className="no-print mt-4 text-xs leading-relaxed text-slate-400">
+          <p className="mt-4 text-xs leading-relaxed text-slate-400">
             Full course certificates can be added after the app lessons are
             completed.
           </p>
         </>
       )}
+
+      {/* Full-screen preview */}
+      {previewOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/70 p-4 backdrop-blur-sm sm:items-center sm:p-8">
+          <button
+            type="button"
+            className="absolute inset-0 cursor-default"
+            onClick={() => setPreviewOpen(false)}
+            aria-label="Close preview"
+          />
+          <div className="relative z-10 w-full max-w-3xl">
+            <button
+              type="button"
+              onClick={() => setPreviewOpen(false)}
+              aria-label="Close preview"
+              className="absolute -top-2 right-0 -translate-y-full rounded-lg p-1.5 text-white/80 transition hover:text-white sm:-right-2"
+            >
+              <CloseIcon className="h-6 w-6" />
+            </button>
+            <CompletionCard
+              large
+              name={name}
+              dateIssued={cert.dateIssued}
+              quizScore={quizScore}
+              courseTitle={course?.title}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// The completion "paper" — always light, in both themes and at preview size.
+function CompletionCard({
+  name,
+  dateIssued,
+  quizScore,
+  courseTitle,
+  large,
+}: {
+  name: string;
+  dateIssued: string | null;
+  quizScore: QuizScore;
+  courseTitle?: string;
+  large?: boolean;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-panel">
+      <div className="border-b border-slate-100 bg-slate-50/80 px-6 py-4">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/20">
+            <CheckCircleIcon className="h-4 w-4" />
+          </span>
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Completion card
+          </span>
+        </div>
+      </div>
+
+      <div className={`text-slate-900 ${large ? "px-8 py-10 sm:px-12" : "px-6 py-7"}`}>
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          This confirms completion of
+        </p>
+        <h2
+          className={`mt-1 font-semibold tracking-tight text-slate-900 ${large ? "text-3xl sm:text-4xl" : "text-2xl"}`}
+        >
+          Morpheus Drive Hardware Setup
+        </h2>
+        {courseTitle && (
+          <p className="mt-0.5 text-sm text-slate-500">
+            {courseTitle} · Lesson 1
+          </p>
+        )}
+
+        <div className="mt-6 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2">
+          <Field label="Completed by">
+            {name.trim() || (
+              <span className="text-slate-400">— (add your name)</span>
+            )}
+          </Field>
+          <Field label="Completed on">
+            {dateIssued ? formatDate(dateIssued) : "—"}
+          </Field>
+          <Field label="Status">Completed on this device</Field>
+          {quizScore && (
+            <Field label="Knowledge check">
+              {quizScore.score} / {quizScore.total}
+            </Field>
+          )}
+        </div>
+
+        <p className="mt-6 border-t border-slate-100 pt-4 text-xs leading-relaxed text-slate-500">
+          This completion card is saved locally and can be shown for review.
+        </p>
+      </div>
     </div>
   );
 }
@@ -181,9 +250,7 @@ function Field({
       <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
         {label}
       </dt>
-      <dd className="mt-0.5 text-sm font-medium text-slate-900 dark:text-slate-100">
-        {children}
-      </dd>
+      <dd className="mt-0.5 text-sm font-medium text-slate-900">{children}</dd>
     </div>
   );
 }

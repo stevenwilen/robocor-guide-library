@@ -18,11 +18,7 @@ export default function LessonNav({
   activeLessonId: string;
   orientation?: Orientation;
 }) {
-  const { isComplete, courseProgress } = useProgress();
-  const { completed, total, percent } = courseProgress(
-    course.id,
-    course.lessons.length,
-  );
+  const { isComplete } = useProgress();
   const vertical = orientation === "vertical";
 
   const divider = vertical ? "h-px w-7 bg-slate-200" : "h-7 w-px bg-slate-200";
@@ -89,44 +85,6 @@ export default function LessonNav({
           );
         })}
       </ul>
-
-      <span aria-hidden="true" className={divider} />
-
-      {/* Compact progress */}
-      <div
-        title={`Course progress: ${percent}%`}
-        className={
-          vertical
-            ? "flex flex-col items-center gap-1.5"
-            : "ml-auto flex items-center gap-2 pl-1"
-        }
-      >
-        {vertical ? (
-          <>
-            <span className="text-[11px] font-semibold tabular-nums text-slate-500">
-              {completed}/{total}
-            </span>
-            <div className="relative h-12 w-1.5 overflow-hidden rounded-full bg-slate-200">
-              <div
-                className="absolute bottom-0 left-0 w-full rounded-full bg-accent transition-[height] duration-500"
-                style={{ height: `${percent}%` }}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="h-1.5 w-12 overflow-hidden rounded-full bg-slate-200">
-              <div
-                className="h-full rounded-full bg-accent transition-[width] duration-500"
-                style={{ width: `${percent}%` }}
-              />
-            </div>
-            <span className="text-[11px] font-semibold tabular-nums text-slate-500">
-              {completed}/{total}
-            </span>
-          </>
-        )}
-      </div>
     </nav>
   );
 }
