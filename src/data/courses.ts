@@ -1,4 +1,4 @@
-import type { Course } from "./types";
+import type { Course, PlannedCourse } from "./types";
 
 // ============================================================================
 // HOW TO EDIT THIS FILE
@@ -141,6 +141,12 @@ export const courses: Course[] = [
         contentStatus: "pending",
         pendingNote:
           "Reserved for the updated CoreOS app connection process. This lesson can be completed after the new app flow is confirmed.",
+        contentNeeded: [
+          "Updated app walkthrough",
+          "Connection steps",
+          "Screenshots or screen recording",
+          "Common pairing issues",
+        ],
       },
 
       // ----------------------------------------------------------------------
@@ -155,8 +161,41 @@ export const courses: Course[] = [
         contentStatus: "pending",
         pendingNote:
           "Reserved for the updated app workflow. This lesson can be completed after the new app flow is confirmed.",
+        contentNeeded: [
+          "Updated app screen flow",
+          "Navigation walkthrough",
+          "App controls or feature list",
+          "Common user questions",
+        ],
       },
     ],
+  },
+];
+
+// Courses the library is structured to support but that are not built yet.
+// These render as clearly-labeled planned cards on the directory — never as
+// active, clickable courses. Describe intended scope only, not real content.
+export const plannedCourses: PlannedCourse[] = [
+  {
+    id: "coreos-app-walkthrough",
+    title: "CoreOS App Walkthrough",
+    description:
+      "Planned walkthrough of the updated app connection and setup flow.",
+    status: "Pending updated app workflow",
+  },
+  {
+    id: "robot-build-reference",
+    title: "Robot Build Reference",
+    description:
+      "Planned reference for assembling and wiring the robot hardware.",
+    status: "Available as future course",
+  },
+  {
+    id: "troubleshooting-guide",
+    title: "Troubleshooting Guide",
+    description:
+      "Planned guide for common setup, power, and connection issues.",
+    status: "Can be added later",
   },
 ];
 

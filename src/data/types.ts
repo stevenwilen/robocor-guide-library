@@ -48,8 +48,27 @@ export interface Lesson {
   durationLabel?: string;
   /** Shown when contentStatus === "pending". Honest, plain wording. */
   pendingNote?: string;
+  /**
+   * For pending lessons: the source material still required before this lesson
+   * can be written. Rendered as a "Content needed to complete this lesson"
+   * checklist — it documents the gap honestly, it is not lesson content.
+   */
+  contentNeeded?: string[];
   /** Present when contentStatus === "available". */
   sections?: LessonSection[];
+}
+
+/**
+ * A course that the library is structured to support but that has not been
+ * built yet. Rendered as a clearly-labeled, non-clickable planned card so the
+ * directory can show future scope without pretending the course exists.
+ */
+export interface PlannedCourse {
+  id: string;
+  title: string;
+  description: string;
+  /** Honest status label, e.g. "Pending updated app workflow". */
+  status: string;
 }
 
 export interface Course {

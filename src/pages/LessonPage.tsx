@@ -7,6 +7,7 @@ import {
   ArrowRightIcon,
   CheckIcon,
   ClockIcon,
+  FileTextIcon,
   LockIcon,
 } from "../components/icons";
 import { getCourse, getLesson } from "../data/courses";
@@ -77,7 +78,10 @@ export default function LessonPage() {
 
           <div className="mt-9 border-t border-slate-200 pt-9">
             {isPending ? (
-              <PendingState note={lesson.pendingNote} />
+              <PendingState
+                note={lesson.pendingNote}
+                contentNeeded={lesson.contentNeeded}
+              />
             ) : (
               <>
                 <LessonSections sections={lesson.sections ?? []} />
@@ -157,27 +161,63 @@ export default function LessonPage() {
 }
 
 // Structured, honest pending state — not a blank or "coming soon" page.
-function PendingState({ note }: { note?: string }) {
+function PendingState({
+  note,
+  contentNeeded,
+}: {
+  note?: string;
+  contentNeeded?: string[];
+}) {
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-6 sm:p-8">
-      <div className="flex items-start gap-4">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700 ring-1 ring-inset ring-amber-200">
-          <LockIcon className="h-5 w-5" />
-        </span>
-        <div>
-          <h2 className="text-base font-semibold text-amber-900">
-            Pending updated app workflow
-          </h2>
-          <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-amber-800">
-            {note ??
-              "This lesson is reserved for upcoming content and can be completed once the new app flow is confirmed."}
-          </p>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-amber-700/90">
-            The lesson structure is in place. Final content will be added here
-            without changing the rest of the course.
-          </p>
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-6 sm:p-8">
+        <div className="flex items-start gap-4">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700 ring-1 ring-inset ring-amber-200">
+            <LockIcon className="h-5 w-5" />
+          </span>
+          <div>
+            <h2 className="text-base font-semibold text-amber-900">
+              Pending updated app workflow
+            </h2>
+            <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-amber-800">
+              {note ??
+                "This lesson is reserved for upcoming content and can be completed once the new app flow is confirmed."}
+            </p>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-amber-700/90">
+              The lesson structure is in place. Final content will be added here
+              without changing the rest of the course.
+            </p>
+          </div>
         </div>
       </div>
+
+      {contentNeeded && contentNeeded.length > 0 && (
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-card">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+              <FileTextIcon className="h-4 w-4" />
+            </span>
+            <h3 className="text-sm font-semibold text-slate-900">
+              Content needed to complete this lesson
+            </h3>
+          </div>
+          <p className="mt-2 text-sm text-slate-600">
+            Once these are provided, this lesson can be written and marked
+            available.
+          </p>
+          <ul className="mt-4 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+            {contentNeeded.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2.5 text-sm text-slate-700"
+              >
+                <span className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border border-slate-300 bg-slate-50" />
+                <span className="leading-snug">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
