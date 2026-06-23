@@ -1,48 +1,22 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import LessonNav from "../components/LessonNav";
 import LessonSections from "../components/sections/LessonSections";
-import ProgressBar from "../components/ProgressBar";
 import StatusBadge from "../components/StatusBadge";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
   CheckIcon,
-  CloseIcon,
   FileTextIcon,
-  ListChecksIcon,
   LockIcon,
 } from "../components/icons";
 import { getCourse, getLesson } from "../data/courses";
 import { useProgress } from "../hooks/useProgress";
 
-// Remembered (this device only) — whether the desktop lesson rail is collapsed.
-const NAV_COLLAPSE_KEY = "robocore-lessonnav-collapsed";
-function readNavCollapsed(): boolean {
-  try {
-    return localStorage.getItem(NAV_COLLAPSE_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
 export default function LessonPage() {
   const { courseId, lessonId } = useParams();
-  const navigate = useNavigate();
   const course = getCourse(courseId);
   const { lesson } = getLesson(courseId, lessonId);
-  const { isComplete, toggleComplete, courseProgress } = useProgress();
-
-  const [collapsed, setCollapsed] = useState(readNavCollapsed);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(NAV_COLLAPSE_KEY, collapsed ? "1" : "0");
-    } catch {
-      // Storage may be unavailable; preference simply won't persist.
-    }
-  }, [collapsed]);
+  const { isComplete, toggleComplete } = useProgress();
 
   if (!course || !lesson) {
     return <NotFound />;
@@ -55,65 +29,30 @@ export default function LessonPage() {
 
   const completed = isComplete(course.id, lesson.id);
   const isPending = lesson.contentStatus === "pending";
-  const {
-    completed: cDone,
-    total: cTotal,
-    percent: cPercent,
-  } = courseProgress(course.id, course.lessons.length);
 
   return (
-    <div
-      className={`lg:grid lg:gap-10 ${
-        collapsed
-          ? "lg:grid-cols-[64px_minmax(0,1fr)]"
-          : "lg:grid-cols-[264px_minmax(0,1fr)]"
-      }`}
-    >
-      {/* Desktop rail */}
+    <div className="lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8">
+      {/* Desktop slim rail */}
       <aside className="hidden lg:sticky lg:top-12 lg:block lg:self-start">
         <LessonNav
           course={course}
           activeLessonId={lesson.id}
-          collapsed={collapsed}
-          onToggleCollapse={() => setCollapsed((c) => !c)}
+          orientation="vertical"
         />
       </aside>
 
       <article className="min-w-0">
-        {/* Mobile lesson selector */}
+        {/* Mobile horizontal rail */}
         <div className="mb-6 lg:hidden">
-          <div className="flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3 py-2.5 shadow-card">
-            <button
-              type="button"
-              onClick={() => navigate(`/course/${course.id}`)}
-              aria-label="Back to course"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-accent"
-            >
-              <ArrowLeftIcon className="h-4 w-4" />
-            </button>
-            <span className="min-w-0 flex-1 truncate text-center text-sm font-semibold text-slate-700">
-              {course.title}
-            </span>
-            <button
-              type="button"
-              onClick={() => setMobileOpen(true)}
-              aria-label="Open lesson list"
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:text-accent"
-            >
-              <ListChecksIcon className="h-4 w-4" />
-              Lessons
-            </button>
-          </div>
-          <div className="mt-2 flex items-center gap-2.5 px-1">
-            <ProgressBar percent={cPercent} className="flex-1" />
-            <span className="text-[11px] font-medium text-slate-400">
-              {cDone}/{cTotal}
-            </span>
-          </div>
+          <LessonNav
+            course={course}
+            activeLessonId={lesson.id}
+            orientation="horizontal"
+          />
         </div>
 
         {/* Reader column */}
-        <div className={`mx-auto ${collapsed ? "max-w-4xl" : "max-w-3xl"}`}>
+        <div className="mx-auto max-w-4xl">
           {/* Intro */}
           <div className="flex items-center gap-3">
             <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
@@ -210,38 +149,6 @@ export default function LessonPage() {
           </nav>
         </div>
       </article>
-
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div
-            className="absolute inset-0 bg-slate-900/50"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="absolute inset-y-0 left-0 w-80 max-w-[85%] overflow-y-auto bg-white p-5 shadow-xl">
-            <div className="mb-5 flex items-center justify-between">
-              <span className="text-sm font-semibold text-slate-900">
-                Lessons
-              </span>
-              <button
-                type="button"
-                onClick={() => setMobileOpen(false)}
-                aria-label="Close lesson list"
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-accent"
-              >
-                <CloseIcon className="h-5 w-5" />
-              </button>
-            </div>
-            <LessonNav
-              course={course}
-              activeLessonId={lesson.id}
-              showCollapseToggle={false}
-              onNavigate={() => setMobileOpen(false)}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
