@@ -1,5 +1,5 @@
 import type { LessonSection } from "../../data/types";
-import { CheckCircleIcon } from "../icons";
+import { CheckCircleIcon, PlayIcon } from "../icons";
 
 // Renders a list of lesson section blocks. Add a case here when a new block
 // type is added to LessonSection in src/data/types.ts.
@@ -22,7 +22,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
   switch (section.type) {
     case "paragraph":
       return (
-        <section>
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card sm:p-6">
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
           <p className="text-[15px] leading-[1.75] text-slate-700">
             {section.text}
@@ -33,8 +33,23 @@ function SectionBlock({ section }: { section: LessonSection }) {
     case "video":
       return (
         <section>
-          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-ink-900 shadow-card">
-            <div className="relative aspect-video w-full">
+          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 sm:px-5">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-accent">
+                  <PlayIcon className="ml-0.5 h-3.5 w-3.5" />
+                </span>
+                <h2 className="truncate text-sm font-semibold text-slate-900">
+                  {section.title}
+                </h2>
+              </div>
+              {section.durationLabel && (
+                <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
+                  {section.durationLabel}
+                </span>
+              )}
+            </div>
+            <div className="relative aspect-video w-full bg-ink-900">
               <iframe
                 className="absolute inset-0 h-full w-full"
                 src={`https://www.youtube.com/embed/${section.youtubeId}`}
@@ -45,12 +60,12 @@ function SectionBlock({ section }: { section: LessonSection }) {
                 allowFullScreen
               />
             </div>
+            {section.note && (
+              <p className="border-t border-slate-100 px-4 py-2.5 text-xs italic text-slate-500 sm:px-5">
+                {section.note}
+              </p>
+            )}
           </div>
-          {section.note && (
-            <p className="mt-2.5 text-xs italic text-slate-500">
-              {section.note}
-            </p>
-          )}
         </section>
       );
 
@@ -141,6 +156,9 @@ function SectionBlock({ section }: { section: LessonSection }) {
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mb-3.5 text-lg font-semibold text-slate-900">{children}</h2>
+    <h2 className="mb-3.5 flex items-center gap-2.5 text-lg font-semibold text-slate-900">
+      <span aria-hidden="true" className="h-4 w-1 rounded-full bg-accent/70" />
+      {children}
+    </h2>
   );
 }

@@ -26,6 +26,8 @@ export const courses: Course[] = [
     subtitle: "Quick-start setup and reference guide",
     level: "Beginner",
     durationLabel: "~1 hour",
+    // Banner image lives in public/images/ and is served at this root path.
+    image: "/images/morpheus-drive.png",
     heroEyebrow: "Course",
     description:
       "Set up the Morpheus Drive hardware and get the system running with minimal setup.",

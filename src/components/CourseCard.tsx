@@ -18,10 +18,24 @@ export default function CourseCard({ course }: { course: Course }) {
     >
       {/* Cover */}
       <div className="relative h-40 overflow-hidden bg-ink-900">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#172339] to-[#101a2c]" />
-        <div className="dot-grid absolute inset-0 opacity-[0.10]" />
-        {/* subtle accent depth */}
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/10 blur-3xl" />
+        {course.image ? (
+          <>
+            <img
+              src={course.image}
+              alt=""
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/35 to-ink-950/5" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#172339] to-[#101a2c]" />
+            <div className="dot-grid absolute inset-0 opacity-[0.10]" />
+            {/* subtle accent depth */}
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/10 blur-3xl" />
+          </>
+        )}
         <div className="absolute inset-x-5 bottom-4 flex items-end justify-between">
           <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-white ring-1 ring-inset ring-white/15 backdrop-blur">
             {course.level}

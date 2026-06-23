@@ -51,12 +51,28 @@ export default function CourseOverviewPage() {
         Back to library
       </Link>
 
-      {/* Hero (compact) */}
+      {/* Hero */}
       <div className="mt-4 overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-panel">
-        <div className="relative h-36 bg-ink-900 sm:h-44">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#172339] to-[#101a2c]" />
-          <div className="dot-grid absolute inset-0 opacity-[0.10]" />
-          <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/10 blur-3xl" />
+        <div className="relative h-48 bg-ink-900 sm:h-64">
+          {course.image ? (
+            <>
+              <img
+                src={course.image}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover object-center"
+              />
+              {/* Calm readability overlays — darkens toward the bottom where
+                  the title and badges sit. */}
+              <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/55 to-ink-950/20" />
+              <div className="absolute inset-0 bg-gradient-to-r from-ink-950/65 via-ink-950/10 to-transparent" />
+            </>
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#172339] to-[#101a2c]" />
+              <div className="dot-grid absolute inset-0 opacity-[0.10]" />
+              <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/10 blur-3xl" />
+            </>
+          )}
           <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
             {course.heroEyebrow && (
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/65">

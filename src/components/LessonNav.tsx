@@ -1,35 +1,128 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import type { Course } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
-import { ArrowLeftIcon, CheckIcon, HelpIcon, LockIcon } from "./icons";
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  HelpIcon,
+  LockIcon,
+} from "./icons";
 import ProgressBar from "./ProgressBar";
 
-// Left rail on the lesson page: back link, lesson list with completion ticks,
-// course progress, and an honest "Need help?" card (no fake support widget).
+// Lesson-page navigation. Renders three ways:
+//  - collapsed: a narrow rail of lesson nodes (desktop, space-saving)
+//  - expanded: full lesson list + progress + help (desktop)
+//  - drawer:   expanded content without the collapse toggle (mobile overlay)
+type Props = {
+  course: Course;
+  activeLessonId: string;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+  onNavigate?: () => void;
+  showCollapseToggle?: boolean;
+};
+
 export default function LessonNav({
   course,
   activeLessonId,
-}: {
-  course: Course;
-  activeLessonId: string;
-}) {
-  const navigate = useNavigate();
+  collapsed = false,
+  onToggleCollapse,
+  onNavigate,
+  showCollapseToggle = true,
+}: Props) {
   const { isComplete, courseProgress } = useProgress();
   const { completed, total, percent } = courseProgress(
     course.id,
     course.lessons.length,
   );
 
+  // --- Collapsed rail ------------------------------------------------------
+  if (collapsed) {
+    return (
+      <div className="flex flex-col items-center gap-3">
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          title="Expand lessons"
+          aria-label="Expand lessons"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-accent"
+        >
+          <ChevronRightIcon className="h-4 w-4" />
+        </button>
+
+        <div className="h-px w-8 bg-slate-200" />
+
+        <ul className="flex flex-col items-center gap-2">
+          {course.lessons.map((lesson) => {
+            const done = isComplete(course.id, lesson.id);
+            const pending = lesson.contentStatus === "pending";
+            const active = lesson.id === activeLessonId;
+            return (
+              <li key={lesson.id}>
+                <Link
+                  to={`/course/${course.id}/lesson/${lesson.id}`}
+                  title={`Lesson ${lesson.number}: ${lesson.title}${pending ? " — pending" : ""}`}
+                  aria-label={`Lesson ${lesson.number}: ${lesson.title}`}
+                  className={`flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-semibold transition ${
+                    active
+                      ? "bg-accent text-white"
+                      : done
+                        ? "bg-emerald-500 text-white"
+                        : pending
+                          ? "bg-slate-100 text-slate-400 ring-1 ring-inset ring-slate-200"
+                          : "bg-white text-slate-500 ring-1 ring-inset ring-slate-300 hover:text-accent hover:ring-accent/40"
+                  }`}
+                >
+                  {done ? (
+                    <CheckIcon className="h-4 w-4" />
+                  ) : pending ? (
+                    <LockIcon className="h-3.5 w-3.5" />
+                  ) : (
+                    lesson.number
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="h-px w-8 bg-slate-200" />
+        <div
+          title={`Course progress: ${percent}%`}
+          className="text-[11px] font-semibold text-slate-400"
+        >
+          {completed}/{total}
+        </div>
+      </div>
+    );
+  }
+
+  // --- Expanded (desktop) / drawer (mobile) --------------------------------
   return (
     <div className="space-y-6">
-      <button
-        type="button"
-        onClick={() => navigate(`/course/${course.id}`)}
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-accent"
-      >
-        <ArrowLeftIcon className="h-4 w-4" />
-        Back to course
-      </button>
+      <div className="flex items-center justify-between gap-2">
+        <Link
+          to={`/course/${course.id}`}
+          onClick={onNavigate}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-accent"
+        >
+          <ArrowLeftIcon className="h-4 w-4" />
+          Back to course
+        </Link>
+        {showCollapseToggle && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            title="Collapse lessons"
+            aria-label="Collapse lessons"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:border-slate-300 hover:text-accent"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </button>
+        )}
+      </div>
 
       <div>
         <h2 className="px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-slate-400">
@@ -43,7 +136,6 @@ export default function LessonNav({
             const isLast = i === course.lessons.length - 1;
             return (
               <li key={lesson.id} className="relative">
-                {/* connector line */}
                 {!isLast && (
                   <span
                     aria-hidden="true"
@@ -52,6 +144,7 @@ export default function LessonNav({
                 )}
                 <Link
                   to={`/course/${course.id}/lesson/${lesson.id}`}
+                  onClick={onNavigate}
                   className={`relative flex items-start gap-3 rounded-lg px-2.5 py-2 text-sm transition ${
                     active
                       ? "bg-blue-50 text-accent ring-1 ring-inset ring-blue-600/15"

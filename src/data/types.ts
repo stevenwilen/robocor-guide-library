@@ -78,6 +78,12 @@ export interface Course {
   subtitle: string;
   level: string;
   durationLabel: string;
+  /**
+   * Optional banner / identity image. Served from the public folder, so use a
+   * root-absolute path like "/images/morpheus-drive.png" (file lives in
+   * public/images/). Used on the overview hero and the directory card.
+   */
+  image?: string;
   /** Small eyebrow label on the overview hero, e.g. "Course". */
   heroEyebrow?: string;
   /** One-line description for the directory card. */
