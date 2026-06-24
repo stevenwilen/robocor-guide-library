@@ -92,5 +92,7 @@ export interface Course {
   about: string[];
   /** Optional bullet list rendered in the "What this guide helps with" card. */
   helpsWith?: string[];
+  /** Optional knowledge-check quiz id (see src/data/quiz.ts). */
+  quizId?: string;
   lessons: Lesson[];
 }

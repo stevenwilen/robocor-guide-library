@@ -118,7 +118,7 @@ function RailLink({
       {children}
       <span
         role="tooltip"
-        className={`pointer-events-none absolute z-30 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100 ${
+        className={`pointer-events-none absolute z-30 hidden w-max max-w-[14rem] rounded-md bg-slate-900 px-2 py-1 text-center text-xs font-medium leading-snug text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100 lg:block ${
           vertical
             ? "left-full top-1/2 ml-2 -translate-y-1/2"
             : "left-1/2 top-full mt-2 -translate-x-1/2"

@@ -22,6 +22,7 @@ import type { Course, PlannedCourse } from "./types";
 export const courses: Course[] = [
   {
     id: "morpheus-drive",
+    quizId: "morpheus-drive-knowledge-check",
     title: "Morpheus Drive",
     subtitle: "Quick-start setup and reference guide",
     level: "Beginner",

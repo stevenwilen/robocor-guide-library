@@ -8,8 +8,10 @@ import {
   CheckIcon,
   FileTextIcon,
   LockIcon,
+  QuizIcon,
 } from "../components/icons";
 import { getCourse, getLesson } from "../data/courses";
+import { getQuiz } from "../data/quiz";
 import { useProgress } from "../hooks/useProgress";
 
 export default function LessonPage() {
@@ -29,6 +31,7 @@ export default function LessonPage() {
 
   const completed = isComplete(course.id, lesson.id);
   const isPending = lesson.contentStatus === "pending";
+  const quiz = getQuiz(course.quizId);
 
   return (
     <div className="lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8">
@@ -104,6 +107,32 @@ export default function LessonPage() {
                     {completed ? "Completed — undo" : "Mark lesson complete"}
                   </button>
                 </div>
+
+                {/* After completing the lesson, point to the knowledge check. */}
+                {completed && quiz && (
+                  <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-blue-200/70 bg-blue-50/60 p-5 dark:border-accent/30 dark:bg-accent/10 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-accent ring-1 ring-inset ring-blue-200">
+                        <QuizIcon className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          Test what you learned
+                        </p>
+                        <p className="mt-0.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                          Take the {quiz.title} to check your understanding.
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      to="/quizzes"
+                      className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
+                    >
+                      <QuizIcon className="h-4 w-4" />
+                      Take the knowledge check
+                    </Link>
+                  </div>
+                )}
               </>
             )}
           </div>

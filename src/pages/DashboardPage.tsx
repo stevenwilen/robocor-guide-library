@@ -25,6 +25,8 @@ export default function DashboardPage() {
     course.lessons.length,
   );
   const lesson1Done = isComplete(course.id, lesson1.id);
+  // The completion card unlocks only after both the lesson and the quiz.
+  const certUnlocked = lesson1Done && !!quizScore;
   const pendingCount = course.lessons.filter(
     (l) => l.contentStatus === "pending",
   ).length;
@@ -120,9 +122,9 @@ export default function DashboardPage() {
                   Completion card
                 </dt>
                 <dd
-                  className={`font-semibold ${lesson1Done ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"}`}
+                  className={`font-semibold ${certUnlocked ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"}`}
                 >
-                  {lesson1Done ? "Available" : "Locked"}
+                  {certUnlocked ? "Available" : "Locked"}
                 </dd>
               </div>
             </dl>
@@ -149,7 +151,7 @@ export default function DashboardPage() {
               <NextStep done={!!quizScore}>
                 Take the Morpheus Drive knowledge check
               </NextStep>
-              <NextStep done={lesson1Done}>
+              <NextStep done={certUnlocked}>
                 Open your local completion card
               </NextStep>
             </ol>

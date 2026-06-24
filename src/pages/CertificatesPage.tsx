@@ -40,14 +40,18 @@ export default function CertificatesPage() {
     dateIssued: null,
   });
 
+  const quizTaken = quizScore != null;
+  // The completion card requires BOTH finishing the lesson and the quiz.
+  const unlocked = lesson1Done && quizTaken;
+
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  // Record the completion date once, the first time the lesson is complete.
+  // Record the completion date once, the first time both steps are done.
   useEffect(() => {
-    if (lesson1Done && !cert.dateIssued) {
+    if (unlocked && !cert.dateIssued) {
       setCert({ dateIssued: new Date().toISOString() });
     }
-  }, [lesson1Done, cert.dateIssued, setCert]);
+  }, [unlocked, cert.dateIssued, setCert]);
 
   // Close the full-screen preview with Escape.
   useEffect(() => {
@@ -80,21 +84,29 @@ export default function CertificatesPage() {
         </p>
       </header>
 
-      {!lesson1Done ? (
+      {!unlocked ? (
         <div className="mt-7 rounded-2xl border border-slate-200/80 bg-white p-8 text-center shadow-card dark:border-slate-800 dark:bg-slate-800/50">
           <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-300">
             <LockIcon className="h-6 w-6" />
           </span>
           <h2 className="mt-4 text-lg font-semibold">Completion card locked</h2>
           <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
-            Complete the Hardware Setup lesson to unlock this completion card.
+            Finish both steps below to unlock this completion card.
           </p>
-          <Link
-            to={`/course/${COURSE_ID}/lesson/${LESSON_ID}`}
-            className="mt-5 inline-flex items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
-          >
-            Go to Hardware Setup
-          </Link>
+          <ul className="mx-auto mt-6 max-w-sm space-y-2.5 text-left">
+            <Requirement
+              done={lesson1Done}
+              label="Complete the Hardware Setup lesson"
+              to={`/course/${COURSE_ID}/lesson/${LESSON_ID}`}
+              cta="Go to lesson"
+            />
+            <Requirement
+              done={quizTaken}
+              label="Take the Morpheus Drive knowledge check"
+              to="/quizzes"
+              cta="Go to quiz"
+            />
+          </ul>
         </div>
       ) : (
         <>
@@ -141,22 +153,22 @@ export default function CertificatesPage() {
 
       {/* Full-screen preview */}
       {previewOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/70 p-4 backdrop-blur-sm sm:items-center sm:p-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden bg-slate-900/70 p-4 backdrop-blur-sm">
           <button
             type="button"
-            className="absolute inset-0 cursor-default"
+            className="fixed inset-0 cursor-default"
             onClick={() => setPreviewOpen(false)}
             aria-label="Close preview"
           />
-          <div className="relative z-10 w-full max-w-3xl">
-            <button
-              type="button"
-              onClick={() => setPreviewOpen(false)}
-              aria-label="Close preview"
-              className="absolute -top-2 right-0 -translate-y-full rounded-lg p-1.5 text-white/80 transition hover:text-white sm:-right-2"
-            >
-              <CloseIcon className="h-6 w-6" />
-            </button>
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(false)}
+            aria-label="Close preview"
+            className="fixed right-3 top-3 z-20 rounded-lg bg-white/10 p-2 text-white transition hover:bg-white/20"
+          >
+            <CloseIcon className="h-5 w-5" />
+          </button>
+          <div className="relative z-10 mx-auto w-full max-w-3xl py-10 sm:py-14">
             <CompletionCard
               large
               name={name}
@@ -235,6 +247,49 @@ function CompletionCard({
         </p>
       </div>
     </div>
+  );
+}
+
+function Requirement({
+  done,
+  label,
+  to,
+  cta,
+}: {
+  done: boolean;
+  label: string;
+  to: string;
+  cta: string;
+}) {
+  return (
+    <li className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50 px-3.5 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+      <span
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+          done
+            ? "bg-emerald-500 text-white"
+            : "border border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-700"
+        }`}
+      >
+        {done && <CheckCircleIcon className="h-3.5 w-3.5" />}
+      </span>
+      <span
+        className={`flex-1 text-sm ${
+          done
+            ? "text-slate-400 line-through dark:text-slate-500"
+            : "text-slate-700 dark:text-slate-300"
+        }`}
+      >
+        {label}
+      </span>
+      {!done && (
+        <Link
+          to={to}
+          className="shrink-0 text-xs font-semibold text-accent hover:underline"
+        >
+          {cta}
+        </Link>
+      )}
+    </li>
   );
 }
 

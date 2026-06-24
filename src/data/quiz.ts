@@ -18,6 +18,11 @@ export interface Quiz {
   questions: QuizQuestion[];
 }
 
+/** Look up a quiz by id (e.g. a course's `quizId`). */
+export function getQuiz(id?: string): Quiz | undefined {
+  return id === morpheusQuiz.id ? morpheusQuiz : undefined;
+}
+
 export const morpheusQuiz: Quiz = {
   id: "morpheus-drive-knowledge-check",
   title: "Morpheus Drive Knowledge Check",

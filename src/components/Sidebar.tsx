@@ -75,7 +75,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             Robocor
           </div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            LMS Admin
+            Guide Library
           </div>
         </div>
       </div>

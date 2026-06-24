@@ -9,20 +9,28 @@ import {
   LayersIcon,
   ListChecksIcon,
   ProgressIcon,
+  QuizIcon,
   SignalIcon,
 } from "../components/icons";
 import { getCourse } from "../data/courses";
+import { getQuiz } from "../data/quiz";
 import type { Lesson } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
+import { usePersistentState } from "../hooks/usePersistentState";
+
+type QuizScore = { score: number; total: number; date: string } | null;
 
 export default function CourseOverviewPage() {
   const { courseId } = useParams();
   const course = getCourse(courseId);
   const { isComplete, courseProgress } = useProgress();
+  const [quizScore] = usePersistentState<QuizScore>("robocor-quiz-score", null);
 
   if (!course) {
     return <NotFound />;
   }
+
+  const quiz = getQuiz(course.quizId);
 
   const { completed, total, percent } = courseProgress(
     course.id,
@@ -221,6 +229,34 @@ export default function CourseOverviewPage() {
               {completed > 0 ? "Continue course" : "Start course"}
             </Link>
           </Card>
+
+          {quiz && (
+            <Card>
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-accent">
+                  <QuizIcon className="h-4 w-4" />
+                </span>
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Knowledge check
+                </h3>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                A short quiz on what this course covers so far.
+              </p>
+              {quizScore && (
+                <p className="mt-2 text-xs font-medium text-slate-500">
+                  Latest score: {quizScore.score} / {quizScore.total}
+                </p>
+              )}
+              <Link
+                to="/quizzes"
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-accent/30 bg-white px-4 py-2.5 text-sm font-semibold text-accent transition hover:bg-blue-50"
+              >
+                <QuizIcon className="h-4 w-4" />
+                {quizScore ? "Retake the knowledge check" : "Take the knowledge check"}
+              </Link>
+            </Card>
+          )}
         </aside>
       </div>
     </div>

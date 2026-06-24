@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen lg:flex">
+    <div className="min-h-screen overflow-x-clip lg:flex">
       {/* Desktop sidebar */}
       <aside className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <Sidebar />
@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       )}
 
       {/* Content canvas */}
-      <main className="flex-1 lg:pl-64">
+      <main className="min-w-0 flex-1 lg:pl-64">
         <div className="mx-auto max-w-6xl px-4 py-7 sm:px-6 lg:px-12 lg:py-12">
           {children}
         </div>
