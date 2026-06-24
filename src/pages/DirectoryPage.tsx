@@ -53,9 +53,9 @@ export default function DirectoryPage() {
           </div>
 
           <p className="mb-4 max-w-2xl text-sm text-slate-500">
-            The library is structured to grow. These are planned courses — not
-            yet built, and shown here only to outline what can be added over
-            time.
+            The library can grow over time. These are planned courses. They
+            aren't built yet, and they're listed here to show what can be added
+            later.
           </p>
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

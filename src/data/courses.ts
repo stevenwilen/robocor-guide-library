@@ -127,7 +127,7 @@ export const courses: Course[] = [
             type: "callout",
             tone: "tip",
             heading: "Ready check",
-            text: "Confirm the system shows it is ready before continuing. The setup notes describe a blinking blue light as the ready indicator — check this matches your unit.",
+            text: "Confirm the system shows it is ready before continuing. The setup notes describe a blinking blue light as the ready indicator. Check that this matches your unit.",
           },
         ],
       },

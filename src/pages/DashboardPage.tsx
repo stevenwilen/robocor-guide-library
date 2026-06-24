@@ -42,7 +42,7 @@ export default function DashboardPage() {
         </h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
           A quick overview of the guide library. Everything here reflects the
-          current state of this device — no accounts, no tracking.
+          current state of this device. No accounts, no tracking.
         </p>
       </header>
 
@@ -73,7 +73,7 @@ export default function DashboardPage() {
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
                   <CheckCircleIcon className="h-4 w-4 shrink-0 text-emerald-500" />
-                  Lesson 1 available — {lesson1.title}
+                  Lesson 1 available: {lesson1.title}
                 </li>
                 <li className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
                   <ClockIcon className="h-4 w-4 shrink-0 text-amber-500" />

@@ -159,8 +159,8 @@ export default function QuizzesPage() {
       )}
 
       <p className="mt-6 text-xs leading-relaxed text-slate-400">
-        This knowledge check can be updated as more lessons are added. It is a
-        lightweight local check — not secure or account-based.
+        This knowledge check can be updated as more lessons are added. It's a
+        lightweight local check, not secure or account-based.
       </p>
     </div>
   );

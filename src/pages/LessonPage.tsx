@@ -104,7 +104,7 @@ export default function LessonPage() {
                     }`}
                   >
                     <CheckIcon className="h-4 w-4" />
-                    {completed ? "Completed — undo" : "Mark lesson complete"}
+                    {completed ? "Completed (undo)" : "Mark lesson complete"}
                   </button>
                 </div>
 

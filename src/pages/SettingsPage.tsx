@@ -82,9 +82,9 @@ export default function SettingsPage() {
       </div>
 
       <p className="mt-6 text-xs leading-relaxed text-slate-400">
-        These are local display controls — not account settings. Dark mode
-        themes the app shell and reading surfaces; lesson content is kept on
-        light reading cards for legibility.
+        These are local display controls, not account settings. Dark mode
+        changes the app shell and reading surfaces. Lesson content stays on
+        light cards so it's easy to read.
       </p>
     </div>
   );

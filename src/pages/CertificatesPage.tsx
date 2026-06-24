@@ -79,7 +79,7 @@ export default function CertificatesPage() {
         </h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
           A lightweight local completion card you can show for review. It is
-          saved on this device only — not a secure or account-verified
+          saved on this device only, not a secure or account-verified
           certificate.
         </p>
       </header>
@@ -228,11 +228,11 @@ function CompletionCard({
         <div className="mt-6 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2">
           <Field label="Completed by">
             {name.trim() || (
-              <span className="text-slate-400">— (add your name)</span>
+              <span className="text-slate-400">Add your name</span>
             )}
           </Field>
           <Field label="Completed on">
-            {dateIssued ? formatDate(dateIssued) : "—"}
+            {dateIssued ? formatDate(dateIssued) : "Not set"}
           </Field>
           <Field label="Status">Completed on this device</Field>
           {quizScore && (

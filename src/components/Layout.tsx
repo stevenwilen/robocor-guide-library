@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             alt=""
             className="hidden h-7 w-7 object-contain dark:block"
           />
-          <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white">
+          <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">
             Robocor
           </span>
         </div>
