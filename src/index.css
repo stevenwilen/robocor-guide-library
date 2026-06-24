@@ -22,14 +22,12 @@
   }
 
   /* Dark theme: a calm dark canvas. Reading content stays in light cards for
-     legibility; bare-on-canvas headings get dark: variants in the pages. */
+     legibility; headings get dark: variants per-component where needed.
+     NOTE: do not add a global `.dark h1/h2/h3` color rule — its specificity
+     beats utility classes and would override headings on light cards (e.g. the
+     always-light certificate), turning them white-on-white. */
   .dark body {
     @apply bg-slate-900 text-slate-300;
-  }
-  .dark h1,
-  .dark h2,
-  .dark h3 {
-    @apply text-slate-100;
   }
 
   /* Calm focus ring for keyboard users */

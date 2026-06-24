@@ -60,7 +60,7 @@ export default function QuizzesPage() {
             Knowledge check
           </p>
         </div>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight dark:text-slate-100">
           {quiz.title}
         </h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">

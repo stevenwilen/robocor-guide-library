@@ -10,7 +10,7 @@ export default function DirectoryPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
           Robocor Guide Library
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-[34px]">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight dark:text-slate-100 sm:text-[34px]">
           Courses
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-slate-700 dark:text-slate-400">

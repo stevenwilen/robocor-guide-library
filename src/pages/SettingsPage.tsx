@@ -19,7 +19,9 @@ export default function SettingsPage() {
             Display
           </p>
         </div>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">Settings</h1>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight dark:text-slate-100">
+          Settings
+        </h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
           Display and accessibility preferences. These are saved on this device
           only and apply across the guide.

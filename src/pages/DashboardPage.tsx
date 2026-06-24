@@ -37,7 +37,9 @@ export default function DashboardPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
           Robocor Guide Library
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight dark:text-slate-100">
+          Dashboard
+        </h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
           A quick overview of the guide library. Everything here reflects the
           current state of this device — no accounts, no tracking.

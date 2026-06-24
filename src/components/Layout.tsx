@@ -18,9 +18,16 @@ export default function Layout({ children }: { children: ReactNode }) {
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900 lg:hidden">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-sm font-bold text-white">
-            R
-          </div>
+          <img
+            src="/images/logo-light.png"
+            alt=""
+            className="h-7 w-7 object-contain dark:hidden"
+          />
+          <img
+            src="/images/logo-dark.png"
+            alt=""
+            className="hidden h-7 w-7 object-contain dark:block"
+          />
           <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white">
             Robocor
           </span>

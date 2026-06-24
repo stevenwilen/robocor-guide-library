@@ -250,9 +250,8 @@ export default function CourseOverviewPage() {
               )}
               <Link
                 to="/quizzes"
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-accent/30 bg-white px-4 py-2.5 text-sm font-semibold text-accent transition hover:bg-blue-50"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-accent/30 bg-white px-4 py-2.5 text-sm font-semibold text-accent transition hover:bg-blue-50"
               >
-                <QuizIcon className="h-4 w-4" />
                 {quizScore ? "Retake the knowledge check" : "Take the knowledge check"}
               </Link>
             </Card>

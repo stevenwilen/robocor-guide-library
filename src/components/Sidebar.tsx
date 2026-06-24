@@ -67,9 +67,16 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
     <div className="flex h-full flex-col border-r border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 py-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-[15px] font-bold text-white">
-          R
-        </div>
+        <img
+          src="/images/logo-light.png"
+          alt=""
+          className="h-9 w-9 object-contain dark:hidden"
+        />
+        <img
+          src="/images/logo-dark.png"
+          alt=""
+          className="hidden h-9 w-9 object-contain dark:block"
+        />
         <div className="leading-tight">
           <div className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">
             Robocor
