@@ -249,20 +249,22 @@ function ImageOrPlaceholder({
   needsUpload,
 }: {
   src?: string;
-  alt: string;
+  alt?: string;
   intendedPath?: string;
   fileName?: string;
   needsUpload?: boolean;
 }) {
   if (src && !needsUpload) {
-    return <img src={src} alt={alt} className="w-full object-cover" />;
+    return <img src={src} alt={alt ?? ""} className="w-full object-cover" />;
   }
   return (
     <div className="flex flex-col items-center justify-center gap-1 bg-slate-50 px-4 py-10 text-center">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
         Image pending
       </p>
-      <p className="text-sm text-slate-500">{fileName || intendedPath || alt}</p>
+      <p className="text-sm text-slate-500">
+        {fileName || intendedPath || alt || "Image"}
+      </p>
     </div>
   );
 }

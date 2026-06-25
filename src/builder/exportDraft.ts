@@ -56,38 +56,43 @@ export function parseYouTube(input: string): string {
   return s;
 }
 
-function isUrl(s: string): boolean {
-  return /^https?:\/\//i.test(s.trim());
+/** A typed value that points at an already-provided public image: an http(s)
+ *  URL or a root-absolute /images/ path. Such references are usable as-is and
+ *  never count as missing assets. */
+export function isProvidedReference(value: string): boolean {
+  const v = value.trim();
+  return /^https?:\/\//i.test(v) || v.startsWith("/images/");
 }
 
-// Resolve a draft image into a published ImageRef and, when a file still has to
-// be supplied, an asset entry. Never invents an uploaded URL.
+// Resolve a draft image into a published ImageRef and, ONLY when a local file
+// still has to be supplied, an asset entry. Public references never produce an
+// asset. Alt text is intentionally omitted — the publisher generates it.
 function resolveImage(img: DraftImage): { ref: ImageRef; asset?: AssetEntry } {
   const value = img.pathOrUrl.trim();
-  const alt = img.alt.trim();
   const caption = img.caption?.trim() || undefined;
+
+  // Provided public reference (http(s) or /images/...) — usable as-is.
+  if (isProvidedReference(value)) {
+    return { ref: { src: value, caption } };
+  }
 
   // A local file was chosen — the file must travel with the draft.
   if (img.fileName) {
-    const intendedPath =
-      value && !isUrl(value) ? value : `/images/${img.fileName}`;
+    const intendedPath = value || `/images/${img.fileName}`;
     return {
-      ref: { fileName: img.fileName, intendedPath, alt, caption, needsUpload: true },
+      ref: { fileName: img.fileName, intendedPath, caption, needsUpload: true },
       asset: { blockId: img.id, fileName: img.fileName, intendedPath, needsUpload: true },
     };
   }
 
-  // A usable URL was typed — safe to reference directly.
-  if (isUrl(value)) {
-    return { ref: { src: value, alt, caption } };
+  // A typed path with no file and no public prefix — record it as an intended
+  // reference, not a missing upload asset.
+  if (value) {
+    return { ref: { intendedPath: value, caption } };
   }
 
-  // A path string with no file yet — record it as needing upload.
-  const intendedPath = value || "/images/REPLACE_ME.png";
-  return {
-    ref: { intendedPath, alt, caption, needsUpload: true },
-    asset: { blockId: img.id, fileName: "", intendedPath, needsUpload: true },
-  };
+  // Nothing provided yet.
+  return { ref: { caption } };
 }
 
 function blockToSection(

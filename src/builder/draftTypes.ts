@@ -24,14 +24,14 @@ export type ImageLayout = "standard" | "wide" | "sideBySide";
 export type CalloutTone = "tip" | "warning" | "readyCheck" | "important";
 
 /** An image reference inside the builder. The local preview object URL is
- *  NEVER stored here — it lives only in component state and is not persisted. */
+ *  NEVER stored here — it lives only in component state and is not persisted.
+ *  Alt text is intentionally not collected here; the publisher generates it. */
 export interface DraftImage {
   id: string;
   /** Typed image URL or expected file path. */
   pathOrUrl: string;
   /** Set when a local file was chosen (marks the asset as needing upload). */
   fileName?: string;
-  alt: string;
   caption?: string;
 }
 
@@ -124,7 +124,7 @@ export function newLesson(): LessonDraft {
 }
 
 export function newImage(): DraftImage {
-  return { id: uid("img"), pathOrUrl: "", fileName: undefined, alt: "", caption: "" };
+  return { id: uid("img"), pathOrUrl: "", fileName: undefined, caption: "" };
 }
 
 export function newBlock(type: DraftBlockType): DraftBlock {

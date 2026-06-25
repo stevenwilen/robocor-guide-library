@@ -22,8 +22,13 @@ export interface ImageRef {
   intendedPath?: string;
   /** Original file name, recorded so the publisher knows which asset to add. */
   fileName?: string;
-  /** Required for accessibility. */
-  alt: string;
+  /**
+   * Accessibility text. Optional in drafts — the Guide Builder no longer asks
+   * for it; the publisher (see the publish-guide-draft skill) generates concise
+   * alt text from the caption, file name, and surrounding content. The live
+   * renderer still uses it.
+   */
+  alt?: string;
   caption?: string;
   /** True when the image file has not been provided yet (draft-only marker). */
   needsUpload?: boolean;

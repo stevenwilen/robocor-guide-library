@@ -105,12 +105,20 @@ The Builder intentionally omits reading level and duration. Add sensible values
     `intendedPath` (e.g. under `public/images/`) and reference it. If no file was
     supplied, leave the block referencing the intended path and flag it.
 12. **Do not assume missing image files exist.** Flag every unresolved asset.
-13. **Confirm the guide appears** on the Guides page (`/courses`,
+13. **Generate alt text for every image.** The Builder no longer collects alt
+    text, so draft image blocks usually have it blank or omitted. For each image
+    (`image` and `gallery` blocks), write concise, simple, descriptive alt text
+    using the image caption, file name, the surrounding section title, and the
+    nearby block content. Keep it short and plain. Do NOT invent technical
+    details the draft does not support; if the image content is unclear, use
+    neutral alt text derived from the caption or file name. Set this as the
+    block's `alt` field — the live renderer uses it.
+14. **Confirm the guide appears** on the Guides page (`/courses`,
     `src/pages/DirectoryPage.tsx`).
-14. **Confirm the guide overview and section routes work**
+15. **Confirm the guide overview and section routes work**
     (`/course/<id>` and `/course/<id>/lesson/<sectionId>`).
-15. **Run `npm run build`** and fix any type errors.
-16. **Summarize** for the client:
+16. **Run `npm run build`** and fix any type errors.
+17. **Summarize** for the client:
     - what was added
     - what was left pending (sections that need more info)
     - what assets are missing

@@ -13,6 +13,13 @@ import {
   TextArea,
   TextInput,
 } from "./fields";
+import { isProvidedReference } from "../exportDraft";
+
+/** True when this image still needs its file sent with the draft: a local file
+ *  was picked and the text field is not a provided public reference. */
+function imageNeedsUpload(img: DraftImage): boolean {
+  return !!img.fileName && !isProvidedReference(img.pathOrUrl);
+}
 
 // Editor body for a single content block. The parent (LessonEditor) handles the
 // surrounding card, move up/down, and remove.
@@ -154,9 +161,11 @@ export default function BlockEditor({
           >
             + Add image
           </button>
-          <p className="rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-            Image files must be included when you submit the draft.
-          </p>
+          {block.images.some(imageNeedsUpload) && (
+            <p className="rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+              Image files must be included when you submit the draft.
+            </p>
+          )}
         </div>
       );
 
@@ -224,7 +233,7 @@ export default function BlockEditor({
 // Lightweight unique id without importing the whole factory module twice.
 function newGalleryImage(): DraftImage {
   const rand = Math.random().toString(36).slice(2, 10);
-  return { id: `img_${rand}`, pathOrUrl: "", alt: "", caption: "" };
+  return { id: `img_${rand}`, pathOrUrl: "", caption: "" };
 }
 
 // Image input with a real local preview that is NEVER uploaded or persisted —
@@ -258,8 +267,21 @@ function ImageField({
     onChange({ ...image, fileName: undefined });
   }
 
-  const isUrl = /^https?:\/\//i.test(image.pathOrUrl.trim());
-  const previewSrc = objectUrl ?? (isUrl ? image.pathOrUrl.trim() : null);
+  // Typing a provided public reference (http(s) or /images/...) switches this
+  // image to a usable reference: drop any local file + preview metadata.
+  function handlePathChange(v: string) {
+    if (isProvidedReference(v)) {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      setObjectUrl(null);
+      onChange({ ...image, pathOrUrl: v, fileName: undefined });
+    } else {
+      onChange({ ...image, pathOrUrl: v });
+    }
+  }
+
+  const isHttpUrl = /^https?:\/\//i.test(image.pathOrUrl.trim());
+  const previewSrc = objectUrl ?? (isHttpUrl ? image.pathOrUrl.trim() : null);
+  const needsUpload = imageNeedsUpload(image);
 
   return (
     <div className="space-y-3">
@@ -269,7 +291,7 @@ function ImageField({
       >
         <TextInput
           value={image.pathOrUrl}
-          onChange={(v) => onChange({ ...image, pathOrUrl: v })}
+          onChange={handlePathChange}
           placeholder="/images/foo.png"
         />
       </Field>
@@ -302,26 +324,19 @@ function ImageField({
         <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
           <img
             src={previewSrc}
-            alt={image.alt || "Preview"}
+            alt="Preview"
             className="max-h-48 w-full object-cover"
           />
         </div>
       )}
 
-      {image.fileName && (
+      {needsUpload && (
         <p className="rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
           Local preview only — this file has not been uploaded. Include it with
           the draft when submitting for publishing.
         </p>
       )}
 
-      <Field label="Alt text" hint="Describes the image for accessibility.">
-        <TextInput
-          value={image.alt}
-          onChange={(v) => onChange({ ...image, alt: v })}
-          placeholder="Describe the image"
-        />
-      </Field>
       <Field label="Caption (optional)">
         <TextInput
           value={image.caption ?? ""}
