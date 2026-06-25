@@ -51,9 +51,9 @@ export default function DashboardPage() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Current course */}
+        {/* Current guide */}
         <section className="lg:col-span-2">
-          <SectionLabel>Current course</SectionLabel>
+          <SectionLabel>Current guide</SectionLabel>
           <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800 dark:bg-slate-800/50">
             <div className="relative h-32 bg-ink-900 sm:h-40">
               {course.image && (
@@ -66,7 +66,7 @@ export default function DashboardPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/45 to-ink-950/10" />
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/65">
-                  Active course
+                  Active guide
                 </span>
                 <h2 className="mt-0.5 text-xl font-semibold text-white">
                   {course.title}
@@ -163,7 +163,7 @@ export default function DashboardPage() {
             </ol>
             <p className="mt-4 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
               {pendingCount} app lessons are a separate next phase, pending the
-              updated app workflow. Future courses can be added later.
+              updated app workflow. Future guides can be added later.
             </p>
           </div>
         </section>

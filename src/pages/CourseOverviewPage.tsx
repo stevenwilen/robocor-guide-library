@@ -58,7 +58,7 @@ export default function CourseOverviewPage() {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-accent dark:text-slate-400"
       >
         <ArrowLeftIcon className="h-4 w-4" />
-        Back to courses
+        Back to guides
       </Link>
 
       {/* Hero */}
@@ -105,7 +105,7 @@ export default function CourseOverviewPage() {
         {/* Main column */}
         <div className="space-y-6 lg:col-span-2">
           <Card>
-            <SectionHeader icon={InfoIcon} title="About this course" />
+            <SectionHeader icon={InfoIcon} title="About this guide" />
             <div className="mt-4 space-y-3">
               {course.about.map((para, i) => (
                 <p
@@ -152,7 +152,7 @@ export default function CourseOverviewPage() {
                 <InfoIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
                 <p className="text-[13px] leading-snug text-slate-600">
                   <span className="font-semibold text-slate-700">
-                    Course status:
+                    Guide status:
                   </span>{" "}
                   {statusLine}
                 </p>
@@ -180,7 +180,7 @@ export default function CourseOverviewPage() {
                 <InfoIcon className="h-4 w-4" />
               </span>
               <h3 className="text-sm font-semibold text-slate-900">
-                Course details
+                Guide details
               </h3>
             </div>
             <dl className="divide-y divide-slate-100 px-5">
@@ -228,7 +228,7 @@ export default function CourseOverviewPage() {
               to={`/course/${course.id}/lesson/${course.lessons[0].id}`}
               className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
             >
-              {completed > 0 ? "Continue course" : "Start course"}
+              {completed > 0 ? "Continue guide" : "Start guide"}
             </Link>
           </Card>
 
@@ -243,7 +243,7 @@ export default function CourseOverviewPage() {
                 </h3>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                A short quiz on what this course covers so far.
+                A short quiz on what this guide covers so far.
               </p>
               {quizScore && (
                 <p className="mt-2 text-xs font-medium text-slate-500">
@@ -359,7 +359,7 @@ function Pill({
 function NotFound() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-card">
-      <p className="text-slate-600">That course could not be found.</p>
+      <p className="text-slate-600">That guide could not be found.</p>
       <Link to="/" className="mt-3 inline-block text-sm font-medium text-accent">
         Back to library
       </Link>

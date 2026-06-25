@@ -49,17 +49,17 @@ export default function BuilderPage() {
             <BuilderIcon className="h-4 w-4" />
           </span>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-            Course tools
+            Guide tools
           </p>
         </div>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-3xl font-semibold tracking-tight dark:text-slate-100">
-            Course Builder
+            Guide Builder
           </h1>
           <StatusPill status={status} />
         </div>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
-          Draft course content locally, then submit it for review.
+          Draft guide content locally, then submit it for review.
         </p>
         <p className="mt-2 max-w-2xl rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-600 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300">
           Drafts are saved on this device. Submitting sends the draft for review

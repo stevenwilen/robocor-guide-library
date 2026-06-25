@@ -18,7 +18,7 @@ export default function PlannedCourseCard({
     >
       <div className="flex items-start justify-between gap-3">
         <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-          Planned course
+          Planned guide
         </span>
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-slate-400 ring-1 ring-inset ring-slate-200">
           <LayersIcon className="h-4 w-4" />

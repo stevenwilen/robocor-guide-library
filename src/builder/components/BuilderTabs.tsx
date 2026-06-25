@@ -1,8 +1,8 @@
 export type BuilderTab = "basics" | "lessons" | "review";
 
 const TABS: { id: BuilderTab; label: string }[] = [
-  { id: "basics", label: "Course Basics" },
-  { id: "lessons", label: "Lessons and Blocks" },
+  { id: "basics", label: "Guide Basics" },
+  { id: "lessons", label: "Sections and Blocks" },
   { id: "review", label: "Review and Submit" },
 ];
 

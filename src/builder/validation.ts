@@ -5,21 +5,22 @@ import type { CourseDraft } from "./draftTypes";
 export function validateDraft(course: CourseDraft): string[] {
   const errors: string[] = [];
 
-  if (!course.title.trim()) errors.push("Course title is required.");
-  if (!course.description.trim()) errors.push("Short description is required.");
-  if (!course.goal.trim()) errors.push("Course goal is required.");
-  if (course.lessons.length === 0) errors.push("Add at least one lesson.");
+  if (!course.title.trim()) errors.push("Guide title is required.");
+  if (!course.description.trim()) errors.push("Guide description is required.");
+  if (course.lessons.length === 0) errors.push("Add at least one section.");
 
   course.lessons.forEach((lesson, i) => {
     const n = i + 1;
-    const label = lesson.title.trim() ? `"${lesson.title.trim()}"` : `Lesson ${n}`;
-    if (!lesson.title.trim()) errors.push(`Lesson ${n}: a title is required.`);
+    const label = lesson.title.trim() ? `"${lesson.title.trim()}"` : `Section ${n}`;
+    if (!lesson.title.trim()) errors.push(`Section ${n}: a title is required.`);
     if (lesson.status === "pending" && !lesson.pendingNote?.trim()) {
-      errors.push(`${label}: a pending note is required for pending lessons.`);
+      errors.push(
+        `${label}: explain what information is still needed for this section.`,
+      );
     }
     if (lesson.status === "available" && lesson.blocks.length === 0) {
       errors.push(
-        `${label}: add at least one content block, or mark the lesson pending.`,
+        `${label}: add at least one content block, or set it to "Needs more info".`,
       );
     }
   });

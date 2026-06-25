@@ -44,12 +44,12 @@ export default function CertificatesPage() {
           </p>
         </div>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight dark:text-slate-100">
-          Certificates
+          Completion Cards
         </h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
           Lightweight local completion cards you can show for review. They are
           saved on this device only, not secure or account-verified
-          certificates.
+          credentials.
         </p>
       </header>
 

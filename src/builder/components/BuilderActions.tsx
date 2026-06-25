@@ -7,7 +7,7 @@ import {
   SendIcon,
 } from "../../components/icons";
 import type { CourseDraft } from "../draftTypes";
-import { kebab, toJSON, type CourseDraftExport } from "../exportDraft";
+import { kebab, toJSON, type GuideDraftExport } from "../exportDraft";
 import { validateDraft } from "../validation";
 
 type Banner =
@@ -23,7 +23,7 @@ export default function BuilderActions({
   onSubmitted,
 }: {
   course: CourseDraft;
-  exportDoc: CourseDraftExport;
+  exportDoc: GuideDraftExport;
   onSave: () => void;
   onLoad: () => boolean;
   onClear: () => void;
@@ -58,7 +58,7 @@ export default function BuilderActions({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${kebab(course.title) || "course"}-draft.json`;
+    a.download = `${kebab(course.title) || "guide"}-draft.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();

@@ -1,10 +1,10 @@
-// Converts a builder draft into the published-shaped export envelope.
+// Converts a builder draft into the guide draft export envelope.
 //
 // The output is self-identifying (_type / claudeSkill) so Claude can recognize
-// and integrate it later even with no other context. The `course` object
-// closely resembles the published Course in src/data/types.ts; ids are
-// kebab-cased and content blocks are converted to published LessonSection
-// shapes so integration into src/data/courses.ts is near copy-paste.
+// and integrate it later even with no other context. The `guide` object uses
+// guide/section vocabulary; ids are kebab-cased and content blocks are
+// converted to published LessonSection shapes so integration into
+// src/data/courses.ts is straightforward.
 
 import type { ImageRef, LessonSection } from "../data/types";
 import type { CourseDraft, DraftBlock, DraftImage } from "./draftTypes";
@@ -16,15 +16,15 @@ export interface AssetEntry {
   needsUpload: true;
 }
 
-export interface CourseDraftExport {
-  _type: "robocor_course_draft";
-  schemaVersion: "1.0";
+export interface GuideDraftExport {
+  _type: "robocor_guide_draft";
+  schemaVersion: "2.0";
   submissionStatus: "pending_approval";
   intendedAction: "review_and_publish_to_guide_library";
-  claudeSkill: "publish-course-draft";
+  claudeSkill: "publish-guide-draft";
   createdAt: string;
   updatedAt: string;
-  course: Record<string, unknown>;
+  guide: Record<string, unknown>;
   assets: AssetEntry[];
   notesForPublisher: string[];
 }
@@ -95,8 +95,6 @@ function blockToSection(
   assets: AssetEntry[],
 ): LessonSection | null {
   switch (block.type) {
-    case "heading":
-      return { type: "heading", text: block.text.trim() };
     case "paragraph":
       return {
         type: "paragraph",
@@ -148,10 +146,6 @@ function blockToSection(
         heading: block.title?.trim() || undefined,
         text: block.body.trim(),
       };
-    case "divider":
-      return { type: "divider" };
-    case "pendingNote":
-      return { type: "pendingNote", text: block.text.trim() };
     default:
       return null;
   }
@@ -160,69 +154,68 @@ function blockToSection(
 export function buildExport(
   course: CourseDraft,
   meta: { createdAt: string; updatedAt: string },
-): CourseDraftExport {
+): GuideDraftExport {
   const assets: AssetEntry[] = [];
 
-  const lessons = course.lessons.map((lesson, i) => {
+  const sections = course.lessons.map((lesson, i) => {
     const base = {
       id: kebab(lesson.title),
       number: i + 1,
       title: lesson.title.trim(),
-      summary: lesson.goal.trim(),
+      summary: lesson.description.trim(),
+      // Published contentStatus equivalent kept for easy integration.
       contentStatus: lesson.status,
+      state: lesson.status === "available" ? "ready" : "needs_info",
     };
     if (lesson.status === "pending") {
-      return { ...base, pendingNote: lesson.pendingNote?.trim() || "" };
+      return { ...base, infoNeeded: lesson.pendingNote?.trim() || "" };
     }
     return {
       ...base,
-      sections: lesson.blocks
+      blocks: lesson.blocks
         .map((b) => blockToSection(b, assets))
         .filter(Boolean),
     };
   });
 
   const notesForPublisher: string[] = [
-    "Course level and duration were intentionally omitted in the Builder — add them when publishing if the design needs them.",
-    "This is a structured draft. The final published course may be redesigned and polished before it goes live.",
+    "This is a structured guide draft. The final published guide may be redesigned and polished before it goes live.",
+    "Reading level and duration were intentionally omitted in the Builder — add them when publishing if the design needs them.",
   ];
   if (assets.length > 0) {
     notesForPublisher.push(
       `${assets.length} image asset(s) still need files supplied (see the assets array). Do not assume these images exist.`,
     );
   }
-  const pendingLessons = course.lessons.filter((l) => l.status === "pending");
-  if (pendingLessons.length > 0) {
+  const needsInfo = course.lessons.filter((l) => l.status === "pending");
+  if (needsInfo.length > 0) {
     notesForPublisher.push(
-      `${pendingLessons.length} lesson(s) are pending and should stay pending until content is provided.`,
+      `${needsInfo.length} section(s) need more info and should stay planned/pending until content is provided.`,
     );
   }
 
   return {
-    _type: "robocor_course_draft",
-    schemaVersion: "1.0",
+    _type: "robocor_guide_draft",
+    schemaVersion: "2.0",
     submissionStatus: "pending_approval",
     intendedAction: "review_and_publish_to_guide_library",
-    claudeSkill: "publish-course-draft",
+    claudeSkill: "publish-guide-draft",
     createdAt: meta.createdAt,
     updatedAt: meta.updatedAt,
-    course: {
+    guide: {
       id: kebab(course.title),
       title: course.title.trim(),
-      subtitle: course.description.trim(),
       description: course.description.trim(),
-      about: course.goal.trim() ? [course.goal.trim()] : [],
-      audience: course.audience,
-      goal: course.goal.trim(),
-      status: course.status,
+      subtitle: course.description.trim(),
+      intendedReader: course.audience,
       image: course.bannerImage?.trim() || undefined,
-      lessons,
+      sections,
     },
     assets,
     notesForPublisher,
   };
 }
 
-export function toJSON(exportDoc: CourseDraftExport): string {
+export function toJSON(exportDoc: GuideDraftExport): string {
   return JSON.stringify(exportDoc, null, 2);
 }

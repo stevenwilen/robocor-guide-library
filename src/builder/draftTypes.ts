@@ -1,10 +1,13 @@
-// Draft data model for the Course Builder.
+// Draft data model for the Guide Builder.
 //
 // These shapes mirror the published content model in src/data/types.ts as
 // closely as is practical, plus stable ids for reordering and a couple of
-// editor-only fields. On export they are converted to published-shaped
-// sections (see exportDraft.ts) so a reviewed draft drops into
+// editor-only fields. On export they are converted to a guide draft envelope
+// (see exportDraft.ts) so a reviewed draft can be integrated into
 // src/data/courses.ts with minimal editing.
+//
+// Internal type names stay Course/Lesson to match the published model and avoid
+// a risky rename; the visible language is Guide/Section.
 
 export type Audience =
   | "interns"
@@ -13,7 +16,8 @@ export type Audience =
   | "customers"
   | "other";
 
-export type CourseDraftStatus = "draft" | "planned" | "ready_for_review";
+/** Internal section state. "available" = ready to include,
+ *  "pending" = needs more info. */
 export type LessonDraftStatus = "available" | "pending";
 export type VideoStyle = "standard" | "feature" | "compact";
 export type ImageLayout = "standard" | "wide" | "sideBySide";
@@ -32,7 +36,6 @@ export interface DraftImage {
 }
 
 export type DraftBlock =
-  | { id: string; type: "heading"; text: string }
   | { id: string; type: "paragraph"; heading?: string; text: string }
   | {
       id: string;
@@ -51,17 +54,17 @@ export type DraftBlock =
       tone: CalloutTone;
       title?: string;
       body: string;
-    }
-  | { id: string; type: "divider" }
-  | { id: string; type: "pendingNote"; text: string };
+    };
 
 export type DraftBlockType = DraftBlock["type"];
 
 export interface LessonDraft {
   id: string;
   title: string;
-  goal: string;
+  /** Optional one-line section description. */
+  description: string;
   status: LessonDraftStatus;
+  /** When the section needs more info: what is still needed. */
   pendingNote?: string;
   blocks: DraftBlock[];
 }
@@ -70,8 +73,6 @@ export interface CourseDraft {
   title: string;
   description: string;
   audience: Audience;
-  goal: string;
-  status: CourseDraftStatus;
   bannerImage?: string;
   lessons: LessonDraft[];
 }
@@ -106,8 +107,6 @@ export function emptyCourse(): CourseDraft {
     title: "",
     description: "",
     audience: "interns",
-    goal: "",
-    status: "draft",
     bannerImage: "",
     lessons: [newLesson()],
   };
@@ -115,9 +114,9 @@ export function emptyCourse(): CourseDraft {
 
 export function newLesson(): LessonDraft {
   return {
-    id: uid("l"),
+    id: uid("s"),
     title: "",
-    goal: "",
+    description: "",
     status: "available",
     pendingNote: "",
     blocks: [],
@@ -131,8 +130,6 @@ export function newImage(): DraftImage {
 export function newBlock(type: DraftBlockType): DraftBlock {
   const id = uid("blk");
   switch (type) {
-    case "heading":
-      return { id, type, text: "" };
     case "paragraph":
       return { id, type, heading: "", text: "" };
     case "video":
@@ -147,30 +144,22 @@ export function newBlock(type: DraftBlockType): DraftBlock {
       return { id, type, notes: [""] };
     case "callout":
       return { id, type, tone: "tip", title: "", body: "" };
-    case "divider":
-      return { id, type };
-    case "pendingNote":
-      return { id, type, text: "" };
   }
 }
 
-/** Human label for a block type, used in the editor and Review Draft. */
+/** Simple human label for each block type. */
 export const BLOCK_LABELS: Record<DraftBlockType, string> = {
-  heading: "Heading block",
-  paragraph: "Paragraph block",
-  video: "Video block",
-  image: "Image block",
-  gallery: "Image gallery block",
-  checklist: "Checklist block",
-  keyNotes: "Key notes block",
-  callout: "Callout block",
-  divider: "Divider block",
-  pendingNote: "Pending note block",
+  paragraph: "Paragraph",
+  video: "Video",
+  image: "Image",
+  gallery: "Image gallery",
+  checklist: "Checklist",
+  keyNotes: "Key notes",
+  callout: "Callout",
 };
 
 /** Order blocks appear in the "add block" menu. */
 export const BLOCK_TYPES: DraftBlockType[] = [
-  "heading",
   "paragraph",
   "video",
   "image",
@@ -178,6 +167,4 @@ export const BLOCK_TYPES: DraftBlockType[] = [
   "checklist",
   "keyNotes",
   "callout",
-  "divider",
-  "pendingNote",
 ];

@@ -25,10 +25,10 @@ export default function QuizzesPage() {
           </p>
         </div>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight dark:text-slate-100">
-          Quizzes
+          Knowledge Checks
         </h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
-          Short checks based on each course's available lessons. Your latest
+          Short checks based on each guide's available sections. Your latest
           score is saved on this device.
         </p>
       </header>
@@ -51,7 +51,7 @@ export default function QuizzesPage() {
       </div>
 
       <p className="mt-8 text-xs leading-relaxed text-slate-400">
-        Knowledge checks can be updated as more lessons are added. They're
+        Knowledge checks can be updated as more sections are added. They're
         lightweight local checks, not secure or account-based.
       </p>
     </div>

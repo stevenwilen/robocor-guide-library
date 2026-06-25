@@ -1,41 +1,49 @@
 import { BLOCK_LABELS, type CourseDraft, type DraftBlock } from "../draftTypes";
-import type { CourseDraftExport } from "../exportDraft";
+import type { GuideDraftExport } from "../exportDraft";
 
-// Structured summary of the draft — deliberately NOT the polished course.
+const READER_LABELS: Record<string, string> = {
+  interns: "Interns",
+  students: "Students",
+  staff: "Staff",
+  customers: "Customers",
+  other: "Other",
+};
+
+// Structured summary of the guide draft — deliberately NOT the polished guide.
 export default function ReviewDraft({
   course,
   exportDoc,
 }: {
   course: CourseDraft;
-  exportDoc: CourseDraftExport;
+  exportDoc: GuideDraftExport;
 }) {
   const assets = exportDoc.assets;
 
   return (
     <div className="space-y-5">
       <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-relaxed text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100">
-        This is a structured draft preview. The final published course may be
+        This is a structured guide draft. The final published guide may be
         redesigned and polished before it goes live.
       </div>
 
-      {/* Course summary */}
+      {/* Guide summary */}
       <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
         <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-          Course
+          Guide
         </h3>
         <dl className="mt-3 space-y-2.5 text-sm">
           <Row label="Title">{course.title || em("Not set")}</Row>
           <Row label="Description">{course.description || em("Not set")}</Row>
-          <Row label="Audience">{course.audience}</Row>
-          <Row label="Goal">{course.goal || em("Not set")}</Row>
-          <Row label="Status">{course.status}</Row>
+          <Row label="Intended reader">
+            {READER_LABELS[course.audience] ?? course.audience}
+          </Row>
           <Row label="Banner">
             {course.bannerImage?.trim() || em("None")}
           </Row>
         </dl>
       </section>
 
-      {/* Lessons */}
+      {/* Sections */}
       <section className="space-y-4">
         {course.lessons.map((lesson, li) => (
           <div
@@ -44,7 +52,7 @@ export default function ReviewDraft({
           >
             <div className="flex items-center justify-between gap-3">
               <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                Lesson {li + 1}: {lesson.title || em("Untitled")}
+                Section {li + 1}: {lesson.title || em("Untitled")}
               </h4>
               <span
                 className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
@@ -53,16 +61,17 @@ export default function ReviewDraft({
                     : "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                 }`}
               >
-                {lesson.status}
+                {lesson.status === "available" ? "Ready" : "Needs info"}
               </span>
             </div>
-            {lesson.goal && (
-              <p className="mt-1 text-xs text-slate-500">{lesson.goal}</p>
+            {lesson.description && (
+              <p className="mt-1 text-xs text-slate-500">{lesson.description}</p>
             )}
 
             {lesson.status === "pending" ? (
               <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-                Pending note: {lesson.pendingNote?.trim() || em("Missing")}
+                Information still needed:{" "}
+                {lesson.pendingNote?.trim() || em("Missing")}
               </p>
             ) : (
               <ol className="mt-3 space-y-2">
@@ -103,7 +112,10 @@ export default function ReviewDraft({
         ) : (
           <ul className="mt-2 space-y-1.5 text-sm">
             {assets.map((a, i) => (
-              <li key={i} className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+              <li
+                key={i}
+                className="flex items-center gap-2 text-slate-600 dark:text-slate-300"
+              >
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
                 {a.fileName || a.intendedPath}
                 <span className="text-xs text-amber-600">needs file</span>
@@ -112,14 +124,27 @@ export default function ReviewDraft({
           </ul>
         )}
       </section>
+
+      {/* Notes for publishing */}
+      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
+        <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+          Notes for publishing
+        </h3>
+        <ul className="mt-2 space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
+          {exportDoc.notesForPublisher.map((note, i) => (
+            <li key={i} className="flex gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" />
+              <span className="leading-relaxed">{note}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
 
 function blockSummary(block: DraftBlock): string {
   switch (block.type) {
-    case "heading":
-      return block.text;
     case "paragraph":
       return [block.heading, block.text].filter(Boolean).join(" — ");
     case "video":
@@ -138,10 +163,6 @@ function blockSummary(block: DraftBlock): string {
       return `${block.notes.filter((n) => n.trim()).length} note(s)`;
     case "callout":
       return `${block.tone}${block.title ? ` — ${block.title}` : ""}`;
-    case "divider":
-      return "—";
-    case "pendingNote":
-      return block.text;
     default:
       return "";
   }

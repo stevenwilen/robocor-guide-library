@@ -24,28 +24,28 @@ export default function LessonEditor({
           key={lesson.id}
           className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6"
         >
-          {/* Lesson header */}
+          {/* Section header */}
           <div className="mb-4 flex items-start justify-between gap-3">
             <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-semibold text-accent dark:bg-accent/15">
-              Lesson {li + 1}
+              Section {li + 1}
             </span>
             <div className="flex shrink-0 items-center gap-1">
               <IconBtn
-                label="Move lesson up"
+                label="Move section up"
                 disabled={li === 0}
                 onClick={() => actions.moveLesson(li, -1)}
               >
                 <ArrowUpIcon className="h-4 w-4" />
               </IconBtn>
               <IconBtn
-                label="Move lesson down"
+                label="Move section down"
                 disabled={li === course.lessons.length - 1}
                 onClick={() => actions.moveLesson(li, 1)}
               >
                 <ArrowDownIcon className="h-4 w-4" />
               </IconBtn>
               <IconBtn
-                label="Remove lesson"
+                label="Remove section"
                 disabled={course.lessons.length === 1}
                 onClick={() => actions.removeLesson(lesson.id)}
                 danger
@@ -56,45 +56,47 @@ export default function LessonEditor({
           </div>
 
           <div className="space-y-4">
-            <Field label="Lesson title" required>
+            <Field label="Section title" required>
               <TextInput
                 value={lesson.title}
                 onChange={(v) => actions.updateLesson(lesson.id, { title: v })}
                 placeholder="e.g. Hardware Setup"
               />
             </Field>
-            <Field label="Lesson goal">
+            <Field label="Section description (optional)">
               <TextInput
-                value={lesson.goal}
-                onChange={(v) => actions.updateLesson(lesson.id, { goal: v })}
-                placeholder="One-line summary of this lesson"
+                value={lesson.description}
+                onChange={(v) =>
+                  actions.updateLesson(lesson.id, { description: v })
+                }
+                placeholder="One-line summary of this section"
               />
             </Field>
-            <Field label="Lesson status">
+            <Field label="Section state">
               <Segmented<LessonDraftStatus>
                 value={lesson.status}
                 onChange={(v) =>
                   actions.updateLesson(lesson.id, { status: v })
                 }
                 options={[
-                  { value: "available", label: "Available" },
-                  { value: "pending", label: "Pending" },
+                  { value: "available", label: "Ready to include" },
+                  { value: "pending", label: "Needs more info" },
                 ]}
               />
             </Field>
 
             {lesson.status === "pending" ? (
               <Field
-                label="Pending note"
+                label="What information is still needed?"
                 required
-                hint="Explain honestly what this lesson is reserved for."
+                hint="Describe honestly what is missing before this section can be written."
               >
                 <TextArea
                   value={lesson.pendingNote ?? ""}
                   onChange={(v) =>
                     actions.updateLesson(lesson.id, { pendingNote: v })
                   }
-                  placeholder="Reserved for the updated app workflow…"
+                  placeholder="e.g. Updated app walkthrough and connection steps"
                 />
               </Field>
             ) : (
@@ -107,8 +109,8 @@ export default function LessonEditor({
 
                 {lesson.blocks.length === 0 && (
                   <p className="mb-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-800/40">
-                    No blocks yet. Add at least one block, or mark this lesson
-                    pending.
+                    No blocks yet. Add at least one block, or set this section to
+                    "Needs more info".
                   </p>
                 )}
 
@@ -174,7 +176,7 @@ export default function LessonEditor({
         onClick={actions.addLesson}
         className="w-full rounded-2xl border border-dashed border-slate-300 bg-white py-3 text-sm font-semibold text-accent transition hover:border-accent hover:bg-blue-50/50 dark:border-slate-700 dark:bg-slate-800/40"
       >
-        + Add lesson
+        + Add section
       </button>
     </div>
   );

@@ -1,4 +1,4 @@
-// Small form primitives for the Course Builder, styled to match the app
+// Small form primitives for the Guide Builder, styled to match the app
 // (slate borders, rounded inputs, accent focus). Kept intentionally simple.
 
 type FieldProps = {

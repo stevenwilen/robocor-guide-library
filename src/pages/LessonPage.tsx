@@ -206,7 +206,7 @@ function PendingState({
             </p>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-amber-700/90">
               The lesson structure is in place. Final content will be added here
-              without changing the rest of the course.
+              without changing the rest of the guide.
             </p>
           </div>
         </div>

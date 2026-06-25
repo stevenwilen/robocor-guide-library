@@ -24,17 +24,6 @@ export default function BlockEditor({
   onChange: (next: DraftBlock) => void;
 }) {
   switch (block.type) {
-    case "heading":
-      return (
-        <Field label="Heading text">
-          <TextInput
-            value={block.text}
-            onChange={(v) => onChange({ ...block, text: v })}
-            placeholder="Section heading"
-          />
-        </Field>
-      );
-
     case "paragraph":
       return (
         <div className="space-y-3">
@@ -225,24 +214,6 @@ export default function BlockEditor({
             />
           </Field>
         </div>
-      );
-
-    case "divider":
-      return (
-        <p className="text-xs text-slate-400">
-          A simple section break. No content to edit.
-        </p>
-      );
-
-    case "pendingNote":
-      return (
-        <Field label="Pending note text">
-          <TextArea
-            value={block.text}
-            onChange={(v) => onChange({ ...block, text: v })}
-            placeholder="Explain what this part is reserved for."
-          />
-        </Field>
       );
 
     default:

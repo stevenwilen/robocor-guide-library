@@ -29,11 +29,11 @@ export const courses: Course[] = [
     durationLabel: "~1 hour",
     // Banner image lives in public/images/ and is served at this root path.
     image: "/images/morpheus-drive.png",
-    heroEyebrow: "Course",
+    heroEyebrow: "Guide",
     description:
       "Set up the Morpheus Drive hardware and get the system running with minimal setup.",
     about: [
-      "This course shows how to quickly set up and use the Morpheus Drive.",
+      "This guide shows how to quickly set up and use the Morpheus Drive.",
       // DRAFT: high-level outcome summary expanded from the course overview note.
       "You will connect the motors and power on the system, then move on to the app workflow once it is confirmed. The focus is on getting the system running with minimal setup.",
     ],
@@ -191,7 +191,7 @@ export const plannedCourses: PlannedCourse[] = [
     title: "Robot Build Reference",
     description:
       "Planned reference for assembling and wiring the robot hardware.",
-    status: "Available as future course",
+    status: "Available as future guide",
   },
   {
     id: "troubleshooting-guide",

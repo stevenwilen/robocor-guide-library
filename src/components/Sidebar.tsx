@@ -30,9 +30,9 @@ const NAV: NavItem[] = [
   },
   {
     to: "/courses",
-    label: "Courses",
+    label: "Guides",
     icon: CourseIcon,
-    // Also active while browsing a course or lesson.
+    // Also active while browsing a guide or section.
     isActive: (p) => p.startsWith("/courses") || p.startsWith("/course"),
   },
   {
@@ -43,13 +43,13 @@ const NAV: NavItem[] = [
   },
   {
     to: "/quizzes",
-    label: "Quizzes",
+    label: "Knowledge Checks",
     icon: QuizIcon,
     isActive: (p) => p.startsWith("/quizzes"),
   },
   {
     to: "/certificates",
-    label: "Certificates",
+    label: "Completion Cards",
     icon: CertificateIcon,
     isActive: (p) => p.startsWith("/certificates"),
   },
@@ -136,7 +136,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
           <dl className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
               <dt className="text-slate-500 dark:text-slate-400">
-                Active courses
+                Active guides
               </dt>
               <dd className="font-semibold text-slate-900 dark:text-slate-100">
                 {activeCourseCount}
@@ -144,7 +144,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             </div>
             <div className="flex items-center justify-between text-xs">
               <dt className="text-slate-500 dark:text-slate-400">
-                Pending lessons
+                Planned sections
               </dt>
               <dd className="font-semibold text-slate-900 dark:text-slate-100">
                 {pendingLessonCount}
