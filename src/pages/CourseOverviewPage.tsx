@@ -17,14 +17,16 @@ import { getQuiz } from "../data/quiz";
 import type { Lesson } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
 import { usePersistentState } from "../hooks/usePersistentState";
-
-type QuizScore = { score: number; total: number; date: string } | null;
+import { quizScoreKey, type QuizScore } from "../data/storageKeys";
 
 export default function CourseOverviewPage() {
   const { courseId } = useParams();
   const course = getCourse(courseId);
   const { isComplete, courseProgress } = useProgress();
-  const [quizScore] = usePersistentState<QuizScore>("robocor-quiz-score", null);
+  const [quizScore] = usePersistentState<QuizScore>(
+    course?.quizId ? quizScoreKey(course.quizId) : "robocor-quiz-score:none",
+    null,
+  );
 
   if (!course) {
     return <NotFound />;

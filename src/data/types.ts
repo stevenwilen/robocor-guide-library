@@ -13,8 +13,25 @@ export type ContentStatus = "available" | "pending";
  * A renderable block within a lesson. Add new block types here and a matching
  * renderer in src/components/sections/ — the lesson page stays generic.
  */
+/** A single image reference used by image and gallery blocks. */
+export interface ImageRef {
+  /** A usable URL (http(s) or an in-app preview). Optional when the file is
+   *  still pending upload and only `intendedPath`/`fileName` are known. */
+  src?: string;
+  /** Where the file is expected to live once published, e.g. "/images/foo.png". */
+  intendedPath?: string;
+  /** Original file name, recorded so the publisher knows which asset to add. */
+  fileName?: string;
+  /** Required for accessibility. */
+  alt: string;
+  caption?: string;
+  /** True when the image file has not been provided yet (draft-only marker). */
+  needsUpload?: boolean;
+}
+
 export type LessonSection =
   | { type: "paragraph"; heading?: string; text: string }
+  | { type: "heading"; text: string }
   | {
       // Video block rendered as a responsive YouTube embed.
       // `youtubeId` is the id in https://www.youtube.com/embed/<youtubeId>.
@@ -23,6 +40,8 @@ export type LessonSection =
       youtubeId: string;
       durationLabel?: string;
       note?: string;
+      /** Optional display emphasis. Defaults to "standard". */
+      style?: "standard" | "feature" | "compact";
     }
   | { type: "keyNotes"; heading?: string; notes: string[] }
   | {
@@ -32,10 +51,17 @@ export type LessonSection =
     }
   | {
       type: "callout";
-      tone?: "info" | "tip" | "warning";
+      tone?: "info" | "tip" | "warning" | "readyCheck" | "important";
       heading?: string;
       text: string;
-    };
+    }
+  | ({
+      type: "image";
+      layout?: "standard" | "wide" | "sideBySide";
+    } & ImageRef)
+  | { type: "gallery"; heading?: string; images: ImageRef[] }
+  | { type: "divider" }
+  | { type: "pendingNote"; text: string };
 
 export interface Lesson {
   id: string;

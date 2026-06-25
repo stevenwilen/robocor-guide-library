@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { courses } from "../data/courses";
 import {
+  BuilderIcon,
   CertificateIcon,
   CourseIcon,
   DashboardIcon,
@@ -33,6 +34,12 @@ const NAV: NavItem[] = [
     icon: CourseIcon,
     // Also active while browsing a course or lesson.
     isActive: (p) => p.startsWith("/courses") || p.startsWith("/course"),
+  },
+  {
+    to: "/builder",
+    label: "Builder",
+    icon: BuilderIcon,
+    isActive: (p) => p.startsWith("/builder"),
   },
   {
     to: "/quizzes",

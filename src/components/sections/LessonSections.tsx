@@ -122,16 +122,22 @@ function SectionBlock({ section }: { section: LessonSection }) {
         info: "border-blue-200 bg-blue-50 text-blue-900",
         tip: "border-emerald-200 bg-emerald-50 text-emerald-900",
         warning: "border-amber-200 bg-amber-50 text-amber-900",
+        readyCheck: "border-emerald-200 bg-emerald-50 text-emerald-900",
+        important: "border-blue-300 bg-blue-50 text-blue-900",
       };
       const accentBar: Record<string, string> = {
         info: "bg-blue-500",
         tip: "bg-emerald-500",
         warning: "bg-amber-500",
+        readyCheck: "bg-emerald-500",
+        important: "bg-blue-600",
       };
       const labels: Record<string, string> = {
         info: "Note",
         tip: "Tip",
         warning: "Caution",
+        readyCheck: "Ready check",
+        important: "Important",
       };
       return (
         <section
@@ -149,9 +155,116 @@ function SectionBlock({ section }: { section: LessonSection }) {
       );
     }
 
+    case "heading":
+      return (
+        <section>
+          <SectionHeading>{section.text}</SectionHeading>
+        </section>
+      );
+
+    case "image": {
+      const wrap =
+        section.layout === "wide"
+          ? ""
+          : section.layout === "sideBySide"
+            ? "sm:max-w-sm"
+            : "max-w-2xl";
+      return (
+        <section className={wrap}>
+          <figure className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card">
+            <ImageOrPlaceholder
+              src={section.src}
+              alt={section.alt}
+              intendedPath={section.intendedPath}
+              fileName={section.fileName}
+              needsUpload={section.needsUpload}
+            />
+            {section.caption && (
+              <figcaption className="border-t border-slate-100 px-4 py-2.5 text-xs italic text-slate-500">
+                {section.caption}
+              </figcaption>
+            )}
+          </figure>
+        </section>
+      );
+    }
+
+    case "gallery":
+      return (
+        <section>
+          {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {section.images.map((img, i) => (
+              <figure
+                key={i}
+                className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-card"
+              >
+                <ImageOrPlaceholder
+                  src={img.src}
+                  alt={img.alt}
+                  intendedPath={img.intendedPath}
+                  fileName={img.fileName}
+                  needsUpload={img.needsUpload}
+                />
+                {img.caption && (
+                  <figcaption className="border-t border-slate-100 px-4 py-2.5 text-xs italic text-slate-500">
+                    {img.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        </section>
+      );
+
+    case "divider":
+      return <hr className="border-t border-slate-200" />;
+
+    case "pendingNote":
+      return (
+        <section className="relative overflow-hidden rounded-2xl border border-amber-200 bg-amber-50 p-5 pl-6 text-amber-900">
+          <span
+            aria-hidden="true"
+            className="absolute inset-y-0 left-0 w-1 bg-amber-500"
+          />
+          <p className="text-[11px] font-semibold uppercase tracking-wide opacity-70">
+            Pending
+          </p>
+          <p className="mt-1 text-sm leading-relaxed">{section.text}</p>
+        </section>
+      );
+
     default:
       return null;
   }
+}
+
+// Renders an image when a usable src is present, otherwise an honest
+// "image pending" placeholder — never a broken <img> or a fake upload claim.
+function ImageOrPlaceholder({
+  src,
+  alt,
+  intendedPath,
+  fileName,
+  needsUpload,
+}: {
+  src?: string;
+  alt: string;
+  intendedPath?: string;
+  fileName?: string;
+  needsUpload?: boolean;
+}) {
+  if (src && !needsUpload) {
+    return <img src={src} alt={alt} className="w-full object-cover" />;
+  }
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 bg-slate-50 px-4 py-10 text-center">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+        Image pending
+      </p>
+      <p className="text-sm text-slate-500">{fileName || intendedPath || alt}</p>
+    </div>
+  );
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {

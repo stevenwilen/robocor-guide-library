@@ -18,11 +18,6 @@ export interface Quiz {
   questions: QuizQuestion[];
 }
 
-/** Look up a quiz by id (e.g. a course's `quizId`). */
-export function getQuiz(id?: string): Quiz | undefined {
-  return id === morpheusQuiz.id ? morpheusQuiz : undefined;
-}
-
 export const morpheusQuiz: Quiz = {
   id: "morpheus-drive-knowledge-check",
   title: "Morpheus Drive Knowledge Check",
@@ -85,3 +80,18 @@ export const morpheusQuiz: Quiz = {
     },
   ],
 };
+
+/** All knowledge-check quizzes, keyed implicitly by id. Future courses add
+ *  their quizzes here; the Quizzes page is data-driven off this registry. */
+export const quizzes: Quiz[] = [morpheusQuiz];
+
+/** Look up a quiz by id (e.g. a course's `quizId`). */
+export function getQuiz(id?: string): Quiz | undefined {
+  if (!id) return undefined;
+  return quizzes.find((q) => q.id === id);
+}
+
+/** Convenience: a course's quiz, if it links one. */
+export function getQuizForCourse(course: { quizId?: string }): Quiz | undefined {
+  return getQuiz(course.quizId);
+}

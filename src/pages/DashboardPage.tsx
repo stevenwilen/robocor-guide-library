@@ -11,14 +11,18 @@ import {
 import { courses } from "../data/courses";
 import { useProgress } from "../hooks/useProgress";
 import { usePersistentState } from "../hooks/usePersistentState";
-
-type QuizScore = { score: number; total: number; date: string } | null;
+import { quizScoreKey, type QuizScore } from "../data/storageKeys";
 
 export default function DashboardPage() {
+  // Featured active course. Morpheus Drive is the only one for now; when more
+  // are added this still spotlights the first active course.
   const course = courses[0];
   const lesson1 = course.lessons[0];
   const { isComplete, courseProgress } = useProgress();
-  const [quizScore] = usePersistentState<QuizScore>("robocor-quiz-score", null);
+  const [quizScore] = usePersistentState<QuizScore>(
+    course.quizId ? quizScoreKey(course.quizId) : "robocor-quiz-score:none",
+    null,
+  );
 
   const { completed, total, percent } = courseProgress(
     course.id,

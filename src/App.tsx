@@ -4,6 +4,7 @@ import DashboardPage from "./pages/DashboardPage";
 import DirectoryPage from "./pages/DirectoryPage";
 import CourseOverviewPage from "./pages/CourseOverviewPage";
 import LessonPage from "./pages/LessonPage";
+import BuilderPage from "./pages/BuilderPage";
 import QuizzesPage from "./pages/QuizzesPage";
 import CertificatesPage from "./pages/CertificatesPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -19,6 +20,7 @@ export default function App() {
           path="/course/:courseId/lesson/:lessonId"
           element={<LessonPage />}
         />
+        <Route path="/builder" element={<BuilderPage />} />
         <Route path="/quizzes" element={<QuizzesPage />} />
         <Route path="/certificates" element={<CertificatesPage />} />
         <Route path="/settings" element={<SettingsPage />} />

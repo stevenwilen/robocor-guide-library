@@ -1,20 +1,72 @@
 import { useState } from "react";
 import { CheckIcon, CloseIcon, QuizIcon } from "../components/icons";
-import { morpheusQuiz } from "../data/quiz";
+import { courses } from "../data/courses";
+import { getQuizForCourse, type Quiz } from "../data/quiz";
 import { usePersistentState } from "../hooks/usePersistentState";
-
-type QuizScore = { score: number; total: number; date: string } | null;
+import { quizScoreKey, type QuizScore } from "../data/storageKeys";
 
 export default function QuizzesPage() {
-  const quiz = morpheusQuiz;
+  // Data-driven: one knowledge check per course that defines one. Morpheus
+  // Drive is the only quiz for now; future courses appear automatically.
+  const courseQuizzes = courses.map((course) => ({
+    course,
+    quiz: getQuizForCourse(course),
+  }));
+
+  return (
+    <div className="mx-auto max-w-3xl">
+      <header>
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-accent dark:bg-accent/15">
+            <QuizIcon className="h-4 w-4" />
+          </span>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+            Knowledge checks
+          </p>
+        </div>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight dark:text-slate-100">
+          Quizzes
+        </h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
+          Short checks based on each course's available lessons. Your latest
+          score is saved on this device.
+        </p>
+      </header>
+
+      <div className="mt-8 space-y-10">
+        {courseQuizzes.map(({ course, quiz }) => (
+          <section key={course.id}>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+              {course.title}
+            </h2>
+            {quiz ? (
+              <QuizCard quiz={quiz} />
+            ) : (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-400">
+                No quiz yet for this course.
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
+
+      <p className="mt-8 text-xs leading-relaxed text-slate-400">
+        Knowledge checks can be updated as more lessons are added. They're
+        lightweight local checks, not secure or account-based.
+      </p>
+    </div>
+  );
+}
+
+function QuizCard({ quiz }: { quiz: Quiz }) {
   const total = quiz.questions.length;
   const [, setStoredScore] = usePersistentState<QuizScore>(
-    "robocor-quiz-score",
+    quizScoreKey(quiz.id),
     null,
   );
 
-  const [answers, setAnswers] = useState<(number | null)[]>(
-    () => quiz.questions.map(() => null),
+  const [answers, setAnswers] = useState<(number | null)[]>(() =>
+    quiz.questions.map(() => null),
   );
   const [submitted, setSubmitted] = useState(false);
 
@@ -36,11 +88,7 @@ export default function QuizzesPage() {
   function handleSubmit() {
     if (!allAnswered) return;
     setSubmitted(true);
-    setStoredScore({
-      score,
-      total,
-      date: new Date().toISOString(),
-    });
+    setStoredScore({ score, total, date: new Date().toISOString() });
   }
 
   function retake() {
@@ -50,34 +98,15 @@ export default function QuizzesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <header>
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-accent dark:bg-accent/15">
-            <QuizIcon className="h-4 w-4" />
-          </span>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-            Knowledge check
-          </p>
-        </div>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight dark:text-slate-100">
-          {quiz.title}
-        </h1>
-        <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
-          A short check based on the current Lesson 1 content. Your latest score
-          is saved on this device.
-        </p>
-      </header>
-
+    <div>
       {submitted && (
-        <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+        <div className="mb-5 flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
           <div>
             <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
               Your score
             </p>
             <p className="text-2xl font-semibold tracking-tight">
-              {score}{" "}
-              <span className="text-lg text-slate-400">/ {total}</span>
+              {score} <span className="text-lg text-slate-400">/ {total}</span>
             </p>
           </div>
           <button
@@ -90,7 +119,7 @@ export default function QuizzesPage() {
         </div>
       )}
 
-      <ol className="mt-6 space-y-5">
+      <ol className="space-y-5">
         {quiz.questions.map((q, qi) => {
           const chosen = answers[qi];
           return (
@@ -157,11 +186,6 @@ export default function QuizzesPage() {
           </button>
         </div>
       )}
-
-      <p className="mt-6 text-xs leading-relaxed text-slate-400">
-        This knowledge check can be updated as more lessons are added. It's a
-        lightweight local check, not secure or account-based.
-      </p>
     </div>
   );
 }

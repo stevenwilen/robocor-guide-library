@@ -8,14 +8,16 @@ import {
   MaximizeIcon,
 } from "../components/icons";
 import { courses } from "../data/courses";
+import { certificates, type CertificateDef } from "../data/certificates";
 import { useProgress } from "../hooks/useProgress";
 import { usePersistentState } from "../hooks/usePersistentState";
+import {
+  certificateKey,
+  quizScoreKey,
+  type QuizScore,
+} from "../data/storageKeys";
 
-type QuizScore = { score: number; total: number; date: string } | null;
 type CertState = { dateIssued: string | null };
-
-const COURSE_ID = "morpheus-drive";
-const LESSON_ID = "hardware-setup";
 
 function formatDate(iso: string): string {
   try {
@@ -30,39 +32,6 @@ function formatDate(iso: string): string {
 }
 
 export default function CertificatesPage() {
-  const { isComplete } = useProgress();
-  const lesson1Done = isComplete(COURSE_ID, LESSON_ID);
-  const course = courses.find((c) => c.id === COURSE_ID);
-
-  const [name, setName] = usePersistentState<string>("robocor-learner-name", "");
-  const [quizScore] = usePersistentState<QuizScore>("robocor-quiz-score", null);
-  const [cert, setCert] = usePersistentState<CertState>("robocor-certificate", {
-    dateIssued: null,
-  });
-
-  const quizTaken = quizScore != null;
-  // The completion card requires BOTH finishing the lesson and the quiz.
-  const unlocked = lesson1Done && quizTaken;
-
-  const [previewOpen, setPreviewOpen] = useState(false);
-
-  // Record the completion date once, the first time both steps are done.
-  useEffect(() => {
-    if (unlocked && !cert.dateIssued) {
-      setCert({ dateIssued: new Date().toISOString() });
-    }
-  }, [unlocked, cert.dateIssued, setCert]);
-
-  // Close the full-screen preview with Escape.
-  useEffect(() => {
-    if (!previewOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setPreviewOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [previewOpen]);
-
   return (
     <div className="mx-auto max-w-3xl">
       <header>
@@ -78,78 +47,143 @@ export default function CertificatesPage() {
           Certificates
         </h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
-          A lightweight local completion card you can show for review. It is
-          saved on this device only, not a secure or account-verified
-          certificate.
+          Lightweight local completion cards you can show for review. They are
+          saved on this device only, not secure or account-verified
+          certificates.
         </p>
       </header>
 
-      {!unlocked ? (
-        <div className="mt-7 rounded-2xl border border-slate-200/80 bg-white p-8 text-center shadow-card dark:border-slate-800 dark:bg-slate-800/50">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-300">
-            <LockIcon className="h-6 w-6" />
-          </span>
-          <h2 className="mt-4 text-lg font-semibold">Completion card locked</h2>
-          <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
-            Finish both steps below to unlock this completion card.
-          </p>
-          <ul className="mx-auto mt-6 max-w-sm space-y-2.5 text-left">
-            <Requirement
-              done={lesson1Done}
-              label="Complete the Hardware Setup lesson"
-              to={`/course/${COURSE_ID}/lesson/${LESSON_ID}`}
-              cta="Go to lesson"
-            />
+      {certificates.length === 0 ? (
+        <div className="mt-7 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-400">
+          No completion cards are available yet.
+        </div>
+      ) : (
+        <div className="mt-7 space-y-8">
+          {certificates.map((cert) => (
+            <CertificateItem key={cert.id} cert={cert} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CertificateItem({ cert }: { cert: CertificateDef }) {
+  const { isComplete } = useProgress();
+  const course = courses.find((c) => c.id === cert.courseId);
+
+  const lessonsDone = cert.requiredLessonIds.every((id) =>
+    isComplete(cert.courseId, id),
+  );
+
+  const [name, setName] = usePersistentState<string>("robocor-learner-name", "");
+  const quizId = course?.quizId;
+  const [quizScore] = usePersistentState<QuizScore>(
+    quizId ? quizScoreKey(quizId) : `robocor-quiz-noquiz:${cert.id}`,
+    null,
+  );
+  const quizTaken = quizScore != null;
+  const quizSatisfied = cert.requiresQuiz ? quizTaken : true;
+  // Unlock rule mirrors the original behavior exactly: all required lessons
+  // complete AND (when required) the course quiz taken.
+  const unlocked = lessonsDone && quizSatisfied;
+
+  const [certState, setCertState] = usePersistentState<CertState>(
+    certificateKey(cert.id),
+    { dateIssued: null },
+  );
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  // Record the completion date once, the first time all steps are done.
+  useEffect(() => {
+    if (unlocked && !certState.dateIssued) {
+      setCertState({ dateIssued: new Date().toISOString() });
+    }
+  }, [unlocked, certState.dateIssued, setCertState]);
+
+  // Close the full-screen preview with Escape.
+  useEffect(() => {
+    if (!previewOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [previewOpen]);
+
+  if (!unlocked) {
+    return (
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-8 text-center shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-300">
+          <LockIcon className="h-6 w-6" />
+        </span>
+        <h2 className="mt-4 text-lg font-semibold">{cert.title}</h2>
+        <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+          Finish the steps below to unlock this completion card.
+        </p>
+        <ul className="mx-auto mt-6 max-w-sm space-y-2.5 text-left">
+          {cert.requiredLessonIds.map((lessonId) => {
+            const lesson = course?.lessons.find((l) => l.id === lessonId);
+            return (
+              <Requirement
+                key={lessonId}
+                done={isComplete(cert.courseId, lessonId)}
+                label={`Complete the ${lesson?.title ?? lessonId} lesson`}
+                to={`/course/${cert.courseId}/lesson/${lessonId}`}
+                cta="Go to lesson"
+              />
+            );
+          })}
+          {cert.requiresQuiz && (
             <Requirement
               done={quizTaken}
-              label="Take the Morpheus Drive knowledge check"
+              label={`Take the ${course?.title ?? "course"} knowledge check`}
               to="/quizzes"
               cta="Go to quiz"
             />
-          </ul>
-        </div>
-      ) : (
-        <>
-          {/* Controls */}
-          <div className="mt-7 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-row sm:items-end sm:justify-between">
-            <label className="flex-1">
-              <span className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
-                Your name (optional)
-              </span>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your name"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-              />
-            </label>
-            <button
-              type="button"
-              onClick={() => setPreviewOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
-            >
-              <MaximizeIcon className="h-4 w-4" />
-              Preview
-            </button>
-          </div>
+          )}
+        </ul>
+      </div>
+    );
+  }
 
-          {/* Inline completion card */}
-          <div className="mt-5">
-            <CompletionCard
-              name={name}
-              dateIssued={cert.dateIssued}
-              quizScore={quizScore}
-              courseTitle={course?.title}
-            />
-          </div>
+  return (
+    <div>
+      {/* Controls */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-row sm:items-end sm:justify-between">
+        <label className="flex-1">
+          <span className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
+            Your name (optional)
+          </span>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+          />
+        </label>
+        <button
+          type="button"
+          onClick={() => setPreviewOpen(true)}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
+        >
+          <MaximizeIcon className="h-4 w-4" />
+          Preview
+        </button>
+      </div>
 
-          <p className="mt-4 text-xs leading-relaxed text-slate-400">
-            Full course certificates can be added after the app lessons are
-            completed.
-          </p>
-        </>
-      )}
+      {/* Inline completion card */}
+      <div className="mt-5">
+        <CompletionCard
+          cert={cert}
+          name={name}
+          dateIssued={certState.dateIssued}
+          quizScore={quizScore}
+          courseTitle={course?.title}
+        />
+      </div>
 
       {/* Full-screen preview */}
       {previewOpen && (
@@ -171,8 +205,9 @@ export default function CertificatesPage() {
           <div className="relative z-10 mx-auto w-full max-w-3xl py-10 sm:py-14">
             <CompletionCard
               large
+              cert={cert}
               name={name}
-              dateIssued={cert.dateIssued}
+              dateIssued={certState.dateIssued}
               quizScore={quizScore}
               courseTitle={course?.title}
             />
@@ -185,12 +220,14 @@ export default function CertificatesPage() {
 
 // The completion "paper" — always light, in both themes and at preview size.
 function CompletionCard({
+  cert,
   name,
   dateIssued,
   quizScore,
   courseTitle,
   large,
 }: {
+  cert: CertificateDef;
   name: string;
   dateIssued: string | null;
   quizScore: QuizScore;
@@ -217,19 +254,17 @@ function CompletionCard({
         <h2
           className={`mt-1 font-semibold tracking-tight text-slate-900 ${large ? "text-3xl sm:text-4xl" : "text-2xl"}`}
         >
-          Morpheus Drive Hardware Setup
+          {cert.title}
         </h2>
         {courseTitle && (
           <p className="mt-0.5 text-sm text-slate-500">
-            {courseTitle} · Lesson 1
+            {courseTitle} · {cert.scopeLabel}
           </p>
         )}
 
         <div className="mt-6 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2">
           <Field label="Completed by">
-            {name.trim() || (
-              <span className="text-slate-400">Add your name</span>
-            )}
+            {name.trim() || <span className="text-slate-400">Add your name</span>}
           </Field>
           <Field label="Completed on">
             {dateIssued ? formatDate(dateIssued) : "Not set"}
