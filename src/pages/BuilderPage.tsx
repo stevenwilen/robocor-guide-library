@@ -39,7 +39,9 @@ export default function BuilderPage() {
     [course, doc.createdAt, doc.updatedAt],
   );
 
-  const endpointConnected = !!import.meta.env.VITE_COURSE_SUBMISSION_ENDPOINT;
+  const endpointConnected =
+    !!import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ||
+    !!import.meta.env.VITE_COURSE_SUBMISSION_ENDPOINT;
 
   return (
     <div className="mx-auto max-w-4xl">

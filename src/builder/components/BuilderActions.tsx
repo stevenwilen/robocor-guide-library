@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CheckCircleIcon,
   CopyIcon,
@@ -32,11 +32,25 @@ export default function BuilderActions({
   const [banner, setBanner] = useState<Banner>(null);
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  // Make sure feedback is seen: the action buttons can sit far down a long
+  // Review page, so scroll the message into view when it appears.
+  useEffect(() => {
+    if (banner) bannerRef.current?.scrollIntoView({ block: "nearest" });
+  }, [banner]);
 
   const errors = validateDraft(course);
   const valid = errors.length === 0;
   const json = toJSON(exportDoc);
+
+  // Submission targets (either is optional). The Web3Forms access key is a
+  // PUBLIC key by design — it's meant to live in client-side forms and is spam
+  // protected, so it is not a private API key. A generic endpoint is also
+  // supported for any custom form-to-email relay that accepts a JSON POST.
+  const web3formsKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
   const endpoint = import.meta.env.VITE_COURSE_SUBMISSION_ENDPOINT;
+  const canSubmit = !!web3formsKey || !!endpoint;
 
   async function copyJSON() {
     if (!valid) return;
@@ -69,11 +83,11 @@ export default function BuilderActions({
     if (!valid) {
       setBanner({
         type: "error",
-        text: "Fix the items below before submitting.",
+        text: "Resolve the highlighted items above before submitting.",
       });
       return;
     }
-    if (!endpoint) {
+    if (!canSubmit) {
       setBanner({
         type: "info",
         text: "Submission is not connected yet. Copy or download the JSON and send it to Steven for review.",
@@ -83,12 +97,36 @@ export default function BuilderActions({
     setSubmitting(true);
     setBanner(null);
     try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: json,
-      });
+      let res: Response;
+      if (web3formsKey) {
+        // Web3Forms relays the draft to the inbox tied to the access key.
+        // The full draft JSON travels in `message`.
+        res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: web3formsKey,
+            subject: `Guide draft: ${course.title.trim() || "Untitled"}`,
+            from_name: "Robocor Guide Builder",
+            message: json,
+          }),
+        });
+      } else {
+        res = await fetch(endpoint as string, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: json,
+        });
+      }
       if (!res.ok) throw new Error(`Server responded ${res.status}`);
+      // Web3Forms returns { success: boolean }; treat success:false as an error.
+      const data = await res.json().catch(() => null);
+      if (data && data.success === false) {
+        throw new Error(data.message || "Submission was rejected");
+      }
       onSubmitted();
       setBanner({
         type: "success",
@@ -118,25 +156,6 @@ export default function BuilderActions({
               <li key={i}>{err}</li>
             ))}
           </ul>
-        </div>
-      )}
-
-      {banner && (
-        <div
-          className={`flex items-start gap-2.5 rounded-xl border p-4 text-sm ${
-            banner.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-200"
-              : banner.type === "error"
-                ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
-                : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
-          }`}
-        >
-          {banner.type === "success" ? (
-            <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
-          ) : (
-            <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
-          )}
-          <span className="leading-relaxed">{banner.text}</span>
         </div>
       )}
 
@@ -210,6 +229,27 @@ export default function BuilderActions({
           {submitting ? "Submitting…" : "Submit for approval"}
         </button>
       </div>
+
+      {/* Feedback shows right under the buttons so it's seen where you click. */}
+      {banner && (
+        <div
+          ref={bannerRef}
+          className={`flex items-start gap-2.5 rounded-xl border p-4 text-sm ${
+            banner.type === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-200"
+              : banner.type === "error"
+                ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
+                : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
+          }`}
+        >
+          {banner.type === "success" ? (
+            <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          ) : (
+            <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          )}
+          <span className="leading-relaxed">{banner.text}</span>
+        </div>
+      )}
 
       <p className="text-xs leading-relaxed text-slate-400">
         Copy JSON or Download JSON is the main way to submit a draft right now.
