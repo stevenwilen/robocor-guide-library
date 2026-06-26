@@ -4,7 +4,7 @@ import DashboardPage from "./pages/DashboardPage";
 import DirectoryPage from "./pages/DirectoryPage";
 import CourseOverviewPage from "./pages/CourseOverviewPage";
 import LessonPage from "./pages/LessonPage";
-import BuilderPage from "./pages/BuilderPage";
+import CreatorToolsPage from "./pages/CreatorToolsPage";
 import QuizzesPage from "./pages/QuizzesPage";
 import CertificatesPage from "./pages/CertificatesPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -20,7 +20,9 @@ export default function App() {
           path="/course/:courseId/lesson/:lessonId"
           element={<LessonPage />}
         />
-        <Route path="/builder" element={<BuilderPage />} />
+        <Route path="/creator" element={<CreatorToolsPage />} />
+        {/* Old Builder route now lives under Creator Tools. */}
+        <Route path="/builder" element={<Navigate to="/creator" replace />} />
         <Route path="/quizzes" element={<QuizzesPage />} />
         <Route path="/certificates" element={<CertificatesPage />} />
         <Route path="/settings" element={<SettingsPage />} />

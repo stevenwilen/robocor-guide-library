@@ -36,12 +36,6 @@ const NAV: NavItem[] = [
     isActive: (p) => p.startsWith("/courses") || p.startsWith("/course"),
   },
   {
-    to: "/builder",
-    label: "Builder",
-    icon: BuilderIcon,
-    isActive: (p) => p.startsWith("/builder"),
-  },
-  {
     to: "/quizzes",
     label: "Knowledge Checks",
     icon: QuizIcon,
@@ -155,6 +149,20 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             Progress is saved on this device only.
           </p>
         </div>
+
+        {/* Secondary, low-prominence link. Not a learner page. */}
+        <Link
+          to="/creator"
+          onClick={onNavigate}
+          className={`mt-3 flex items-center gap-2 rounded-lg px-2 py-1.5 text-[11px] font-medium transition-colors ${
+            pathname.startsWith("/creator") || pathname.startsWith("/builder")
+              ? "text-accent"
+              : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+          }`}
+        >
+          <BuilderIcon className="h-3.5 w-3.5" />
+          Creator Tools
+        </Link>
       </div>
     </div>
   );

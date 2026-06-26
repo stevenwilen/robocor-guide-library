@@ -36,7 +36,8 @@ npm run preview  # serve the production build locally
 - **Guide overview + sections** (`/course/:id`, `/course/:id/lesson/:sectionId`):
   the reading experience, including YouTube embeds and structured pending
   sections for content that is not finalized yet.
-- **Guide Builder** (`/builder`): a local drafting tool (see below).
+- **Creator Tools** (`/creator`): a secondary, passcode-gated area for creators
+  (see below). It is not in the main learner navigation and is not a learner page.
 - **Knowledge Checks** (`/quizzes`): short, optional quizzes per guide. The
   latest score is saved per guide in `localStorage`.
 - **Completion Cards** (`/certificates`): lightweight local completion cards,
@@ -45,23 +46,21 @@ npm run preview  # serve the production build locally
 - **Settings** (`/settings`): text size, theme (light/dark/system), reduced
   motion, and high contrast. Applied immediately and stored locally.
 
-## Guide Builder and the JSON handoff
+## Creator Tools and the JSON handoff
 
-The Guide Builder lets someone draft a guide locally and hand it off for review.
-It does **not** publish anything. The workflow:
+Creator Tools is a secondary area for creators to draft content and request
+changes. It does **not** publish anything and never edits a live guide. A
+lightweight 4-digit passcode gate (`VITE_CREATOR_PASSCODE`, local fallback
+`2468`) keeps learners out; the unlocked flag is stored in `localStorage`. This
+is a gate, not authentication. There are two tools:
 
-1. Draft a guide in the Builder: **Guide Basics** (title, description, intended
-   reader, optional banner), **Sections and Blocks** (sections that are "Ready
-   to include" or "Needs more info", each with ordered content blocks), then
-   **Review and Submit**.
-2. The draft is saved on the device and auto-loads when you return.
-3. **Copy JSON** or **Download JSON** and send it (with any local image files)
-   to Steven for review.
-4. Steven and Claude integrate it into the library using the
-   `publish-guide-draft` skill (`.claude/skills/publish-guide-draft/`).
-
-The exported JSON is self-identifying so it can be handed to Claude with no
-context:
+**New Guide Draft** - draft a whole new guide locally:
+**Guide Basics** (title, description, intended reader, optional banner),
+**Sections and Blocks** (sections that are "Ready to include" or "Needs more
+info", each with ordered content blocks), then **Review and Submit**. Drafts are
+saved on the device and auto-load on return. Export with **Copy JSON** /
+**Download JSON** and send it (with any local image files) to Steven. Claude
+integrates it with the `publish-guide-draft` skill.
 
 ```json
 {
@@ -70,11 +69,33 @@ context:
   "submissionStatus": "pending_approval",
   "intendedAction": "review_and_publish_to_guide_library",
   "claudeSkill": "publish-guide-draft",
-  "guide": { "title": "...", "sections": [ ... ] },
-  "assets": [ ... ],
-  "notesForPublisher": [ ... ]
+  "guide": { "title": "...", "sections": [ ... ] }
 }
 ```
+
+**Update Existing Guide** - request a small change (replace a paragraph, swap an
+image, update a checklist, mark a section as needing more info, etc.) to an
+already-published guide. It produces a separate request JSON, applied by Claude
+with the `publish-guide-update` skill:
+
+```json
+{
+  "_type": "robocor_guide_update_request",
+  "schemaVersion": "1.0",
+  "submissionStatus": "pending_approval",
+  "intendedAction": "review_and_apply_update_to_guide_library",
+  "claudeSkill": "publish-guide-update",
+  "guideId": "...",
+  "sectionId": "...",
+  "changeType": "...",
+  "changeSummary": "..."
+}
+```
+
+Both JSON types are self-identifying so they can be handed to Claude with no
+context. If `VITE_SUBMISSION_ENDPOINT` is set, **Submit for approval** POSTs the
+JSON; otherwise it honestly reports that submission is not connected and you use
+Copy / Download.
 
 Images: a public URL or `/images/...` path is treated as a provided reference. A
 locally picked file is previewed in the browser only. It is never uploaded and
@@ -91,11 +112,13 @@ src/
     quiz.ts          # knowledge-check questions, keyed per guide
     certificates.ts  # completion-card definitions, keyed per guide
     storageKeys.ts   # localStorage key helpers
-  builder/           # Guide Builder: draft model, validation, export, UI
+  builder/           # New Guide Draft: draft model, validation, export, UI
+  creator/           # Creator Tools: passcode gate + New Guide Draft + Update
+                     # Existing Guide (update request model, export, UI)
   hooks/             # localStorage-backed progress and settings
   components/        # Sidebar, Layout, cards, section renderers
-  pages/             # Dashboard, Directory, overview, lesson, Builder, quizzes,
-                     # certificates, settings
+  pages/             # Dashboard, Directory, overview, lesson, Creator Tools,
+                     # quizzes, certificates, settings
 ```
 
 ## Editing published content

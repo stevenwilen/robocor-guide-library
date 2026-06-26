@@ -1,24 +1,34 @@
 import { useEffect, useRef, useState } from "react";
-import { CopyIcon, DownloadIcon, InfoIcon } from "../../components/icons";
+import {
+  CheckCircleIcon,
+  CopyIcon,
+  DownloadIcon,
+  InfoIcon,
+  SendIcon,
+} from "../../components/icons";
 import type { CourseDraft } from "../draftTypes";
 import { kebab, toJSON, type GuideDraftExport } from "../exportDraft";
 import { validateDraft } from "../validation";
+import { NOT_CONNECTED_MESSAGE, submitJson } from "../submit";
 
-type Banner = { type: "info" | "error"; text: string } | null;
+type Banner = { type: "info" | "success" | "error"; text: string } | null;
 
 export default function BuilderActions({
   course,
   exportDoc,
   onSave,
   onClear,
+  onSubmitted,
 }: {
   course: CourseDraft;
   exportDoc: GuideDraftExport;
   onSave: () => void;
   onClear: () => void;
+  onSubmitted: () => void;
 }) {
   const [banner, setBanner] = useState<Banner>(null);
   const [copied, setCopied] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
 
   // Make sure feedback is seen: the action buttons can sit far down a long
@@ -30,6 +40,27 @@ export default function BuilderActions({
   const errors = validateDraft(course);
   const valid = errors.length === 0;
   const json = toJSON(exportDoc);
+
+  async function submit() {
+    if (!valid) return;
+    setSubmitting(true);
+    const result = await submitJson(json);
+    setSubmitting(false);
+    if (result.kind === "no_endpoint") {
+      setBanner({ type: "info", text: NOT_CONNECTED_MESSAGE });
+    } else if (result.kind === "success") {
+      onSubmitted();
+      setBanner({
+        type: "success",
+        text: "Submitted for approval. This draft will be reviewed and polished before being added to the live guide library.",
+      });
+    } else {
+      setBanner({
+        type: "error",
+        text: `Could not submit (${result.message}). You can still Copy or Download the JSON and send it to Steven.`,
+      });
+    }
+  }
 
   async function copyJSON() {
     if (!valid) return;
@@ -120,6 +151,15 @@ export default function BuilderActions({
           <DownloadIcon className="h-4 w-4" />
           Download JSON
         </button>
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!valid || submitting}
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+        >
+          <SendIcon className="h-4 w-4" />
+          {submitting ? "Submitting…" : "Submit for approval"}
+        </button>
       </div>
 
       {/* Feedback shows right under the buttons so it's seen where you click. */}
@@ -127,19 +167,25 @@ export default function BuilderActions({
         <div
           ref={bannerRef}
           className={`flex items-start gap-2.5 rounded-xl border p-4 text-sm ${
-            banner.type === "error"
-              ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
-              : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
+            banner.type === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-200"
+              : banner.type === "error"
+                ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
+                : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
           }`}
         >
-          <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          {banner.type === "success" ? (
+            <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          ) : (
+            <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          )}
           <span className="leading-relaxed">{banner.text}</span>
         </div>
       )}
 
       <p className="text-xs leading-relaxed text-slate-400">
-        To submit a guide, use Copy JSON or Download JSON and send it (with any
-        image files) to steven.wilen@gmail.com for review.
+        Submission is not connected yet, so use Copy JSON or Download JSON and
+        send it (with any image files) to steven.wilen@gmail.com for review.
       </p>
     </div>
   );

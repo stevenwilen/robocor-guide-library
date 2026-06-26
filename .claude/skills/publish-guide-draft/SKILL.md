@@ -15,9 +15,14 @@ no other context.
   an older export of the same idea. Still fully supported; map it the same way
   (it uses `course`/`lessons`/`contentStatus` instead of `guide`/`sections`/`state`).
 
-Both come from the in-app **Guide Builder** (`/builder`). A draft is a structured
-starting point, not a finished guide. Steven and Claude turn drafts into polished
-published guides.
+Both come from **Creator Tools > New Guide Draft** (`/creator`). A draft is a
+structured starting point, not a finished guide. Steven and Claude turn drafts
+into polished published guides.
+
+**Do not confuse a full guide draft with an update request.** Small changes to
+an already-published guide come from **Creator Tools > Update Existing Guide**
+with `_type: "robocor_guide_update_request"`; those use the `publish-guide-update`
+skill, not this one.
 
 ## Goal
 
