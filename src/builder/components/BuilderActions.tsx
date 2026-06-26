@@ -10,13 +10,11 @@ export default function BuilderActions({
   course,
   exportDoc,
   onSave,
-  onLoad,
   onClear,
 }: {
   course: CourseDraft;
   exportDoc: GuideDraftExport;
   onSave: () => void;
-  onLoad: () => boolean;
   onClear: () => void;
 }) {
   const [banner, setBanner] = useState<Banner>(null);
@@ -88,20 +86,6 @@ export default function BuilderActions({
         <button
           type="button"
           onClick={() => {
-            const ok = onLoad();
-            setBanner(
-              ok
-                ? { type: "info", text: "Loaded the saved draft from this device." }
-                : { type: "info", text: "No saved draft was found on this device." },
-            );
-          }}
-          className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          Load saved draft
-        </button>
-        <button
-          type="button"
-          onClick={() => {
             if (
               typeof window === "undefined" ||
               window.confirm("Clear the current draft? This cannot be undone.")
@@ -155,7 +139,7 @@ export default function BuilderActions({
 
       <p className="text-xs leading-relaxed text-slate-400">
         To submit a guide, use Copy JSON or Download JSON and send it (with any
-        image files) to Steven for review.
+        image files) to steven.wilen@gmail.com for review.
       </p>
     </div>
   );
