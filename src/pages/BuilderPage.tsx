@@ -13,20 +13,10 @@ const STATUS_LABEL: Record<SaveStatus, string> = {
   saved: "Saved on this device",
   unsaved: "Unsaved changes",
   cleared: "Draft cleared",
-  pending_approval: "Pending approval",
 };
 
 export default function BuilderPage() {
-  const {
-    course,
-    doc,
-    status,
-    setCourse,
-    save,
-    loadSaved,
-    clear,
-    markPendingApproval,
-  } = useDraft();
+  const { course, doc, status, setCourse, save, loadSaved, clear } = useDraft();
   const actions = useMemo(() => createActions(setCourse), [setCourse]);
   const [tab, setTab] = useState<BuilderTab>("basics");
 
@@ -38,10 +28,6 @@ export default function BuilderPage() {
       }),
     [course, doc.createdAt, doc.updatedAt],
   );
-
-  const endpointConnected =
-    !!import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ||
-    !!import.meta.env.VITE_COURSE_SUBMISSION_ENDPOINT;
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -61,20 +47,12 @@ export default function BuilderPage() {
           <StatusPill status={status} />
         </div>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">
-          Draft guide content locally, then submit it for review.
+          Draft guide content locally, then export it for review.
         </p>
         <p className="mt-2 max-w-2xl rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-600 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300">
-          Drafts are saved on this device. Submitting sends the draft for review
-          before it is added to the live guide library.
-          {!endpointConnected && (
-            <>
-              {" "}
-              <span className="font-medium text-slate-700 dark:text-slate-200">
-                Submission is not connected yet — copy or download the JSON and
-                send it to Steven for review.
-              </span>
-            </>
-          )}
+          Drafts are saved on this device. To submit a guide for review, copy or
+          download the JSON and send it to Steven — he reviews it and adds it to
+          the live guide library.
         </p>
       </header>
 
@@ -98,7 +76,6 @@ export default function BuilderPage() {
               onSave={save}
               onLoad={loadSaved}
               onClear={clear}
-              onSubmitted={markPendingApproval}
             />
           </div>
         )}
@@ -131,11 +108,9 @@ function StatusPill({ status }: { status: SaveStatus }) {
   const tone =
     status === "saved"
       ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
-      : status === "pending_approval"
-        ? "bg-blue-50 text-accent dark:bg-accent/15 dark:text-accent-soft"
-        : status === "cleared"
-          ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-          : "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300";
+      : status === "cleared"
+        ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+        : "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300";
   return (
     <span
       className={`rounded-full px-3 py-1 text-xs font-semibold ${tone}`}

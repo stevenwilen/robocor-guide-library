@@ -7,7 +7,7 @@ import { emptyCourse, type CourseDraft, type DraftDocument } from "./draftTypes"
 
 const KEY = "robocor-guide-draft";
 
-export type SaveStatus = "saved" | "unsaved" | "cleared" | "pending_approval";
+export type SaveStatus = "saved" | "unsaved" | "cleared";
 
 function now(): string {
   return new Date().toISOString();
@@ -88,20 +88,6 @@ export function useDraft() {
     setStatus("cleared");
   }, []);
 
-  const markPendingApproval = useCallback(() => {
-    setDoc((prev) => {
-      const next = { ...prev, updatedAt: now() };
-      try {
-        localStorage.setItem(KEY, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-    setSavedExists(true);
-    setStatus("pending_approval");
-  }, []);
-
   return {
     course: doc.course,
     doc,
@@ -111,6 +97,5 @@ export function useDraft() {
     save,
     loadSaved,
     clear,
-    markPendingApproval,
   };
 }
