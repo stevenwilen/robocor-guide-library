@@ -43,7 +43,7 @@ export default function PasscodeGate({ children }: { children: React.ReactNode }
 
         <form onSubmit={submit} className="mt-5">
           <input
-            type="text"
+            type="password"
             inputMode="numeric"
             autoComplete="off"
             maxLength={4}
@@ -54,7 +54,7 @@ export default function PasscodeGate({ children }: { children: React.ReactNode }
             }}
             placeholder="••••"
             aria-label="Creator passcode"
-            className={`w-full rounded-xl border bg-white px-4 py-3 text-center text-2xl tracking-[0.5em] text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 dark:bg-slate-900 dark:text-slate-100 ${
+            className={`w-full rounded-xl border bg-white px-4 py-3 text-center text-2xl tracking-[0.5em] text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 dark:bg-slate-900 dark:text-slate-100 [&::-ms-reveal]:hidden [&::-ms-clear]:hidden ${
               error
                 ? "border-red-300 focus:ring-red-300/40"
                 : "border-slate-300 focus:border-accent focus:ring-accent/30 dark:border-slate-600"
