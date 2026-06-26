@@ -153,6 +153,12 @@ export interface Course {
   about: string[];
   /** Optional bullet list rendered in the "What this guide helps with" card. */
   helpsWith?: string[];
+  /**
+   * Optional prep items rendered in the sidebar "Before you start" card. Use
+   * this for genuinely useful guidance instead of restating the hero metadata
+   * (audience / duration / lesson count).
+   */
+  beforeYouStart?: string[];
   /** Optional knowledge-check quiz id (see src/data/quiz.ts). */
   quizId?: string;
   /** Optional overall presentation chosen during the publishing/design pass. */

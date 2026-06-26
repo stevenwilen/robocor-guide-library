@@ -129,8 +129,7 @@ export default function UpdateExistingGuide() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-          Request a small change to an existing published guide. This does not
-          edit the live guide.
+          Request a small change to an existing published guide.
         </p>
         <StatusPill status={status} />
       </div>

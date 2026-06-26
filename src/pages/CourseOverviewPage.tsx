@@ -39,15 +39,6 @@ export default function CourseOverviewPage() {
     course.lessons.length,
   );
 
-  const details = [
-    { icon: AudienceIcon, label: "For", value: course.audience },
-    { icon: ClockIcon, label: "Duration", value: course.durationLabel },
-    {
-      icon: LayersIcon,
-      label: "Lessons",
-      value: String(course.lessons.length),
-    },
-  ];
 
   const statusLine = buildStatusLine(course.lessons);
 
@@ -173,33 +164,29 @@ export default function CourseOverviewPage() {
         </div>
 
         {/* Sidebar column */}
-        <aside className="space-y-5 lg:sticky lg:top-12 lg:self-start">
-          <Card className="p-0">
-            <div className="flex items-center gap-2.5 border-b border-slate-100 px-5 py-4">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                <InfoIcon className="h-4 w-4" />
-              </span>
-              <h3 className="text-sm font-semibold text-slate-900">
-                Guide details
-              </h3>
-            </div>
-            <dl className="divide-y divide-slate-100 px-5">
-              {details.map(({ icon: Icon, label, value }) => (
-                <div
-                  key={label}
-                  className="flex items-center justify-between py-3"
-                >
-                  <dt className="inline-flex items-center gap-2.5 text-sm text-slate-500">
-                    <Icon className="h-4 w-4 text-slate-400" />
-                    {label}
-                  </dt>
-                  <dd className="text-sm font-semibold text-slate-900">
-                    {value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Card>
+        <aside className="space-y-5 lg:self-start">
+          {/* The hero already shows audience / duration / lessons, so the
+              sidebar uses its space for practical prep instead of repeating it. */}
+          {course.beforeYouStart && course.beforeYouStart.length > 0 && (
+            <Card className="p-0">
+              <div className="flex items-center gap-2.5 border-b border-slate-100 px-5 py-4">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-accent">
+                  <ListChecksIcon className="h-4 w-4" />
+                </span>
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Before you start
+                </h3>
+              </div>
+              <ul className="space-y-2.5 px-5 py-4">
+                {course.beforeYouStart.map((item, i) => (
+                  <li key={i} className="flex gap-2.5 text-sm text-slate-700">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/70" />
+                    <span className="leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
 
           <Card>
             <div className="flex items-center gap-2.5">

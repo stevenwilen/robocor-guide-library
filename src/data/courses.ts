@@ -43,6 +43,11 @@ export const courses: Course[] = [
       "Prepare for the updated app connection workflow",
       "Keep the guide ready for future lessons",
     ],
+    beforeYouStart: [
+      "Have the two motors ready",
+      "Have a battery ready",
+      "Have the Morpheus Drive unit on hand",
+    ],
     lessons: [
       // ----------------------------------------------------------------------
       // LESSON 1 - fully built (content available)
@@ -189,13 +194,19 @@ export const courses: Course[] = [
     description:
       "A simple guide for staff on using ChatGPT or Claude to save time on repeated writing, notes, and organizing tasks.",
     about: [
-      "This guide helps staff use AI tools like ChatGPT or Claude to save time on work they repeat often, like writing, summarizing, and organizing notes.",
-      "It covers how to spot tasks that are a good fit for AI and how to write a clear prompt to get useful results.",
+      "This guide is for staff who want a simple, repeatable way to use AI for everyday writing and organizing work.",
+      "Start by picking one task you already repeat, then use the prompt structure in the next section to turn rough notes into a cleaner first draft. Always review the result before you use it.",
     ],
     helpsWith: [
       "Spot repeated tasks that AI can help with",
       "Write clearer prompts for ChatGPT or Claude",
-      "Turn rough notes into clean first drafts",
+      "Avoid unsupported AI guesses",
+      "Turn rough notes into a usable first draft",
+    ],
+    beforeYouStart: [
+      "Have a repeated task in mind",
+      "Gather your rough notes or instructions",
+      "Know who the output is for",
     ],
     lessons: [
       {

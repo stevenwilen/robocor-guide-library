@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Course } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
-import { ArrowRightIcon, AudienceIcon, ClockIcon, LayersIcon } from "./icons";
+import { ArrowRightIcon, ClockIcon, LayersIcon } from "./icons";
 import ProgressBar from "./ProgressBar";
 
 export default function CourseCard({ course }: { course: Course }) {
@@ -10,6 +10,15 @@ export default function CourseCard({ course }: { course: Course }) {
     course.id,
     course.lessons.length,
   );
+
+  // Each fact appears once: audience on the cover badge, lessons + duration +
+  // status in the meta row, progress in the bar. No restating the same value.
+  const status =
+    total > 0 && completed >= total
+      ? "Complete"
+      : completed > 0
+        ? "In progress"
+        : "Not started";
 
   return (
     <Link
@@ -36,12 +45,9 @@ export default function CourseCard({ course }: { course: Course }) {
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/10 blur-3xl" />
           </>
         )}
-        <div className="absolute inset-x-5 bottom-4 flex items-end justify-between">
+        <div className="absolute inset-x-5 bottom-4">
           <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-white ring-1 ring-inset ring-white/15 backdrop-blur">
             {course.audience}
-          </span>
-          <span className="text-xs font-medium text-white/70">
-            {completed}/{total} lessons
           </span>
         </div>
       </div>
@@ -60,17 +66,14 @@ export default function CourseCard({ course }: { course: Course }) {
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
           <span className="inline-flex items-center gap-1.5">
-            <AudienceIcon className="h-4 w-4 text-slate-400" />
-            {course.audience}
+            <LayersIcon className="h-4 w-4 text-slate-400" />
+            {total} {total === 1 ? "lesson" : "lessons"}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <ClockIcon className="h-4 w-4 text-slate-400" />
             {course.durationLabel}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <LayersIcon className="h-4 w-4 text-slate-400" />
-            {course.lessons.length} lessons
-          </span>
+          <span className="font-medium text-slate-500">{status}</span>
         </div>
 
         <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-700">

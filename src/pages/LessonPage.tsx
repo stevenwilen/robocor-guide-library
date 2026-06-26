@@ -36,7 +36,7 @@ export default function LessonPage() {
   return (
     <div className="lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8">
       {/* Desktop slim rail */}
-      <aside className="hidden lg:sticky lg:top-12 lg:block lg:self-start">
+      <aside className="hidden lg:block lg:self-start">
         <LessonNav
           course={course}
           activeLessonId={lesson.id}
