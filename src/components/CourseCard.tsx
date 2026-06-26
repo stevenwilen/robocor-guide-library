@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Course } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
-import { ArrowRightIcon, ClockIcon, LayersIcon, SignalIcon } from "./icons";
+import { ArrowRightIcon, AudienceIcon, ClockIcon, LayersIcon } from "./icons";
 import ProgressBar from "./ProgressBar";
 
 export default function CourseCard({ course }: { course: Course }) {
@@ -38,7 +38,7 @@ export default function CourseCard({ course }: { course: Course }) {
         )}
         <div className="absolute inset-x-5 bottom-4 flex items-end justify-between">
           <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-white ring-1 ring-inset ring-white/15 backdrop-blur">
-            {course.level}
+            {course.audience}
           </span>
           <span className="text-xs font-medium text-white/70">
             {completed}/{total} lessons
@@ -60,8 +60,8 @@ export default function CourseCard({ course }: { course: Course }) {
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
           <span className="inline-flex items-center gap-1.5">
-            <SignalIcon className="h-4 w-4 text-slate-400" />
-            {course.level}
+            <AudienceIcon className="h-4 w-4 text-slate-400" />
+            {course.audience}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <ClockIcon className="h-4 w-4 text-slate-400" />

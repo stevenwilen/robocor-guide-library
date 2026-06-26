@@ -102,6 +102,15 @@ locally picked file is previewed in the browser only. It is never uploaded and
 never stored as base64. The JSON records its metadata and flags it as needing the
 file sent separately.
 
+**Publishing is a design pass, not a copy-paste.** Creator Tools collect
+structured draft content only; the submitted JSON is not the final design. When
+Steven publishes, Claude reviews the draft, applies a design/layout pass (the
+`publish-guide-draft` skill, using the optional presentation metadata in
+`src/data/types.ts`), integrates it into the guide library, and runs the build.
+Published guides may use that layout metadata (`presentationVariant`,
+`layoutVariant`, `displayVariant`) for a more intentional presentation than raw
+stacked cards. The "Using AI for Repeated Staff Work" guide is a worked example.
+
 ## Project structure
 
 ```

@@ -7,6 +7,12 @@ import CourseBasicsForm from "../builder/components/CourseBasicsForm";
 import LessonEditor from "../builder/components/LessonEditor";
 import ReviewDraft from "../builder/components/ReviewDraft";
 import BuilderActions from "../builder/components/BuilderActions";
+import {
+  SaveIndicator,
+  Toast,
+  formatSavedTime,
+  useToast,
+} from "../components/SaveFeedback";
 
 const STATUS_LABEL: Record<SaveStatus, string> = {
   saved: "Saved on this device",
@@ -22,6 +28,13 @@ export default function NewGuideDraft() {
     useDraft();
   const actions = useMemo(() => createActions(setCourse), [setCourse]);
   const [tab, setTab] = useState<BuilderTab>("basics");
+  const { message: toast, show: showToast } = useToast();
+  const savedTime = formatSavedTime(doc.updatedAt);
+
+  function handleSave() {
+    save();
+    showToast("Draft saved locally");
+  }
 
   const exportDoc = useMemo(
     () =>
@@ -56,19 +69,21 @@ export default function NewGuideDraft() {
             <BuilderActions
               course={course}
               exportDoc={exportDoc}
-              onSave={save}
+              onSave={handleSave}
               onClear={clear}
               onSubmitted={markPendingApproval}
+              status={status}
+              savedTime={savedTime}
             />
           </div>
         )}
       </div>
 
       {tab !== "review" && (
-        <div className="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-5 dark:border-slate-800">
+        <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-5 dark:border-slate-800">
           <button
             type="button"
-            onClick={save}
+            onClick={handleSave}
             className="rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
           >
             Save draft
@@ -80,8 +95,13 @@ export default function NewGuideDraft() {
           >
             Go to Review and Submit
           </button>
+          <span className="flex items-center pl-1">
+            <SaveIndicator status={status} savedTime={savedTime} />
+          </span>
         </div>
       )}
+
+      <Toast message={toast} />
     </div>
   );
 }

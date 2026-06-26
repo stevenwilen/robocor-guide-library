@@ -1,16 +1,65 @@
-import type { LessonSection } from "../../data/types";
-import { CheckCircleIcon, PlayIcon } from "../icons";
+import type { LessonSection, SectionLayoutVariant } from "../../data/types";
+import { CheckCircleIcon, PlayIcon, SparkIcon } from "../icons";
 
-// Renders a list of lesson section blocks. Add a case here when a new block
-// type is added to LessonSection in src/data/types.ts.
+// Renders a guide section's content blocks. Two layers of presentation, both
+// set during the publishing/design pass (never in the Builder) and both
+// optional so existing content keeps working:
+//   - the section `layoutVariant` arranges blocks (e.g. media beside text)
+//   - each block's `displayVariant` controls how that block looks
+// On mobile everything stacks cleanly.
+
+function isMedia(s: LessonSection): boolean {
+  return s.type === "image" || s.type === "gallery";
+}
 
 export default function LessonSections({
   sections,
+  layoutVariant,
 }: {
   sections: LessonSection[];
+  layoutVariant?: SectionLayoutVariant;
 }) {
+  const mediaSplit =
+    layoutVariant === "media-right" || layoutVariant === "media-left";
+  const media = mediaSplit ? sections.filter(isMedia) : [];
+
+  // Media-beside-text: content in one column, images in the other. Falls back
+  // to a normal stack when there is no media to place.
+  if (mediaSplit && media.length > 0) {
+    const content = sections.filter((s) => !isMedia(s));
+    const contentCol = (
+      <div className="space-y-5">
+        {content.map((s, i) => (
+          <SectionBlock key={i} section={s} />
+        ))}
+      </div>
+    );
+    const mediaCol = (
+      <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+        {media.map((s, i) => (
+          <SectionBlock key={`m${i}`} section={s} />
+        ))}
+      </div>
+    );
+    return (
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        {layoutVariant === "media-left" ? (
+          <>
+            {mediaCol}
+            {contentCol}
+          </>
+        ) : (
+          <>
+            {contentCol}
+            {mediaCol}
+          </>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       {sections.map((section, i) => (
         <SectionBlock key={i} section={section} />
       ))}
@@ -19,16 +68,27 @@ export default function LessonSections({
 }
 
 function SectionBlock({ section }: { section: LessonSection }) {
+  const dv = section.displayVariant;
+
   switch (section.type) {
-    case "paragraph":
-      return (
-        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card sm:p-6">
+    case "paragraph": {
+      const body = (
+        <>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
           <p className="text-[15px] leading-[1.75] text-slate-700">
             {section.text}
           </p>
+        </>
+      );
+      // "plain" reads as flowing prose; default keeps the card surface.
+      return dv === "plain" ? (
+        <section>{body}</section>
+      ) : (
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card sm:p-6">
+          {body}
         </section>
       );
+    }
 
     case "video":
       return (
@@ -69,7 +129,44 @@ function SectionBlock({ section }: { section: LessonSection }) {
         </section>
       );
 
-    case "steps":
+    case "steps": {
+      // "grid"/"compact" turn a long list of short actions into tidy small
+      // cards instead of giant full-width rows. Default keeps the big steps.
+      if (dv === "grid" || dv === "compact") {
+        return (
+          <section>
+            {section.heading && (
+              <SectionHeading>{section.heading}</SectionHeading>
+            )}
+            <ul
+              className={
+                dv === "grid" ? "grid gap-2.5 sm:grid-cols-2" : "space-y-2"
+              }
+            >
+              {section.steps.map((step, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-white p-3 shadow-card"
+                >
+                  <span className="mt-px flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[11px] font-semibold text-accent ring-1 ring-inset ring-blue-600/20">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium text-slate-800">
+                      {step.title}
+                    </p>
+                    {step.detail && (
+                      <p className="mt-0.5 text-[13px] leading-relaxed text-slate-600">
+                        {step.detail}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      }
       return (
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
@@ -97,27 +194,54 @@ function SectionBlock({ section }: { section: LessonSection }) {
           </ol>
         </section>
       );
+    }
 
-    case "keyNotes":
+    case "keyNotes": {
+      const compact = dv === "compact";
       return (
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid gap-2.5 sm:grid-cols-2">
             {section.notes.map((note, i) => (
               <li
                 key={i}
-                className="flex gap-2.5 rounded-xl border border-slate-200/80 bg-white p-4 text-sm text-slate-700 shadow-card"
+                className={`flex gap-2 rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-card ${
+                  compact ? "p-2.5 text-[13px]" : "p-4 text-sm"
+                }`}
               >
-                <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                <CheckCircleIcon
+                  className={`mt-0.5 shrink-0 text-emerald-500 ${
+                    compact ? "h-3.5 w-3.5" : "h-4 w-4"
+                  }`}
+                />
                 <span className="leading-relaxed">{note}</span>
               </li>
             ))}
           </ul>
         </section>
       );
+    }
 
     case "callout": {
       const tone = section.tone ?? "info";
+
+      // "highlight" reads as a reusable template/snippet rather than a banner.
+      if (dv === "highlight") {
+        return (
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-card">
+            <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-2.5">
+              <SparkIcon className="h-3.5 w-3.5 text-accent" />
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                {section.heading ?? "Template"}
+              </span>
+            </div>
+            <p className="px-4 py-3 font-mono text-[13px] leading-relaxed text-slate-700">
+              {section.text}
+            </p>
+          </section>
+        );
+      }
+
       const toneStyles: Record<string, string> = {
         info: "border-blue-200 bg-blue-50 text-blue-900",
         tip: "border-emerald-200 bg-emerald-50 text-emerald-900",

@@ -185,7 +185,7 @@ export function buildExport(
 
   const notesForPublisher: string[] = [
     "This is a structured guide draft. The final published guide may be redesigned and polished before it goes live.",
-    "Reading level and duration were intentionally omitted in the Builder, so add them when publishing if the design needs them.",
+    "Duration was intentionally omitted in the Builder, so add it when publishing if the design needs it. intendedReader maps to the guide's audience pill.",
   ];
   if (assets.length > 0) {
     notesForPublisher.push(

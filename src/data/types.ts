@@ -34,7 +34,33 @@ export interface ImageRef {
   needsUpload?: boolean;
 }
 
-export type LessonSection =
+// Optional presentation metadata. Set during the publishing/design pass (never
+// in the Builder) so a published guide can be laid out intentionally instead of
+// as generic stacked cards. All optional - existing content is unaffected.
+export type PresentationVariant =
+  | "standard"
+  | "compact"
+  | "visual"
+  | "training"
+  | "reference";
+export type SectionLayoutVariant =
+  | "stacked"
+  | "split"
+  | "feature-checklist"
+  | "steps-grid"
+  | "media-right"
+  | "media-left"
+  | "compact-cards";
+export type BlockDisplayVariant =
+  | "card"
+  | "plain"
+  | "compact"
+  | "grid"
+  | "numbered"
+  | "side-by-side"
+  | "highlight";
+
+export type LessonSection = (
   | { type: "paragraph"; heading?: string; text: string }
   | { type: "heading"; text: string }
   | {
@@ -66,7 +92,8 @@ export type LessonSection =
     } & ImageRef)
   | { type: "gallery"; heading?: string; images: ImageRef[] }
   | { type: "divider" }
-  | { type: "pendingNote"; text: string };
+  | { type: "pendingNote"; text: string }
+) & { displayVariant?: BlockDisplayVariant };
 
 export interface Lesson {
   id: string;
@@ -85,6 +112,8 @@ export interface Lesson {
    * checklist - it documents the gap honestly, it is not lesson content.
    */
   contentNeeded?: string[];
+  /** Optional section layout chosen during the publishing/design pass. */
+  layoutVariant?: SectionLayoutVariant;
   /** Present when contentStatus === "available". */
   sections?: LessonSection[];
 }
@@ -107,7 +136,8 @@ export interface Course {
   title: string;
   /** Short tagline under the title. */
   subtitle: string;
-  level: string;
+  /** Intended reader, shown as a pill, e.g. "Interns", "Students", "Staff". */
+  audience: string;
   durationLabel: string;
   /**
    * Optional banner / identity image. Served from the public folder, so use a
@@ -125,5 +155,7 @@ export interface Course {
   helpsWith?: string[];
   /** Optional knowledge-check quiz id (see src/data/quiz.ts). */
   quizId?: string;
+  /** Optional overall presentation chosen during the publishing/design pass. */
+  presentationVariant?: PresentationVariant;
   lessons: Lesson[];
 }

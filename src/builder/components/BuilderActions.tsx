@@ -10,6 +10,7 @@ import type { CourseDraft } from "../draftTypes";
 import { kebab, toJSON, type GuideDraftExport } from "../exportDraft";
 import { validateDraft } from "../validation";
 import { NOT_CONNECTED_MESSAGE, submitJson } from "../submit";
+import { SaveIndicator, type SaveState } from "../../components/SaveFeedback";
 
 type Banner = { type: "info" | "success" | "error"; text: string } | null;
 
@@ -19,12 +20,16 @@ export default function BuilderActions({
   onSave,
   onClear,
   onSubmitted,
+  status,
+  savedTime,
 }: {
   course: CourseDraft;
   exportDoc: GuideDraftExport;
   onSave: () => void;
   onClear: () => void;
   onSubmitted: () => void;
+  status: SaveState;
+  savedTime?: string;
 }) {
   const [banner, setBanner] = useState<Banner>(null);
   const [copied, setCopied] = useState(false);
@@ -129,6 +134,9 @@ export default function BuilderActions({
         >
           Clear draft
         </button>
+        <span className="flex items-center pl-1">
+          <SaveIndicator status={status} savedTime={savedTime} />
+        </span>
       </div>
 
       {/* Export group */}

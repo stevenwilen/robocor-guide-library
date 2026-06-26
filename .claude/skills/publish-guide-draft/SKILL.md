@@ -69,7 +69,7 @@ way.
 
 The published model lives in `src/data/types.ts`:
 
-- `Course` - `id`, `title`, `subtitle`, `level`, `durationLabel`, `image?`,
+- `Course` - `id`, `title`, `subtitle`, `audience`, `durationLabel`, `image?`,
   `heroEyebrow?`, `description`, `about: string[]`, `helpsWith?`, `quizId?`,
   `lessons: Lesson[]`.
 - `Lesson` - `id`, `number`, `title`, `summary`, `contentStatus`
@@ -81,8 +81,43 @@ Guides register in `src/data/courses.ts` (the `courses` array). Knowledge checks
 live in `src/data/quiz.ts` (the `quizzes` array, linked via `course.quizId`).
 Completion cards live in `src/data/certificates.ts` (the `certificates` array).
 
-The Builder intentionally omits reading level and duration. Add sensible values
-(or confirm with the client) when publishing - do not fabricate specifics.
+The Builder intentionally omits duration. Add a sensible value (or confirm with
+the client) when publishing - do not fabricate specifics.
+
+## Design Pass (required)
+
+The submitted JSON is **raw structured content, not the final design.** A draft
+that is copied straight into the default renderer comes out as generic stacked
+cards. Before publishing you MUST do a design pass so the guide feels
+intentionally laid out around its content.
+
+Rules:
+
+- Do **not** simply paste JSON blocks into the default renderer.
+- Treat submitted JSON as raw structured content; keep the content accurate and
+  do not invent unsupported details.
+- Choose a layout that fits the content, then set the optional presentation
+  metadata (below) to express it.
+- Do **not** overcomplicate short guides; a 1-2 section guide can stay simple.
+- Do **not** make every block a full-width card.
+- Do **not** render checklists as giant repeated full-width rows unless that
+  truly is the best layout; prefer a compact grid for lists of short items.
+- Use images as part of the layout (beside related content via a media layout),
+  not just dropped below the text.
+- Keep it responsive; everything stacks cleanly on mobile.
+- Run `npm run build`.
+
+Presentation metadata (all optional, in `src/data/types.ts`; set ONLY here, never
+in the Builder):
+
+- `Course.presentationVariant`: `"standard" | "compact" | "visual" | "training" | "reference"`.
+- `Lesson.layoutVariant` (a guide section): `"stacked" | "split" | "feature-checklist" | "steps-grid" | "media-right" | "media-left" | "compact-cards"`. `media-right`/`media-left` place image/gallery blocks beside the text.
+- block `displayVariant`: `"card" | "plain" | "compact" | "grid" | "numbered" | "side-by-side" | "highlight"`. Useful examples: `paragraph` → `plain`; `steps`/checklist → `grid` or `compact`; `keyNotes` → `compact`; `callout` → `highlight` (reads as a reusable template).
+
+The renderer (`src/components/sections/LessonSections.tsx`) reads these. If you
+need a layout it does not support yet, add it there rather than forcing content
+into the wrong shape. The "Using AI for Repeated Staff Work" guide in
+`courses.ts` is a worked example of a design pass.
 
 ## Process
 
@@ -99,8 +134,9 @@ The Builder intentionally omits reading level and duration. Add sensible values
 6. **Read `notesForPublisher` and `assets`.** Note anything that needs client
    confirmation.
 7. **Add the guide** to `src/data/courses.ts` as a `Course`. Map: guide
-   `description` → `description`/`subtitle`; add `level` and `durationLabel`
-   (confirm if unsure); `intendedReader` is context, not a published field.
+   `description` → `description`/`subtitle`; `intendedReader` → `audience`
+   (the reader pill, e.g. "Interns" / "Students" / "Staff"); add `durationLabel`
+   (confirm if unsure). There is no difficulty/level field.
 8. **Map sections → lessons.** A `ready` / `available` section becomes a lesson
    with `contentStatus: "available"` and its `blocks` as `sections`. A
    `needs_info` / `pending` section becomes `contentStatus: "pending"` with
@@ -123,12 +159,15 @@ The Builder intentionally omits reading level and duration. Add sensible values
     details the draft does not support; if the image content is unclear, use
     neutral alt text derived from the caption or file name. Set this as the
     block's `alt` field - the live renderer uses it.
-14. **Confirm the guide appears** on the Guides page (`/courses`,
+14. **Do the Design Pass (required).** Apply layout/presentation metadata (see
+    the "Design Pass" section) so the guide is laid out intentionally, not as
+    generic stacked cards.
+15. **Confirm the guide appears** on the Guides page (`/courses`,
     `src/pages/DirectoryPage.tsx`).
-15. **Confirm the guide overview and section routes work**
+16. **Confirm the guide overview and section routes work**
     (`/course/<id>` and `/course/<id>/lesson/<sectionId>`).
-16. **Run `npm run build`** and fix any type errors.
-17. **Summarize** for the client:
+17. **Run `npm run build`** and fix any type errors.
+18. **Summarize** for the client:
     - what was added
     - what was left pending (sections that need more info)
     - what assets are missing

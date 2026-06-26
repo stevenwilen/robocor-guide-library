@@ -18,6 +18,12 @@ import {
   TextArea,
   TextInput,
 } from "../../builder/components/fields";
+import {
+  SaveIndicator,
+  Toast,
+  formatSavedTime,
+  useToast,
+} from "../../components/SaveFeedback";
 import { useUpdateRequest } from "./useUpdateRequest";
 import {
   buildUpdateExport,
@@ -41,6 +47,13 @@ export default function UpdateExistingGuide() {
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
+  const { message: toast, show: showToast } = useToast();
+  const savedTime = formatSavedTime(doc.updatedAt);
+
+  function handleSave() {
+    save();
+    showToast("Update request saved locally");
+  }
 
   useEffect(() => {
     if (banner) bannerRef.current?.scrollIntoView({ block: "nearest" });
@@ -205,10 +218,10 @@ export default function UpdateExistingGuide() {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={save}
+          onClick={handleSave}
           className="rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
         >
           Save request
@@ -228,6 +241,9 @@ export default function UpdateExistingGuide() {
         >
           Clear request
         </button>
+        <span className="flex items-center pl-1">
+          <SaveIndicator status={status} savedTime={savedTime} />
+        </span>
       </div>
 
       <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4 dark:border-slate-700">
@@ -284,6 +300,8 @@ export default function UpdateExistingGuide() {
         Submission is not connected yet, so use Copy JSON or Download JSON and
         send it (with any image files) to steven.wilen@gmail.com for review.
       </p>
+
+      <Toast message={toast} />
     </div>
   );
 

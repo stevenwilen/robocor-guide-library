@@ -25,6 +25,11 @@ Library.
 - Keep all visible company names as **"Robocor."**
 - Do **not** add backend, accounts, users, enrollments, reports, analytics, or
   admin tools.
+- **Preserve the guide's existing presentation.** Published guides may already
+  have a design pass applied (`presentationVariant`, section `layoutVariant`,
+  block `displayVariant` in `src/data/types.ts`). Keep or adjust those as needed
+  for the change; do **not** reset a designed guide back to generic stacked
+  cards.
 - Run `npm run build` before finishing.
 
 ## Request shape
@@ -69,10 +74,11 @@ Published guides are in `src/data/courses.ts` (the `courses` array). A guide is 
      provided, leave a clear note and do not fabricate the image.
    - Generate concise alt text from the caption, file name, and surrounding
      context.
-9. **Preserve existing guide structure and styling.** Change only what the
-   request asks for. For `mark_needs_info`, set the section's
-   `contentStatus: "pending"` with an honest `pendingNote`; do not delete its
-   existing content unless asked.
+9. **Preserve existing guide structure and styling**, including any presentation
+   metadata (`layoutVariant`, `displayVariant`). Change only what the request
+   asks for, and keep new content consistent with the section's existing layout.
+   For `mark_needs_info`, set the section's `contentStatus: "pending"` with an
+   honest `pendingNote`; do not delete its existing content unless asked.
 10. **Run `npm run build`** and fix any type errors.
 11. **Summarize** for the client:
     - what changed

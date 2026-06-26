@@ -80,7 +80,10 @@ export default function LessonPage() {
               />
             ) : (
               <>
-                <LessonSections sections={lesson.sections ?? []} />
+                <LessonSections
+                  sections={lesson.sections ?? []}
+                  layoutVariant={lesson.layoutVariant}
+                />
 
                 {/* Mark complete (user progress -> localStorage) */}
                 <div className="mt-12 flex flex-col items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 p-5 sm:flex-row sm:items-center sm:justify-between">

@@ -3,6 +3,7 @@ import LessonListItem from "../components/LessonListItem";
 import ProgressBar from "../components/ProgressBar";
 import {
   ArrowLeftIcon,
+  AudienceIcon,
   CheckIcon,
   ClockIcon,
   InfoIcon,
@@ -10,7 +11,6 @@ import {
   ListChecksIcon,
   ProgressIcon,
   QuizIcon,
-  SignalIcon,
 } from "../components/icons";
 import { getCourse } from "../data/courses";
 import { getQuiz } from "../data/quiz";
@@ -40,7 +40,7 @@ export default function CourseOverviewPage() {
   );
 
   const details = [
-    { icon: SignalIcon, label: "Level", value: course.level },
+    { icon: AudienceIcon, label: "For", value: course.audience },
     { icon: ClockIcon, label: "Duration", value: course.durationLabel },
     {
       icon: LayersIcon,
@@ -93,7 +93,7 @@ export default function CourseOverviewPage() {
               {course.title}
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Pill icon={SignalIcon}>{course.level}</Pill>
+              <Pill icon={AudienceIcon}>{course.audience}</Pill>
               <Pill icon={ClockIcon}>{course.durationLabel}</Pill>
               <Pill icon={LayersIcon}>{course.lessons.length} lessons</Pill>
             </div>
