@@ -51,7 +51,7 @@ export default function BuilderPage() {
         </p>
         <p className="mt-2 max-w-2xl rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-600 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300">
           Drafts are saved on this device. To submit a guide for review, copy or
-          download the JSON and send it to steven.wilen@gmail.com — he reviews it
+          download the JSON and send it to steven.wilen@gmail.com. He reviews it
           and adds it to the live guide library.
         </p>
       </header>

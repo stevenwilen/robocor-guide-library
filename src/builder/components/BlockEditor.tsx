@@ -236,7 +236,7 @@ function newGalleryImage(): DraftImage {
   return { id: `img_${rand}`, pathOrUrl: "", caption: "" };
 }
 
-// Image input with a real local preview that is NEVER uploaded or persisted —
+// Image input with a real local preview that is NEVER uploaded or persisted -
 // the object URL lives only in this component's state.
 function ImageField({
   image,
@@ -332,7 +332,7 @@ function ImageField({
 
       {needsUpload && (
         <p className="rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-          Local preview only — this file has not been uploaded. Include it with
+          Local preview only. This file has not been uploaded. Include it with
           the draft when submitting for publishing.
         </p>
       )}

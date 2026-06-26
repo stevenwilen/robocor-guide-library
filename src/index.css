@@ -23,7 +23,7 @@
 
   /* Dark theme: a calm dark canvas. Reading content stays in light cards for
      legibility; headings get dark: variants per-component where needed.
-     NOTE: do not add a global `.dark h1/h2/h3` color rule — its specificity
+     NOTE: do not add a global `.dark h1/h2/h3` color rule - its specificity
      beats utility classes and would override headings on light cards (e.g. the
      always-light certificate), turning them white-on-white. */
   .dark body {

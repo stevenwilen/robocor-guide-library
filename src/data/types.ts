@@ -11,7 +11,7 @@ export type ContentStatus = "available" | "pending";
 
 /**
  * A renderable block within a lesson. Add new block types here and a matching
- * renderer in src/components/sections/ — the lesson page stays generic.
+ * renderer in src/components/sections/ - the lesson page stays generic.
  */
 /** A single image reference used by image and gallery blocks. */
 export interface ImageRef {
@@ -23,7 +23,7 @@ export interface ImageRef {
   /** Original file name, recorded so the publisher knows which asset to add. */
   fileName?: string;
   /**
-   * Accessibility text. Optional in drafts — the Guide Builder no longer asks
+   * Accessibility text. Optional in drafts - the Guide Builder no longer asks
    * for it; the publisher (see the publish-guide-draft skill) generates concise
    * alt text from the caption, file name, and surrounding content. The live
    * renderer still uses it.
@@ -82,7 +82,7 @@ export interface Lesson {
   /**
    * For pending lessons: the source material still required before this lesson
    * can be written. Rendered as a "Content needed to complete this lesson"
-   * checklist — it documents the gap honestly, it is not lesson content.
+   * checklist - it documents the gap honestly, it is not lesson content.
    */
   contentNeeded?: string[];
   /** Present when contentStatus === "available". */

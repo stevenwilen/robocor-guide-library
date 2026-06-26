@@ -66,17 +66,17 @@ export function isProvidedReference(value: string): boolean {
 
 // Resolve a draft image into a published ImageRef and, ONLY when a local file
 // still has to be supplied, an asset entry. Public references never produce an
-// asset. Alt text is intentionally omitted — the publisher generates it.
+// asset. Alt text is intentionally omitted - the publisher generates it.
 function resolveImage(img: DraftImage): { ref: ImageRef; asset?: AssetEntry } {
   const value = img.pathOrUrl.trim();
   const caption = img.caption?.trim() || undefined;
 
-  // Provided public reference (http(s) or /images/...) — usable as-is.
+  // Provided public reference (http(s) or /images/...) - usable as-is.
   if (isProvidedReference(value)) {
     return { ref: { src: value, caption } };
   }
 
-  // A local file was chosen — the file must travel with the draft.
+  // A local file was chosen - the file must travel with the draft.
   if (img.fileName) {
     const intendedPath = value || `/images/${img.fileName}`;
     return {
@@ -85,7 +85,7 @@ function resolveImage(img: DraftImage): { ref: ImageRef; asset?: AssetEntry } {
     };
   }
 
-  // A typed path with no file and no public prefix — record it as an intended
+  // A typed path with no file and no public prefix - record it as an intended
   // reference, not a missing upload asset.
   if (value) {
     return { ref: { intendedPath: value, caption } };
@@ -185,7 +185,7 @@ export function buildExport(
 
   const notesForPublisher: string[] = [
     "This is a structured guide draft. The final published guide may be redesigned and polished before it goes live.",
-    "Reading level and duration were intentionally omitted in the Builder — add them when publishing if the design needs them.",
+    "Reading level and duration were intentionally omitted in the Builder, so add them when publishing if the design needs them.",
   ];
   if (assets.length > 0) {
     notesForPublisher.push(

@@ -3,7 +3,7 @@ import type { Lesson } from "../data/types";
 import { ArrowRightIcon, CheckIcon, ClockIcon, LockIcon } from "./icons";
 import StatusBadge from "./StatusBadge";
 
-// Row in the course-overview lesson list — styled as a course module.
+// Row in the course-overview lesson list - styled as a course module.
 // Completion (a tick) is user progress; the status badge is content status.
 // Three clear states: available (accent, the action), completed (emerald),
 // pending (muted but intentional).

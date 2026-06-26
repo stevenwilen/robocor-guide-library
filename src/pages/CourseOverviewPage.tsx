@@ -71,7 +71,7 @@ export default function CourseOverviewPage() {
                 alt=""
                 className="absolute inset-0 h-full w-full object-cover object-center"
               />
-              {/* Calm readability overlays — darkens toward the bottom where
+              {/* Calm readability overlays - darkens toward the bottom where
                   the title and badges sit. */}
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/55 to-ink-950/20" />
               <div className="absolute inset-0 bg-gradient-to-r from-ink-950/65 via-ink-950/10 to-transparent" />

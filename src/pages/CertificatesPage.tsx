@@ -218,7 +218,7 @@ function CertificateItem({ cert }: { cert: CertificateDef }) {
   );
 }
 
-// The completion "paper" — always light, in both themes and at preview size.
+// The completion "paper" - always light, in both themes and at preview size.
 function CompletionCard({
   cert,
   name,

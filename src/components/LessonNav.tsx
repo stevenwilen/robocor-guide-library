@@ -4,7 +4,7 @@ import type { Course } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
 import { ArrowLeftIcon, CheckIcon, LockIcon } from "./icons";
 
-// A permanent slim lesson rail — a compact utility nav, not a collapsed
+// A permanent slim lesson rail - a compact utility nav, not a collapsed
 // sidebar. Renders vertically (desktop) or horizontally (mobile, above the
 // content). Pending lessons stay clickable and clearly muted.
 type Orientation = "vertical" | "horizontal";

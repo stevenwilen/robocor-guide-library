@@ -81,7 +81,7 @@ export default function DashboardPage() {
                 </li>
                 <li className="flex items-center gap-2.5 text-slate-700 dark:text-slate-300">
                   <ClockIcon className="h-4 w-4 shrink-0 text-amber-500" />
-                  Lessons 2–3 pending updated app workflow
+                  Lessons 2-3 pending updated app workflow
                 </li>
               </ul>
               <Link

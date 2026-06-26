@@ -181,7 +181,7 @@ export default function LessonPage() {
   );
 }
 
-// Structured, honest pending state — not a blank or "coming soon" page.
+// Structured, honest pending state - not a blank or "coming soon" page.
 function PendingState({
   note,
   contentNeeded,

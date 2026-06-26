@@ -9,7 +9,7 @@ import {
   SettingsIcon,
 } from "./icons";
 
-// Clean light LMS-style shell. Honest navigation only — every item routes to a
+// Clean light LMS-style shell. Honest navigation only - every item routes to a
 // page that exists. No Users / Enrollments / Reports, no backend implied.
 
 type SidebarProps = { onNavigate?: () => void };
@@ -61,7 +61,7 @@ const NAV: NavItem[] = [
   },
 ];
 
-// Honest, derived stats — never fabricated.
+// Honest, derived stats - never fabricated.
 const activeCourseCount = courses.length;
 const pendingLessonCount = courses
   .flatMap((c) => c.lessons)
@@ -127,7 +127,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
         })}
       </nav>
 
-      {/* Honest stats — derived from course data, not fabricated. */}
+      {/* Honest stats - derived from course data, not fabricated. */}
       <div className="px-4 pb-5">
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-800/50">
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">

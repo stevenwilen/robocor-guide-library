@@ -1,13 +1,13 @@
 // Honest, locally-evaluated completion certificates.
 //
-// A certificate is a lightweight local completion card — NOT an account-verified
+// A certificate is a lightweight local completion card - NOT an account-verified
 // credential. Each definition declares exactly which locally-completed lessons
 // (and optionally the course quiz) unlock it. Unlock state lives in localStorage
 // (see CertificatesPage), never on a server.
 //
 // HONESTY RULE: a certificate may only cover lessons that are actually
 // "available" and finished. Do not define a full-course certificate that
-// depends on lessons still marked "pending" — scope it to the completed
+// depends on lessons still marked "pending" - scope it to the completed
 // available lessons instead.
 
 export interface CertificateDef {

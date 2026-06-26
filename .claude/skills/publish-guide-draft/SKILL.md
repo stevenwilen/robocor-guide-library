@@ -5,14 +5,19 @@ description: Use this skill when the user provides JSON with `_type: "robocor_gu
 
 # Publish Guide Draft
 
-Use this skill when the user provides a JSON object with
-`_type: "robocor_guide_draft"` **or** the older
-`_type: "robocor_course_draft"`. Both come from the in-app **Guide Builder**
-(`/builder`); the older type is the same idea using earlier course/lesson
-wording.
+Use this skill when the user provides a submitted guide draft JSON, even with
+no other context.
 
-A draft is a structured starting point, not a finished guide. Steven and Claude
-turn drafts into polished published guides.
+## Accepted formats
+
+- **Primary:** `_type: "robocor_guide_draft"` (`claudeSkill: "publish-guide-draft"`).
+- **Legacy:** `_type: "robocor_course_draft"` (`claudeSkill: "publish-course-draft"`),
+  an older export of the same idea. Still fully supported; map it the same way
+  (it uses `course`/`lessons`/`contentStatus` instead of `guide`/`sections`/`state`).
+
+Both come from the in-app **Guide Builder** (`/builder`). A draft is a structured
+starting point, not a finished guide. Steven and Claude turn drafts into polished
+published guides.
 
 ## Goal
 
@@ -24,7 +29,7 @@ Library safely, producing a real, typed guide that matches the existing app.
 - Do **not** push directly to `main`. Work on a branch and open a PR.
 - Do **not** invent technical content. If a step, value, or detail is not in the
   draft, leave it out and flag it for client confirmation.
-- Keep sections that **need more info** as planned/pending — do not write content
+- Keep sections that **need more info** as planned/pending - do not write content
   for them unless real content blocks are provided.
 - Keep all visible company names as **"Robocor."**
 - Preserve the existing learner-facing app (Morpheus Drive and all current
@@ -39,17 +44,17 @@ Library safely, producing a real, typed guide that matches the existing app.
 
 `robocor_guide_draft` (schemaVersion `2.0`) envelope:
 
-- `guide` — `id`, `title`, `description`, `subtitle`, `intendedReader`, `image?`,
+- `guide` - `id`, `title`, `description`, `subtitle`, `intendedReader`, `image?`,
   `sections[]`.
-- `guide.sections[]` — `id`, `number`, `title`, `summary`, `state`
+- `guide.sections[]` - `id`, `number`, `title`, `summary`, `state`
   (`"ready" | "needs_info"`), and either `blocks[]` (when ready) or `infoNeeded`
   (a string, when it needs more info). `contentStatus` (`"available" | "pending"`)
   is also included for convenience.
 - Content blocks in `blocks[]` are already in published `LessonSection` shape
   (`paragraph`, `video`, `image`, `gallery`, `steps`, `keyNotes`, `callout`).
-- `assets[]` — image files still needed (`blockId`, `fileName`, `intendedPath`,
+- `assets[]` - image files still needed (`blockId`, `fileName`, `intendedPath`,
   `needsUpload: true`).
-- `notesForPublisher[]` — plain notes to read first.
+- `notesForPublisher[]` - plain notes to read first.
 
 Older `robocor_course_draft` drafts use `course` instead of `guide`, `lessons`
 instead of `sections`, and `contentStatus` instead of `state`. Map them the same
@@ -59,10 +64,10 @@ way.
 
 The published model lives in `src/data/types.ts`:
 
-- `Course` — `id`, `title`, `subtitle`, `level`, `durationLabel`, `image?`,
+- `Course` - `id`, `title`, `subtitle`, `level`, `durationLabel`, `image?`,
   `heroEyebrow?`, `description`, `about: string[]`, `helpsWith?`, `quizId?`,
   `lessons: Lesson[]`.
-- `Lesson` — `id`, `number`, `title`, `summary`, `contentStatus`
+- `Lesson` - `id`, `number`, `title`, `summary`, `contentStatus`
   (`"available" | "pending"`), `pendingNote?`, `contentNeeded?`, `sections?`.
 - `LessonSection` content blocks: `paragraph`, `heading`, `video`, `keyNotes`,
   `steps`, `callout`, `image`, `gallery`, `divider`, `pendingNote`.
@@ -72,7 +77,7 @@ live in `src/data/quiz.ts` (the `quizzes` array, linked via `course.quizId`).
 Completion cards live in `src/data/certificates.ts` (the `certificates` array).
 
 The Builder intentionally omits reading level and duration. Add sensible values
-(or confirm with the client) when publishing — do not fabricate specifics.
+(or confirm with the client) when publishing - do not fabricate specifics.
 
 ## Process
 
@@ -94,12 +99,12 @@ The Builder intentionally omits reading level and duration. Add sensible values
 8. **Map sections → lessons.** A `ready` / `available` section becomes a lesson
    with `contentStatus: "available"` and its `blocks` as `sections`. A
    `needs_info` / `pending` section becomes `contentStatus: "pending"` with
-   `pendingNote` (from `infoNeeded`) — do not write its content.
+   `pendingNote` (from `infoNeeded`) - do not write its content.
 9. **Add knowledge-check data only if it exists** in the draft. Otherwise leave
-   `quizId` unset — do not fabricate questions.
+   `quizId` unset - do not fabricate questions.
 10. **Add completion-card data only if** it exists or can be safely generated
     from provided completion rules. Scope it to completed available sections
-    only — never depend on sections that need more info.
+    only - never depend on sections that need more info.
 11. **Add or link image assets only if** real files or safe image URLs are
     provided. For `needsUpload: true` assets, place the supplied file at the
     `intendedPath` (e.g. under `public/images/`) and reference it. If no file was
@@ -112,7 +117,7 @@ The Builder intentionally omits reading level and duration. Add sensible values
     nearby block content. Keep it short and plain. Do NOT invent technical
     details the draft does not support; if the image content is unclear, use
     neutral alt text derived from the caption or file name. Set this as the
-    block's `alt` field — the live renderer uses it.
+    block's `alt` field - the live renderer uses it.
 14. **Confirm the guide appears** on the Guides page (`/courses`,
     `src/pages/DirectoryPage.tsx`).
 15. **Confirm the guide overview and section routes work**

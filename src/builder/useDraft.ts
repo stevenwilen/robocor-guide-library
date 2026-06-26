@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { emptyCourse, type CourseDraft, type DraftDocument } from "./draftTypes";
 
 // Local-only working draft for the Guide Builder. One draft per device, stored
-// in localStorage. Image preview object URLs are NEVER stored here — they live
+// in localStorage. Image preview object URLs are NEVER stored here - they live
 // in component state and are not persisted.
 
 const KEY = "robocor-guide-draft";

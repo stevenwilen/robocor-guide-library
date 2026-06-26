@@ -1,5 +1,5 @@
 // Centralized localStorage key builders so the Dashboard, Quizzes, and
-// Certificates pages stay in sync. Local-only device state — no accounts.
+// Certificates pages stay in sync. Local-only device state - no accounts.
 
 /** Latest quiz score, namespaced per quiz id. */
 export function quizScoreKey(quizId: string): string {

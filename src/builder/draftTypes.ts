@@ -24,7 +24,7 @@ export type ImageLayout = "standard" | "wide" | "sideBySide";
 export type CalloutTone = "tip" | "warning" | "readyCheck" | "important";
 
 /** An image reference inside the builder. The local preview object URL is
- *  NEVER stored here — it lives only in component state and is not persisted.
+ *  NEVER stored here - it lives only in component state and is not persisted.
  *  Alt text is intentionally not collected here; the publisher generates it. */
 export interface DraftImage {
   id: string;

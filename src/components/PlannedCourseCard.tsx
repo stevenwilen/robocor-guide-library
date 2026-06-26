@@ -1,7 +1,7 @@
 import type { PlannedCourse } from "../data/types";
 import { ClockIcon, LayersIcon } from "./icons";
 
-// A planned/future course. Intentionally NOT a link — it's a non-interactive,
+// A planned/future course. Intentionally NOT a link - it's a non-interactive,
 // dashed, muted card so the directory can show future scope honestly without
 // implying the course is built or clickable.
 export default function PlannedCourseCard({

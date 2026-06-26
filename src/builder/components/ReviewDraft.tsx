@@ -9,7 +9,7 @@ const READER_LABELS: Record<string, string> = {
   other: "Other",
 };
 
-// Structured summary of the guide draft — deliberately NOT the polished guide.
+// Structured summary of the guide draft - deliberately NOT the polished guide.
 export default function ReviewDraft({
   course,
   exportDoc,
@@ -100,16 +100,15 @@ export default function ReviewDraft({
         ))}
       </section>
 
-      {/* Missing assets */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
-        <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-          Missing assets
-        </h3>
-        {assets.length === 0 ? (
-          <p className="mt-2 text-sm text-slate-500">
-            No image files need to be supplied.
+      {/* Local image files to send separately, only shown when applicable. */}
+      {assets.length > 0 && (
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Image files to send separately
+          </h3>
+          <p className="mt-1 text-xs text-slate-400">
+            These were added as local files, so send them with the JSON.
           </p>
-        ) : (
           <ul className="mt-2 space-y-1.5 text-sm">
             {assets.map((a, i) => (
               <li
@@ -122,8 +121,8 @@ export default function ReviewDraft({
               </li>
             ))}
           </ul>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* Notes for publishing */}
       <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
@@ -146,7 +145,7 @@ export default function ReviewDraft({
 function blockSummary(block: DraftBlock): string {
   switch (block.type) {
     case "paragraph":
-      return [block.heading, block.text].filter(Boolean).join(" — ");
+      return [block.heading, block.text].filter(Boolean).join(": ");
     case "video":
       return block.youtube || "(no video set)";
     case "image":
@@ -162,7 +161,7 @@ function blockSummary(block: DraftBlock): string {
     case "keyNotes":
       return `${block.notes.filter((n) => n.trim()).length} note(s)`;
     case "callout":
-      return `${block.tone}${block.title ? ` — ${block.title}` : ""}`;
+      return `${block.tone}${block.title ? `: ${block.title}` : ""}`;
     default:
       return "";
   }

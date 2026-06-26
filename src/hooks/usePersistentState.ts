@@ -2,7 +2,7 @@ import { useCallback, useSyncExternalStore } from "react";
 
 // A tiny localStorage-backed state hook with a shared module store, so multiple
 // components using the same key stay in sync (e.g. the Quiz page writes a score
-// and the Dashboard reads it). Browser-only — no backend, no accounts.
+// and the Dashboard reads it). Browser-only - no backend, no accounts.
 
 type Store<T> = { value: T; listeners: Set<() => void> };
 const stores = new Map<string, Store<unknown>>();

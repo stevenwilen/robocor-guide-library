@@ -240,7 +240,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
 }
 
 // Renders an image when a usable src is present, otherwise an honest
-// "image pending" placeholder — never a broken <img> or a fake upload claim.
+// "image pending" placeholder - never a broken <img> or a fake upload claim.
 function ImageOrPlaceholder({
   src,
   alt,

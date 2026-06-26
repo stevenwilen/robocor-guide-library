@@ -45,7 +45,7 @@ export const courses: Course[] = [
     ],
     lessons: [
       // ----------------------------------------------------------------------
-      // LESSON 1 — fully built (content available)
+      // LESSON 1 - fully built (content available)
       // ----------------------------------------------------------------------
       {
         id: "hardware-setup",
@@ -54,7 +54,7 @@ export const courses: Course[] = [
         summary:
           "Connect two motors and a battery to the Morpheus Drive and confirm the system powers on.",
         contentStatus: "available",
-        // NOTE: no per-lesson duration shown — a time estimate for this lesson
+        // NOTE: no per-lesson duration shown - a time estimate for this lesson
         // is not source-confirmed. (The video's own 3:14 runtime is reference-
         // sourced and lives on the video block below.)
         sections: [
@@ -69,7 +69,7 @@ export const courses: Course[] = [
             // Real setup video. The embed URL is
             // https://www.youtube.com/embed/<youtubeId>.
             type: "video",
-            title: "Steven – Morpheus Drive Setup",
+            title: "Steven - Morpheus Drive Setup",
             youtubeId: "Ay3YeL9tJZM",
             durationLabel: "3:14",
             note: "Additional reference photos can be added later if needed.",
@@ -77,7 +77,7 @@ export const courses: Course[] = [
           {
             // DRAFT / CONFIRMABLE: action sequence derived from the setup notes.
             // Kept deliberately generic. Specific terminal labels, wiring,
-            // battery specs, and reset behavior are NOT invented here — they
+            // battery specs, and reset behavior are NOT invented here - they
             // live in "Key notes" (reference-sourced) and should be confirmed
             // with the client before this reads as final.
             type: "steps",
@@ -108,7 +108,7 @@ export const courses: Course[] = [
             // Reference-sourced cautions, reminders, and specific details
             // (morpheus-final-section-1.png). These hold the specifics so the
             // checklist above can stay generic and avoid duplication.
-            // ("main" power wire softened to "power wire" — the source text was
+            // ("main" power wire softened to "power wire" - the source text was
             // partially cut off in the screenshot.)
             type: "keyNotes",
             heading: "Key notes",
@@ -133,7 +133,7 @@ export const courses: Course[] = [
       },
 
       // ----------------------------------------------------------------------
-      // LESSON 2 — planned / pending (app workflow changed)
+      // LESSON 2 - planned / pending (app workflow changed)
       // ----------------------------------------------------------------------
       {
         id: "connecting-to-the-app",
@@ -153,7 +153,7 @@ export const courses: Course[] = [
       },
 
       // ----------------------------------------------------------------------
-      // LESSON 3 — planned / pending (app workflow changed)
+      // LESSON 3 - planned / pending (app workflow changed)
       // ----------------------------------------------------------------------
       {
         id: "navigating-the-app",
@@ -178,7 +178,7 @@ export const courses: Course[] = [
     title: "Using AI for Repeated Staff Work",
     subtitle: "Using AI to speed up repeated staff tasks",
     // NOTE (publisher): level + duration were not provided by the Builder.
-    // These are sensible placeholders — confirm with the client.
+    // These are sensible placeholders - confirm with the client.
     level: "Beginner",
     durationLabel: "~15 min",
     // NOTE (publisher): banner is a placehold.co placeholder from the draft.
@@ -188,7 +188,7 @@ export const courses: Course[] = [
     description:
       "A simple guide for staff on using ChatGPT or Claude to save time on repeated writing, notes, and organizing tasks.",
     about: [
-      "This guide helps staff use AI tools like ChatGPT or Claude to save time on work they repeat often — writing, summarizing, and organizing notes.",
+      "This guide helps staff use AI tools like ChatGPT or Claude to save time on work they repeat often, like writing, summarizing, and organizing notes.",
       "It covers how to spot tasks that are a good fit for AI and how to write a clear prompt to get useful results.",
     ],
     helpsWith: [
@@ -252,7 +252,7 @@ export const courses: Course[] = [
           {
             type: "image",
             layout: "standard",
-            // Public placeholder URL from the draft — replace with a real image.
+            // Public placeholder URL from the draft - replace with a real image.
             src: "https://placehold.co/1200x700/png?text=Prompt+Example",
             // alt generated at publish time (Builder no longer collects alt).
             alt: "Example staff prompt template (placeholder image)",
@@ -271,7 +271,7 @@ export const courses: Course[] = [
 ];
 
 // Courses the library is structured to support but that are not built yet.
-// These render as clearly-labeled planned cards on the directory — never as
+// These render as clearly-labeled planned cards on the directory - never as
 // active, clickable courses. Describe intended scope only, not real content.
 export const plannedCourses: PlannedCourse[] = [
   {

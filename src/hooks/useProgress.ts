@@ -1,7 +1,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 
 // ============================================================================
-// Local progress — the SINGLE source of truth for user lesson completion.
+// Local progress - the SINGLE source of truth for user lesson completion.
 //
 // Stored in the browser only (localStorage). This is intentionally not secure
 // user tracking: clearing browser data resets it. Content state (whether a

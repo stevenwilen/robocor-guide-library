@@ -1,13 +1,13 @@
 import { InfoIcon } from "./icons";
 
 // A concise, honest summary of what the guide library currently includes.
-// Plain documentation — not a dashboard, not stats, no fake metrics.
+// Plain documentation - not a dashboard, not stats, no fake metrics.
 const ITEMS = [
   "Guide directory",
   "Morpheus Drive guide",
   "Reusable guide layout",
   "Lesson 1 complete",
-  "Lessons 2–3 ready to fill in after the updated app walkthrough",
+  "Lessons 2-3 ready to fill in after the updated app walkthrough",
   "Progress saved on this device",
   "Future guides can be added",
 ];

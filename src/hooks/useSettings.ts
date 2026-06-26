@@ -1,7 +1,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 
 // Local display / accessibility settings, applied to the document root.
-// Stored in the browser only — no backend, no accounts.
+// Stored in the browser only - no backend, no accounts.
 
 export type TextSize = "default" | "large";
 export type Theme = "light" | "dark" | "system";
