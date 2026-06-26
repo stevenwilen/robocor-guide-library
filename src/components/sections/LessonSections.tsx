@@ -35,7 +35,7 @@ export default function LessonSections({
       </div>
     );
     const mediaCol = (
-      <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+      <div className="space-y-4 lg:self-start">
         {media.map((s, i) => (
           <SectionBlock key={`m${i}`} section={s} />
         ))}

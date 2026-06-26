@@ -181,10 +181,10 @@ export const courses: Course[] = [
     // the Builder, so it is a sensible placeholder - confirm with the client.
     audience: "Staff",
     durationLabel: "~15 min",
+    // Banner lives in public/images/ and is served at this root path.
+    image: "/images/using-ai-for-repeated-staff-work.png",
     heroEyebrow: "Guide",
-    // Presentation chosen during the publishing/design pass (not set in the
-    // Builder). No banner image was provided, so the hero uses its designed
-    // gradient fallback instead of a placeholder graphic.
+    // Presentation chosen during the publishing/design pass (not set in the Builder).
     presentationVariant: "training",
     description:
       "A simple guide for staff on using ChatGPT or Claude to save time on repeated writing, notes, and organizing tasks.",
@@ -272,12 +272,11 @@ export const courses: Course[] = [
           },
           {
             type: "image",
-            // Placeholder shown beside the recipe via the media-right layout.
-            // No real screenshot was provided, so it renders the honest "Image
-            // pending" placeholder instead of an external graphic.
-            intendedPath: "/images/ai-prompt-example.png",
+            // Real screenshot, saved in public/images/ and shown beside the
+            // recipe via the media-right layout.
+            src: "/images/ai-prompt-example.png",
             alt: "Example of a staff prompt template",
-            caption: "Add a real screenshot of a prompt template here.",
+            caption: "Example of a staff prompt template.",
           },
         ],
       },
