@@ -173,6 +173,101 @@ export const courses: Course[] = [
       },
     ],
   },
+  {
+    id: "using-ai-for-repeated-staff-work",
+    title: "Using AI for Repeated Staff Work",
+    subtitle: "Using AI to speed up repeated staff tasks",
+    // NOTE (publisher): level + duration were not provided by the Builder.
+    // These are sensible placeholders — confirm with the client.
+    level: "Beginner",
+    durationLabel: "~15 min",
+    // NOTE (publisher): banner is a placehold.co placeholder from the draft.
+    // Replace with a real image when one is provided.
+    image: "https://placehold.co/1200x700/png?text=AI+Staff+Workflow",
+    heroEyebrow: "Guide",
+    description:
+      "A simple guide for staff on using ChatGPT or Claude to save time on repeated writing, notes, and organizing tasks.",
+    about: [
+      "This guide helps staff use AI tools like ChatGPT or Claude to save time on work they repeat often — writing, summarizing, and organizing notes.",
+      "It covers how to spot tasks that are a good fit for AI and how to write a clear prompt to get useful results.",
+    ],
+    helpsWith: [
+      "Spot repeated tasks that AI can help with",
+      "Write clearer prompts for ChatGPT or Claude",
+      "Turn rough notes into clean first drafts",
+    ],
+    lessons: [
+      {
+        id: "finding-work-ai-can-help-with",
+        number: 1,
+        title: "Finding work AI can help with",
+        summary: "How to spot simple staff tasks that are good for AI.",
+        contentStatus: "available",
+        sections: [
+          {
+            type: "paragraph",
+            heading: "Look for repeated work",
+            text: "AI is useful for tasks staff repeat often, especially writing, summarizing, organizing notes, and turning rough information into a cleaner first draft.",
+          },
+          {
+            type: "steps",
+            steps: [
+              { title: "Drafting emails" },
+              { title: "Summarizing notes" },
+              { title: "Cleaning up rough instructions" },
+              { title: "Turning steps into a checklist" },
+              { title: "Rewriting messages in a clearer tone" },
+            ],
+          },
+          {
+            type: "callout",
+            tone: "important",
+            heading: "Still review everything",
+            text: "AI can save time, but a person still needs to check the facts, tone, and final wording.",
+          },
+        ],
+      },
+      {
+        id: "writing-a-better-prompt",
+        number: 2,
+        title: "Writing a better prompt",
+        summary: "A simple way to ask ChatGPT or Claude for better results.",
+        contentStatus: "available",
+        sections: [
+          {
+            type: "paragraph",
+            heading: "Give context first",
+            text: "A good prompt tells the AI what the task is, who the output is for, what information to use, and what format you want back.",
+          },
+          {
+            type: "keyNotes",
+            notes: [
+              "Say what you need",
+              "Explain who will read it",
+              "Paste the rough notes",
+              "Ask for a specific format",
+              "Tell it what not to add",
+            ],
+          },
+          {
+            type: "image",
+            layout: "standard",
+            // Public placeholder URL from the draft — replace with a real image.
+            src: "https://placehold.co/1200x700/png?text=Prompt+Example",
+            // alt generated at publish time (Builder no longer collects alt).
+            alt: "Example staff prompt template (placeholder image)",
+            caption: "Example image placeholder for a staff prompt template.",
+          },
+          {
+            type: "callout",
+            tone: "tip",
+            heading: "Simple prompt example",
+            text: "Turn these rough notes into a short staff checklist. Keep it clear, practical, and do not add anything that is not in the notes.",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // Courses the library is structured to support but that are not built yet.
