@@ -24,8 +24,7 @@ const STATUS_LABEL: Record<SaveStatus, string> = {
 // The "New Guide Draft" flow (formerly the Guide Builder page). Rendered inside
 // Creator Tools, so it has no big page header of its own.
 export default function NewGuideDraft() {
-  const { course, doc, status, setCourse, save, clear, markPendingApproval } =
-    useDraft();
+  const { course, doc, status, setCourse, save, clear } = useDraft();
   const actions = useMemo(() => createActions(setCourse), [setCourse]);
   const [tab, setTab] = useState<BuilderTab>("basics");
   const { message: toast, show: showToast } = useToast();
@@ -71,7 +70,6 @@ export default function NewGuideDraft() {
               exportDoc={exportDoc}
               onSave={handleSave}
               onClear={clear}
-              onSubmitted={markPendingApproval}
               status={status}
               savedTime={savedTime}
             />

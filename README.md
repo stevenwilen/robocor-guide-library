@@ -93,9 +93,9 @@ with the `publish-guide-update` skill:
 ```
 
 Both JSON types are self-identifying so they can be handed to Claude with no
-context. If `VITE_SUBMISSION_ENDPOINT` is set, **Submit for approval** POSTs the
-JSON; otherwise it honestly reports that submission is not connected and you use
-Copy / Download.
+context. There is no automatic submit: the creator uses **Copy JSON** or
+**Download JSON** and emails it (with any image files) to Steven, who reviews
+and publishes it. Nothing goes live automatically.
 
 Images: a public URL or `/images/...` path is treated as a provided reference. A
 locally picked file is previewed in the browser only. It is never uploaded and

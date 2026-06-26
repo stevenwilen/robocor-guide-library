@@ -315,14 +315,6 @@ export function CopyIcon({ className }: IconProps) {
   );
 }
 
-export function SendIcon({ className }: IconProps) {
-  return (
-    <svg className={base(className)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M22 2 11 13M22 2l-7 20-4-9-9-4z" />
-    </svg>
-  );
-}
-
 export function DownloadIcon({ className }: IconProps) {
   return (
     <svg className={base(className)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

@@ -1,17 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { courses } from "../../data/courses";
 import { isProvidedReference } from "../../builder/exportDraft";
-import {
-  NOT_CONNECTED_MESSAGE,
-  submitJson,
-} from "../../builder/submit";
-import {
-  CheckCircleIcon,
-  CopyIcon,
-  DownloadIcon,
-  InfoIcon,
-  SendIcon,
-} from "../../components/icons";
+import { CopyIcon, DownloadIcon, InfoIcon } from "../../components/icons";
+
+const CREATOR_EMAIL = "steven.wilen@gmail.com";
 import {
   Field,
   Select,
@@ -37,15 +29,13 @@ import {
   type ChangeType,
 } from "./updateTypes";
 
-type Banner = { type: "info" | "success" | "error"; text: string } | null;
+type Banner = { type: "info" | "error"; text: string } | null;
 
 export default function UpdateExistingGuide() {
-  const { request, doc, status, setRequest, save, clear, markPendingApproval } =
-    useUpdateRequest();
+  const { request, doc, status, setRequest, save, clear } = useUpdateRequest();
 
   const [banner, setBanner] = useState<Banner>(null);
   const [copied, setCopied] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
   const { message: toast, show: showToast } = useToast();
   const savedTime = formatSavedTime(doc.updatedAt);
@@ -102,27 +92,6 @@ export default function UpdateExistingGuide() {
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-  }
-
-  async function submit() {
-    if (!valid) return;
-    setSubmitting(true);
-    const result = await submitJson(json);
-    setSubmitting(false);
-    if (result.kind === "no_endpoint") {
-      setBanner({ type: "info", text: NOT_CONNECTED_MESSAGE });
-    } else if (result.kind === "success") {
-      markPendingApproval();
-      setBanner({
-        type: "success",
-        text: "Submitted for approval. The live guide will not change until Steven reviews and publishes the update.",
-      });
-    } else {
-      setBanner({
-        type: "error",
-        text: `Could not submit (${result.message}). You can still Copy or Download the JSON and send it to Steven.`,
-      });
-    }
   }
 
   return (
@@ -245,7 +214,24 @@ export default function UpdateExistingGuide() {
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4 dark:border-slate-700">
+      {/* How to submit: no submit button. Copy/download the JSON and email it. */}
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-relaxed text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100">
+        <p className="font-semibold">How to submit this request</p>
+        <p className="mt-1">
+          There is no automatic submit. Use <strong>Copy JSON</strong> or{" "}
+          <strong>Download JSON</strong> below, then email it (with any image
+          files) to{" "}
+          <a
+            href={`mailto:${CREATOR_EMAIL}?subject=Guide update request`}
+            className="font-semibold underline"
+          >
+            {CREATOR_EMAIL}
+          </a>
+          . The live guide changes only after Steven reviews and publishes it.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={copyJSON}
@@ -264,41 +250,21 @@ export default function UpdateExistingGuide() {
           <DownloadIcon className="h-4 w-4" />
           Download JSON
         </button>
-        <button
-          type="button"
-          onClick={submit}
-          disabled={!valid || submitting}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
-        >
-          <SendIcon className="h-4 w-4" />
-          {submitting ? "Submitting…" : "Submit for approval"}
-        </button>
       </div>
 
       {banner && (
         <div
           ref={bannerRef}
           className={`flex items-start gap-2.5 rounded-xl border p-4 text-sm ${
-            banner.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-200"
-              : banner.type === "error"
-                ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
-                : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
+            banner.type === "error"
+              ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
+              : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
           }`}
         >
-          {banner.type === "success" ? (
-            <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
-          ) : (
-            <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
-          )}
+          <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
           <span className="leading-relaxed">{banner.text}</span>
         </div>
       )}
-
-      <p className="text-xs leading-relaxed text-slate-400">
-        Submission is not connected yet, so use Copy JSON or Download JSON and
-        send it (with any image files) to steven.wilen@gmail.com for review.
-      </p>
 
       <Toast message={toast} />
     </div>
