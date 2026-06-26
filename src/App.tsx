@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
+import ScrollToTop from "./components/ScrollToTop";
 import DashboardPage from "./pages/DashboardPage";
 import DirectoryPage from "./pages/DirectoryPage";
 import CourseOverviewPage from "./pages/CourseOverviewPage";
@@ -12,6 +13,7 @@ import SettingsPage from "./pages/SettingsPage";
 export default function App() {
   return (
     <Layout>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/courses" element={<DirectoryPage />} />
