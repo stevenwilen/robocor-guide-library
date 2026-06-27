@@ -66,38 +66,26 @@ it falls back to downloading a copy to email manually. The creator does not writ
 lessons - Steven and Claude scope, section, and design the guide from the
 materials with the `publish-guide-draft` skill (show, don't tell).
 
-**Update Existing Guide** - request a small change (replace a paragraph, swap an
-image, update a checklist, mark a section as needing more info, etc.) to an
-already-published guide. It produces a separate request JSON, applied by Claude
-with the `publish-guide-update` skill:
+**Update Existing Guide** - request a small change to an already-published
+guide. Pick the guide and section, choose a plain-language **change type**
+(reword or correct text, update an image, update a video, add something new,
+remove something, flag as outdated / needs more info, other), describe the
+change, and optionally paste a link or attach a file. One **Send request to
+admin** button submits it (with the attachment) via the same form service.
+Claude applies it with the `publish-guide-update` skill.
 
-```json
-{
-  "_type": "robocor_guide_update_request",
-  "schemaVersion": "1.0",
-  "submissionStatus": "pending_approval",
-  "intendedAction": "review_and_apply_update_to_guide_library",
-  "claudeSkill": "publish-guide-update",
-  "guideId": "...",
-  "sectionId": "...",
-  "changeType": "...",
-  "changeSummary": "..."
-}
-```
+Both tools submit in one click; nothing goes live automatically - the admin
+reviews and publishes. If a send fails it falls back to downloading a copy to
+email manually.
 
-The update-request JSON is self-identifying so it can be handed to Claude with no
-context; the creator copies or downloads it and emails it to Steven. A **New
-Guide** brief instead submits in one click via the form service. Either way,
-nothing goes live automatically - Steven reviews and publishes.
+Files and images are never uploaded to the app or stored as base64. Local files
+are held in memory only and attached to the one-click submission; a public URL
+or `/images/...` path is treated as a provided reference.
 
-Files and images are never uploaded to the app or stored as base64. A brief's
-local files are held in memory only and attached to the one-click submission; a
-public URL or `/images/...` path is treated as a provided reference.
-
-**Publishing is a design pass, not a copy-paste.** Creator Tools collect
-structured draft content only; the submitted JSON is not the final design. When
-Steven publishes, Claude reviews the draft, applies a design/layout pass (the
-`publish-guide-draft` skill, using the optional presentation metadata in
+**Publishing is a design pass, not a copy-paste.** Creator Tools capture intent
+and raw materials only; the submission is not the final design. When the admin
+publishes, Claude scopes and sections the brief, applies a design/layout pass
+(the `publish-guide-draft` skill, using the optional presentation metadata in
 `src/data/types.ts`), integrates it into the guide library, and runs the build.
 Published guides may use that layout metadata (`presentationVariant`,
 `layoutVariant`, `displayVariant`) for a more intentional presentation than raw

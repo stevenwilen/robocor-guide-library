@@ -1,24 +1,25 @@
 // Data model for an "Update Existing Guide" request. This never edits a live
-// guide; it produces a structured request JSON for Steven and Claude to review.
+// guide; it sends a small, plain-language change request (with any links or
+// attached files) to the admin, who reviews and applies it with Claude.
+
+import { type Material } from "../materials/types";
 
 export type ChangeType =
-  | "replace_text"
-  | "replace_image"
-  | "replace_video"
-  | "add_block"
-  | "remove_block"
-  | "update_list"
-  | "mark_needs_info"
+  | "fix_text"
+  | "update_image"
+  | "update_video"
+  | "add_content"
+  | "remove_content"
+  | "needs_info"
   | "other";
 
 export const CHANGE_TYPES: { value: ChangeType; label: string }[] = [
-  { value: "replace_text", label: "Replace text" },
-  { value: "replace_image", label: "Replace image" },
-  { value: "replace_video", label: "Replace video" },
-  { value: "add_block", label: "Add content block" },
-  { value: "remove_block", label: "Remove content block" },
-  { value: "update_list", label: "Update checklist/key notes" },
-  { value: "mark_needs_info", label: "Mark section as needing more info" },
+  { value: "fix_text", label: "Reword or correct text" },
+  { value: "update_image", label: "Update an image" },
+  { value: "update_video", label: "Update a video" },
+  { value: "add_content", label: "Add something new" },
+  { value: "remove_content", label: "Remove something" },
+  { value: "needs_info", label: "Flag as outdated / needs more info" },
   { value: "other", label: "Other" },
 ];
 
@@ -36,12 +37,10 @@ export interface UpdateRequestDraft {
   changeType: ChangeType;
   /** "What needs to change?" */
   changeSummary: string;
-  replacementContent: string;
-  /** Image replacement: a typed URL/path. */
-  imagePathOrUrl: string;
-  /** Set when a local file was picked (metadata only; never uploaded). */
-  imageFileName?: string;
-  notesForPublisher: string;
+  /** New material for the change: links and/or attached files, each with a note. */
+  materials: Material[];
+  /** Optional notes for the admin. */
+  notesForAdmin: string;
 }
 
 export interface UpdateRequestDocument {
@@ -54,11 +53,9 @@ export function emptyUpdateRequest(): UpdateRequestDraft {
   return {
     guideId: "",
     sectionId: GENERAL_SECTION,
-    changeType: "replace_text",
+    changeType: "fix_text",
     changeSummary: "",
-    replacementContent: "",
-    imagePathOrUrl: "",
-    imageFileName: undefined,
-    notesForPublisher: "",
+    materials: [],
+    notesForAdmin: "",
   };
 }

@@ -1,25 +1,28 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { courses } from "../../data/courses";
-import { isProvidedReference } from "../../builder/exportDraft";
-import { CopyIcon, DownloadIcon, InfoIcon } from "../../components/icons";
-
-const CREATOR_EMAIL = "steven.wilen@gmail.com";
 import {
-  Field,
-  Select,
-  TextArea,
-  TextInput,
-} from "../../builder/components/fields";
+  ArrowRightIcon,
+  CheckCircleIcon,
+  DownloadIcon,
+  InfoIcon,
+} from "../../components/icons";
+import { Field, Select, TextArea } from "../../builder/components/fields";
 import {
   SaveIndicator,
   Toast,
   formatSavedTime,
   useToast,
 } from "../../components/SaveFeedback";
+import { submitForm } from "../formSubmit";
+import { MaterialsEditor } from "../materials/MaterialsEditor";
+import { useMaterialFiles } from "../materials/useMaterialFiles";
+import { cleanMaterials } from "../materials/types";
 import { useUpdateRequest } from "./useUpdateRequest";
 import {
-  buildUpdateExport,
-  updateToJSON,
+  buildUpdateText,
+  guideTitleFor,
+  sectionTitleFor,
+  updateFileName,
   validateUpdate,
 } from "./exportUpdate";
 import {
@@ -27,67 +30,97 @@ import {
   CHANGE_TYPE_LABELS,
   GENERAL_SECTION,
   type ChangeType,
+  type UpdateRequestDraft,
 } from "./updateTypes";
 
-type Banner = { type: "info" | "error"; text: string } | null;
+const CREATOR_EMAIL = "steven.wilen@gmail.com";
+
+type SendState = "idle" | "sending" | "sent" | "error";
 
 export default function UpdateExistingGuide() {
   const { request, doc, status, setRequest, save, clear } = useUpdateRequest();
-
-  const [banner, setBanner] = useState<Banner>(null);
-  const [copied, setCopied] = useState(false);
-  const bannerRef = useRef<HTMLDivElement>(null);
   const { message: toast, show: showToast } = useToast();
   const savedTime = formatSavedTime(doc.updatedAt);
+  const files = useMaterialFiles();
 
-  function handleSave() {
-    save();
-    showToast("Update request saved locally");
-  }
-
-  useEffect(() => {
-    if (banner) bannerRef.current?.scrollIntoView({ block: "nearest" });
-  }, [banner]);
+  const [send, setSend] = useState<SendState>("idle");
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [banner, setBanner] = useState<string | null>(null);
 
   const guide = courses.find((c) => c.id === request.guideId);
-  const errors = validateUpdate(request);
-  const valid = errors.length === 0;
-  const exportDoc = useMemo(
-    () => buildUpdateExport(request, { createdAt: doc.createdAt }),
-    [request, doc.createdAt],
-  );
-  const json = updateToJSON(exportDoc);
+  const baseErrors = validateUpdate(request);
+  const missing = files.missingFiles(request.materials);
+  const blockers = [
+    ...baseErrors,
+    ...(missing.length
+      ? [
+          `Re-select ${missing.length} file${
+            missing.length === 1 ? "" : "s"
+          } so they attach to the submission.`,
+        ]
+      : []),
+  ];
+  const canSend = blockers.length === 0;
 
   const guideOptions = [
     { value: "", label: "Select a guide…" },
     ...courses.map((c) => ({ value: c.id, label: c.title })),
   ];
-  const sectionOptions = [
-    { value: GENERAL_SECTION, label: "General guide-level change" },
-    ...(guide?.lessons ?? []).map((l) => ({
-      value: l.id,
-      label: `Section ${l.number}: ${l.title}`,
-    })),
-  ];
+  const sectionOptions = guide
+    ? [
+        { value: GENERAL_SECTION, label: "Whole guide (general change)" },
+        ...guide.lessons.map((l) => ({
+          value: l.id,
+          label: `Section ${l.number}: ${l.title}`,
+        })),
+      ]
+    : [{ value: GENERAL_SECTION, label: "Select a guide first" }];
 
-  async function copyJSON() {
-    if (!valid) return;
-    try {
-      await navigator.clipboard.writeText(json);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setBanner({ type: "error", text: "Could not copy. Use Download JSON." });
+  function patch(p: Partial<UpdateRequestDraft>) {
+    setRequest((r) => ({ ...r, ...p }));
+  }
+
+  function handleSave() {
+    save();
+    showToast("Update request saved locally");
+  }
+  function handleClear() {
+    if (
+      typeof window === "undefined" ||
+      window.confirm("Clear this update request?")
+    ) {
+      clear();
+      files.resetFiles();
+      setSend("idle");
+      setSendError(null);
+      setBanner("Request cleared.");
     }
   }
 
-  function downloadJSON() {
-    if (!valid) return;
-    const blob = new Blob([json], { type: "application/json" });
+  async function handleSend() {
+    if (!canSend || send === "sending") return;
+    setSend("sending");
+    setSendError(null);
+    const result = await submitForm({
+      subject: `Guide update: ${guideTitleFor(request.guideId) || request.guideId || "guide"}`,
+      message: buildUpdateText(request),
+      files: files.collectFiles(request.materials),
+    });
+    if (result.ok) {
+      setSend("sent");
+      save();
+    } else {
+      setSend("error");
+      setSendError(result.error ?? "Something went wrong.");
+    }
+  }
+
+  function downloadFallback() {
+    const blob = new Blob([buildUpdateText(request)], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${request.guideId || "guide"}-update-request.json`;
+    a.download = updateFileName(request);
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -98,39 +131,38 @@ export default function UpdateExistingGuide() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-          Request a small change to an existing published guide.
+          Request a small change to an existing published guide. The admin
+          reviews and applies it; the live guide changes only after that.
         </p>
-        <StatusPill status={status} />
+        <SaveIndicator status={status} savedTime={savedTime} />
       </div>
 
-      {/* Form */}
+      {/* Basics */}
       <div className="space-y-5 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
         <Field label="Guide" required>
           <Select
             value={request.guideId}
-            onChange={(v) =>
-              setRequest((r) => ({
-                ...r,
-                guideId: v,
-                sectionId: GENERAL_SECTION,
-              }))
-            }
+            onChange={(v) => patch({ guideId: v, sectionId: GENERAL_SECTION })}
             options={guideOptions}
           />
         </Field>
 
-        <Field label="Section">
+        <Field
+          label="Section"
+          hint="Which part of the guide. Pick the whole guide for a general change."
+        >
           <Select
             value={request.sectionId}
-            onChange={(v) => setRequest((r) => ({ ...r, sectionId: v }))}
+            onChange={(v) => patch({ sectionId: v })}
             options={sectionOptions}
+            disabled={!guide}
           />
         </Field>
 
         <Field label="Change type">
           <Select<ChangeType>
             value={request.changeType}
-            onChange={(v) => setRequest((r) => ({ ...r, changeType: v }))}
+            onChange={(v) => patch({ changeType: v })}
             options={CHANGE_TYPES}
           />
         </Field>
@@ -138,263 +170,166 @@ export default function UpdateExistingGuide() {
         <Field label="What needs to change?" required>
           <TextArea
             value={request.changeSummary}
-            onChange={(v) => setRequest((r) => ({ ...r, changeSummary: v }))}
+            onChange={(v) => patch({ changeSummary: v })}
             placeholder="Describe the change you are requesting."
           />
         </Field>
+      </div>
 
-        <Field
-          label="Replacement content"
-          hint="The new text, item, link, or details. Leave blank if not applicable."
-        >
+      {/* New material */}
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
+        <MaterialsEditor
+          materials={request.materials}
+          onChange={(materials) => patch({ materials })}
+          attached={files.attached}
+          onPick={files.pickFile}
+          onDrop={files.dropFile}
+          label="New material"
+          description="Optional. Add a link or attach a file for this change - a new image, a video URL, a doc. Leave empty for a text-only change."
+        />
+      </div>
+
+      {/* Notes */}
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
+        <Field label="Notes for admin (optional)">
           <TextArea
-            value={request.replacementContent}
-            onChange={(v) =>
-              setRequest((r) => ({ ...r, replacementContent: v }))
-            }
-            placeholder="New content for this change."
-          />
-        </Field>
-
-        {request.changeType === "replace_image" && <ImageReplacement />}
-
-        <Field label="Notes for publisher (optional)">
-          <TextArea
-            value={request.notesForPublisher}
-            onChange={(v) =>
-              setRequest((r) => ({ ...r, notesForPublisher: v }))
-            }
-            placeholder="Anything Steven should know when applying this."
+            value={request.notesForAdmin}
+            onChange={(v) => patch({ notesForAdmin: v })}
+            placeholder="Anything the admin should know when applying this."
           />
         </Field>
       </div>
 
       {/* Review */}
-      <ReviewUpdate exportDoc={exportDoc} />
+      <ReviewUpdate request={request} />
 
-      {/* Actions */}
-      {!valid && (
+      {/* Blockers */}
+      {blockers.length > 0 && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-900 dark:bg-amber-900/20">
           <p className="font-semibold text-amber-800 dark:text-amber-200">
-            Resolve these before exporting:
+            Complete the request before sending:
           </p>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-800 dark:text-amber-200">
-            {errors.map((err, i) => (
+            {blockers.map((err, i) => (
               <li key={i}>{err}</li>
             ))}
           </ul>
         </div>
       )}
 
+      {/* Save / clear */}
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={handleSave}
-          className="rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
+          className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           Save request
         </button>
         <button
           type="button"
-          onClick={() => {
-            if (
-              typeof window === "undefined" ||
-              window.confirm("Clear this update request?")
-            ) {
-              clear();
-              setBanner({ type: "info", text: "Request cleared." });
-            }
-          }}
+          onClick={handleClear}
           className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:text-red-600 dark:border-slate-700 dark:text-slate-200"
         >
           Clear request
         </button>
-        <span className="flex items-center pl-1">
-          <SaveIndicator status={status} savedTime={savedTime} />
-        </span>
       </div>
 
-      {/* How to submit: no submit button. Copy/download the JSON and email it. */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-relaxed text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100">
-        <p className="font-semibold">How to submit this request</p>
-        <p className="mt-1">
-          There is no automatic submit. Use <strong>Copy JSON</strong> or{" "}
-          <strong>Download JSON</strong> below, then email it (with any image
-          files) to{" "}
-          <a
-            href={`mailto:${CREATOR_EMAIL}?subject=Guide update request`}
-            className="font-semibold underline"
-          >
-            {CREATOR_EMAIL}
-          </a>
-          . The live guide changes only after Steven reviews and publishes it.
+      {/* Send */}
+      <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
+        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          One click sends the request and any attached files to the admin.
+          Nothing changes on the live guide automatically.
         </p>
-      </div>
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={copyJSON}
-          disabled={!valid}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          <CopyIcon className="h-4 w-4" />
-          {copied ? "Copied" : "Copy JSON"}
-        </button>
-        <button
-          type="button"
-          onClick={downloadJSON}
-          disabled={!valid}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          <DownloadIcon className="h-4 w-4" />
-          Download JSON
-        </button>
+        {send === "sent" ? (
+          <div className="flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-100">
+            <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
+            <span className="leading-relaxed">
+              Request sent to the admin. They will review it and apply the change.
+            </span>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={handleSend}
+            disabled={!canSend || send === "sending"}
+            className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {send === "sending" ? "Sending…" : "Send request to admin"}
+            {send !== "sending" && <ArrowRightIcon className="h-4 w-4" />}
+          </button>
+        )}
+
+        {send === "error" && (
+          <div className="space-y-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900 dark:border-red-900 dark:bg-red-900/20 dark:text-red-100">
+            <p className="leading-relaxed">
+              {sendError} You can try again, or download a copy and{" "}
+              <a
+                href={`mailto:${CREATOR_EMAIL}?subject=Guide update request`}
+                className="font-semibold underline"
+              >
+                email it to the admin
+              </a>{" "}
+              with your files.
+            </p>
+            <button
+              type="button"
+              onClick={downloadFallback}
+              className="inline-flex items-center gap-2 rounded-lg border border-red-300 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100 dark:border-red-800 dark:text-red-200"
+            >
+              <DownloadIcon className="h-4 w-4" />
+              Download a copy
+            </button>
+          </div>
+        )}
       </div>
 
       {banner && (
-        <div
-          ref={bannerRef}
-          className={`flex items-start gap-2.5 rounded-xl border p-4 text-sm ${
-            banner.type === "error"
-              ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-900/20 dark:text-red-200"
-              : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100"
-          }`}
-        >
+        <div className="flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100">
           <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
-          <span className="leading-relaxed">{banner.text}</span>
+          <span className="leading-relaxed">{banner}</span>
         </div>
       )}
 
       <Toast message={toast} />
     </div>
   );
-
-  // Image replacement sub-field. Local previews are never uploaded; only
-  // metadata is exported.
-  function ImageReplacement() {
-    const [objectUrl, setObjectUrl] = useState<string | null>(null);
-    useEffect(() => {
-      return () => {
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
-      };
-    }, [objectUrl]);
-
-    function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      setObjectUrl(URL.createObjectURL(file));
-      setRequest((r) => ({ ...r, imageFileName: file.name }));
-    }
-    function handlePath(v: string) {
-      if (isProvidedReference(v)) {
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
-        setObjectUrl(null);
-        setRequest((r) => ({ ...r, imagePathOrUrl: v, imageFileName: undefined }));
-      } else {
-        setRequest((r) => ({ ...r, imagePathOrUrl: v }));
-      }
-    }
-
-    const isHttp = /^https?:\/\//i.test(request.imagePathOrUrl.trim());
-    const previewSrc = objectUrl ?? (isHttp ? request.imagePathOrUrl.trim() : null);
-    const needsUpload =
-      !!request.imageFileName && !isProvidedReference(request.imagePathOrUrl);
-
-    return (
-      <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-700 dark:bg-slate-800/40">
-        <Field
-          label="Replacement image URL or path"
-          hint="A public URL or an expected path like /images/foo.png."
-        >
-          <TextInput
-            value={request.imagePathOrUrl}
-            onChange={handlePath}
-            placeholder="/images/foo.png"
-          />
-        </Field>
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="cursor-pointer rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-slate-400 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200">
-            Choose local file
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFile}
-              className="hidden"
-            />
-          </label>
-          {request.imageFileName && (
-            <span className="inline-flex items-center gap-2 text-xs text-slate-500">
-              {request.imageFileName}
-              <button
-                type="button"
-                onClick={() => {
-                  if (objectUrl) URL.revokeObjectURL(objectUrl);
-                  setObjectUrl(null);
-                  setRequest((r) => ({ ...r, imageFileName: undefined }));
-                }}
-                className="text-slate-400 hover:text-red-600"
-              >
-                clear
-              </button>
-            </span>
-          )}
-        </div>
-        {previewSrc && (
-          <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
-            <img
-              src={previewSrc}
-              alt="Preview"
-              className="max-h-48 w-full object-cover"
-            />
-          </div>
-        )}
-        {needsUpload && (
-          <p className="rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-            Local preview only. Send this file with the request when submitting.
-          </p>
-        )}
-      </div>
-    );
-  }
 }
 
-function ReviewUpdate({
-  exportDoc,
-}: {
-  exportDoc: ReturnType<typeof buildUpdateExport>;
-}) {
+function ReviewUpdate({ request }: { request: UpdateRequestDraft }) {
+  const guideTitle = guideTitleFor(request.guideId);
+  const sectionTitle = sectionTitleFor(request.guideId, request.sectionId);
+  const materials = cleanMaterials(request.materials);
+  const links = materials.filter((m) => m.kind === "link").length;
+  const fileCount = materials.filter((m) => m.kind === "file").length;
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-relaxed text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100">
-        This is an update request. The live guide will not change until Steven
-        reviews and publishes the update.
+        This is an update request. The live guide will not change until the admin
+        reviews and applies it.
       </div>
       <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
         <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
           Review update request
         </h3>
         <dl className="mt-3 space-y-2.5 text-sm">
-          <Row label="Guide">{exportDoc.guideTitle || em("Not selected")}</Row>
-          <Row label="Section">{exportDoc.sectionTitle || em("None")}</Row>
+          <Row label="Guide">{guideTitle || em("Not selected")}</Row>
+          <Row label="Section">{sectionTitle || em("None")}</Row>
           <Row label="Change type">
-            {CHANGE_TYPE_LABELS[exportDoc.changeType as ChangeType] ??
-              exportDoc.changeType}
+            {CHANGE_TYPE_LABELS[request.changeType]}
           </Row>
           <Row label="What changes">
-            {exportDoc.changeSummary || em("Not described")}
+            {request.changeSummary.trim() || em("Not described")}
           </Row>
-          {exportDoc.replacementContent && (
-            <Row label="Replacement">{exportDoc.replacementContent}</Row>
-          )}
-          {exportDoc.imageReference && (
-            <Row label="Image ref">{exportDoc.imageReference}</Row>
-          )}
-          {exportDoc.assets.length > 0 && (
-            <Row label="Image file">
-              {exportDoc.assets[0].fileName}{" "}
-              <span className="text-xs text-amber-600">send separately</span>
+          {materials.length > 0 && (
+            <Row label="New material">
+              {[
+                links ? `${links} link${links === 1 ? "" : "s"}` : null,
+                fileCount ? `${fileCount} file${fileCount === 1 ? "" : "s"}` : null,
+              ]
+                .filter(Boolean)
+                .join(", ")}
             </Row>
           )}
         </dl>
@@ -418,28 +353,4 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 function em(text: string) {
   return <span className="text-slate-400">{text}</span>;
-}
-
-function StatusPill({ status }: { status: string }) {
-  const label =
-    status === "saved"
-      ? "Saved on this device"
-      : status === "pending_approval"
-        ? "Pending approval"
-        : status === "cleared"
-          ? "Request cleared"
-          : "Unsaved changes";
-  const tone =
-    status === "saved"
-      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
-      : status === "pending_approval"
-        ? "bg-blue-50 text-accent dark:bg-accent/15 dark:text-accent-soft"
-        : status === "cleared"
-          ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-          : "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300";
-  return (
-    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${tone}`}>
-      {label}
-    </span>
-  );
 }
