@@ -128,7 +128,7 @@ export default function LessonPage() {
                       </div>
                     </div>
                     <Link
-                      to="/quizzes"
+                      to={`/quizzes/${quiz.id}`}
                       className="inline-flex shrink-0 items-center rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
                     >
                       Take the knowledge check

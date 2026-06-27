@@ -15,12 +15,15 @@ export interface QuizQuestion {
 export interface Quiz {
   id: string;
   title: string;
+  /** One line shown on the index card: what taking this check confirms. */
+  description?: string;
   questions: QuizQuestion[];
 }
 
 export const morpheusQuiz: Quiz = {
   id: "morpheus-drive-knowledge-check",
   title: "Morpheus Drive Knowledge Check",
+  description: "Confirms you understood the Lesson 1 hardware setup.",
   questions: [
     {
       id: "q1",

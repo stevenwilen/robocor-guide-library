@@ -7,6 +7,7 @@ import CourseOverviewPage from "./pages/CourseOverviewPage";
 import LessonPage from "./pages/LessonPage";
 import CreatorToolsPage from "./pages/CreatorToolsPage";
 import QuizzesPage from "./pages/QuizzesPage";
+import QuizPage from "./pages/QuizPage";
 import CertificatesPage from "./pages/CertificatesPage";
 import SettingsPage from "./pages/SettingsPage";
 
@@ -26,6 +27,7 @@ export default function App() {
         {/* Old Builder route now lives under Creator Tools. */}
         <Route path="/builder" element={<Navigate to="/creator" replace />} />
         <Route path="/quizzes" element={<QuizzesPage />} />
+        <Route path="/quizzes/:quizId" element={<QuizPage />} />
         <Route path="/certificates" element={<CertificatesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

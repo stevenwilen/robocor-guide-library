@@ -139,7 +139,7 @@ function CertificateItem({ cert }: { cert: CertificateDef }) {
             <Requirement
               done={quizTaken}
               label={`Take the ${course?.title ?? "course"} knowledge check`}
-              to="/quizzes"
+              to={quizId ? `/quizzes/${quizId}` : "/quizzes"}
               cta="Go to quiz"
             />
           )}

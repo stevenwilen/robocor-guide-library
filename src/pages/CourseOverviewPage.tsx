@@ -238,7 +238,7 @@ export default function CourseOverviewPage() {
                 </p>
               )}
               <Link
-                to="/quizzes"
+                to={`/quizzes/${course.quizId}`}
                 className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-accent/30 bg-white px-4 py-2.5 text-sm font-semibold text-accent transition hover:bg-blue-50"
               >
                 {quizScore ? "Retake the knowledge check" : "Take the knowledge check"}
