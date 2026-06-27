@@ -200,7 +200,6 @@ function SideStats({ guide }: { guide: Course }) {
 }
 
 function EmptyContinue() {
-  const recommended = courses[0];
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-8">
       <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-accent dark:bg-accent/15">
@@ -213,26 +212,13 @@ function EmptyContinue() {
         Choose a guide from the library to begin. Your progress will show up here
         once you open one.
       </p>
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <Link
-          to="/courses"
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
-        >
-          Browse guides
-          <ArrowRightIcon className="h-4 w-4" />
-        </Link>
-        {recommended && (
-          <span className="text-sm text-slate-500 dark:text-slate-400">
-            Recommended:{" "}
-            <Link
-              to={`/course/${recommended.id}`}
-              className="font-semibold text-accent hover:underline"
-            >
-              {recommended.title}
-            </Link>
-          </span>
-        )}
-      </div>
+      <Link
+        to="/courses"
+        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep"
+      >
+        Browse guides
+        <ArrowRightIcon className="h-4 w-4" />
+      </Link>
     </div>
   );
 }
