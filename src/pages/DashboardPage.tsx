@@ -53,7 +53,7 @@ export default function DashboardPage() {
             <SectionLabel>Continue learning</SectionLabel>
             <ContinueCard guide={activeGuide} />
           </section>
-          <section>
+          <section className="flex flex-col">
             <SectionLabel>This guide</SectionLabel>
             <SideStats guide={activeGuide} />
           </section>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
           <SystemOverview />
         </section>
         {activeGuide && (
-          <section>
+          <section className="flex flex-col">
             <SectionLabel>Next steps</SectionLabel>
             <NextSteps guide={activeGuide} />
           </section>
@@ -104,7 +104,7 @@ function NextSteps({ guide }: { guide: Course }) {
     : false;
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+    <div className="flex h-full flex-1 flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
       <ol className="space-y-3 text-sm">
         {firstLesson && (
           <NextStep done={firstDone}>Complete {firstLesson.title}</NextStep>
@@ -117,7 +117,7 @@ function NextSteps({ guide }: { guide: Course }) {
         )}
       </ol>
       {pending.length > 0 && (
-        <p className="mt-4 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
+        <p className="mt-auto border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
           {pending.length} {pending.length === 1 ? "lesson is" : "lessons are"}{" "}
           pending the updated app workflow.
         </p>
@@ -244,7 +244,7 @@ function SideStats({ guide }: { guide: Course }) {
   const hasRows = !!guide.quizId || !!cert;
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+    <div className="flex h-full flex-1 flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
       {hasRows ? (
         <dl className="space-y-2.5 text-sm">
           {guide.quizId && (
@@ -277,7 +277,7 @@ function SideStats({ guide }: { guide: Course }) {
           No knowledge check or completion card for this guide yet.
         </p>
       )}
-      <p className="mt-3 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-400 dark:border-slate-700">
+      <p className="mt-auto border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-400 dark:border-slate-700">
         Progress is saved on this device only.
       </p>
     </div>
