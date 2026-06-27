@@ -156,8 +156,8 @@ export default function NewGuideDraft() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Brief a new guide. List the topics and drop your materials (links or
-          files). You do not write the lessons; Steven and Claude scope and
-          design it from what you send.
+          files). You do not write the lessons; the admin scopes and designs it
+          from what you send.
         </p>
         <SaveIndicator status={status} savedTime={savedTime} />
       </div>
@@ -377,16 +377,16 @@ export default function NewGuideDraft() {
       {/* Send */}
       <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
         <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-          One click sends the brief and all attached files to Steven. Nothing is
-          published automatically.
+          One click sends the brief and all attached files to the admin. Nothing
+          is published automatically.
         </p>
 
         {send === "sent" ? (
           <div className="flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-100">
             <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0" />
             <span className="leading-relaxed">
-              Brief sent to Steven. He will review the scope and follow up. You
-              can keep this brief or clear it.
+              Brief sent to the admin. They will review the scope and follow up.
+              You can keep this brief or clear it.
             </span>
           </div>
         ) : (
@@ -396,7 +396,7 @@ export default function NewGuideDraft() {
             disabled={!canSend || send === "sending"}
             className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-deep disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {send === "sending" ? "Sending…" : "Send brief to Steven"}
+            {send === "sending" ? "Sending…" : "Send brief to admin"}
             {send !== "sending" && <ArrowRightIcon className="h-4 w-4" />}
           </button>
         )}
@@ -404,12 +404,12 @@ export default function NewGuideDraft() {
         {send === "error" && (
           <div className="space-y-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900 dark:border-red-900 dark:bg-red-900/20 dark:text-red-100">
             <p className="leading-relaxed">
-              {sendError} You can try again, or download a copy and email it to{" "}
+              {sendError} You can try again, or download a copy and{" "}
               <a
                 href={`mailto:${CREATOR_EMAIL}?subject=Guide brief`}
                 className="font-semibold underline"
               >
-                {CREATOR_EMAIL}
+                email it to the admin
               </a>{" "}
               with your files.
             </p>
@@ -453,7 +453,7 @@ function ScopeReview({
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-relaxed text-blue-900 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-100">
-        This is a brief, not a finished guide. Steven scopes and designs the
+        This is a brief, not a finished guide. The admin scopes and designs the
         final guide from your topics and materials.
       </div>
       <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50 sm:p-6">
