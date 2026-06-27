@@ -87,37 +87,54 @@ the client) when publishing - do not fabricate specifics.
 ## Design Pass (required)
 
 The submitted JSON is **raw structured content, not the final design.** A draft
-that is copied straight into the default renderer comes out as generic stacked
-cards. Before publishing you MUST do a design pass so the guide feels
-intentionally laid out around its content.
+copied straight into the default renderer comes out as generic stacked cards.
+Before publishing you MUST redesign each lesson so it teaches by **showing**.
 
-Rules:
+### Show, don't tell (the core principle)
 
-- Do **not** simply paste JSON blocks into the default renderer.
-- Treat submitted JSON as raw structured content; keep the content accurate and
-  do not invent unsupported details.
-- Choose a layout that fits the content, then set the optional presentation
-  metadata (below) to express it.
-- Do **not** overcomplicate short guides; a 1-2 section guide can stay simple.
-- Do **not** make every block a full-width card.
-- Do **not** render checklists as giant repeated full-width rows unless that
-  truly is the best layout; prefer a compact grid for lists of short items.
-- Use images as part of the layout (beside related content via a media layout),
-  not just dropped below the text.
-- Keep it responsive; everything stacks cleanly on mobile.
-- Run `npm run build`.
+The published "Using AI for Repeated Staff Work" guide is the reference for how
+lessons should read. Follow it:
 
-Presentation metadata (all optional, in `src/data/types.ts`; set ONLY here, never
-in the Builder):
+- **Lead with a diagram or a real example, not prose.** One line of framing, then
+  *show* it. A worked before/after teaches more than three paragraphs.
+- **Cut the obvious.** Delete filler and lecture-y caveats ("remember to review
+  the output", "don't use AI for anything important"). Respect the reader.
+- **Keep lessons short and visual.** Prefer a `flow` diagram, an `example`, a
+  `labeledList` breakdown, or a `compare` over walls of text and long bullet
+  lists. Images are optional — diagrams and examples usually carry the lesson.
+- Keep the content accurate; do not invent unsupported details. (This applies to
+  general-knowledge guides too — enrich, but stay correct.)
+- Do **not** make every block a full-width card; keep it responsive (stacks on
+  mobile); run `npm run build`.
+
+### Creative blocks (use these to show instead of tell)
+
+These live in `src/data/types.ts` and render in `LessonSections.tsx`. They are
+**design-pass blocks** — the Builder does not collect them; you add them when
+publishing:
+
+- **`flow`** — a small, lightly-animated diagram of a process: labeled nodes
+  joined by arrows. Use for "how it works" instead of describing steps in prose.
+- **`example`** — a real worked before/after: an `input` (what you'd actually do)
+  next to the `output` (the result). The single most effective teaching block.
+- **`labeledList`** — a labeled breakdown / "anatomy of X": each item is a named
+  part with a short, concrete explanation (often with a tiny quoted example).
+- **`compare`** — side-by-side columns with `good`/`bad`/`neutral` tone
+  (vague vs clear, before vs after, do vs don't).
+
+Plus the base blocks: `paragraph` (use `displayVariant: "plain"` for flowing
+intro lines), `heading`, `video`, `image`, `gallery`, `steps`, `keyNotes`,
+`callout`, `divider`, `pendingNote`.
+
+### Presentation metadata (all optional; set ONLY here, never in the Builder)
 
 - `Course.presentationVariant`: `"standard" | "compact" | "visual" | "training" | "reference"`.
-- `Lesson.layoutVariant` (a guide section): `"stacked" | "split" | "feature-checklist" | "steps-grid" | "media-right" | "media-left" | "compact-cards"`. `media-right`/`media-left` place image/gallery blocks beside the text.
-- block `displayVariant`: `"card" | "plain" | "compact" | "grid" | "numbered" | "side-by-side" | "highlight"`. Useful examples: `paragraph` → `plain`; `steps`/checklist → `grid` or `compact`; `keyNotes` → `compact`; `callout` → `highlight` (reads as a reusable template).
+- `Lesson.layoutVariant`: `"stacked" | "split" | "feature-checklist" | "steps-grid" | "media-right" | "media-left" | "compact-cards"`. `media-right`/`media-left` place image/gallery blocks beside the text (drop them if a lesson has no media).
+- block `displayVariant`: `"card" | "plain" | "compact" | "grid" | "numbered" | "side-by-side" | "highlight"`.
 
-The renderer (`src/components/sections/LessonSections.tsx`) reads these. If you
-need a layout it does not support yet, add it there rather than forcing content
-into the wrong shape. The "Using AI for Repeated Staff Work" guide in
-`courses.ts` is a worked example of a design pass.
+If you need a block or layout the renderer does not support yet, **add it to
+`LessonSections.tsx`** rather than forcing content into the wrong shape — that is
+how the toolkit grows.
 
 ## Process
 

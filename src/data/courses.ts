@@ -216,33 +216,34 @@ export const courses: Course[] = [
         title: "Finding work AI can help with",
         summary: "How to spot simple staff tasks that are good for AI.",
         contentStatus: "available",
-        // Design pass: short intro, then the tasks as a compact grid of action
-        // cards (not five giant rows), with the reminder kept clearly attached.
-        layoutVariant: "feature-checklist",
+        // Design pass: show, don't explain. One line, a small animated flow
+        // diagram, and a real worked example. No obvious caveats.
         sections: [
           {
             type: "paragraph",
             displayVariant: "plain",
-            heading: "Look for repeated work",
-            text: "AI is useful for tasks staff repeat often, especially writing, summarizing, organizing notes, and turning rough information into a cleaner first draft.",
+            text: "AI is fastest at one thing: turning rough notes into a clean first draft - summaries, emails, checklists, and tone fixes.",
           },
           {
-            type: "steps",
-            displayVariant: "grid",
-            heading: "Good tasks to start with",
+            type: "flow",
+            heading: "How it works",
             steps: [
-              { title: "Drafting emails" },
-              { title: "Summarizing notes" },
-              { title: "Cleaning up rough instructions" },
-              { title: "Turning steps into a checklist" },
-              { title: "Rewriting messages in a clearer tone" },
+              { label: "Your rough notes", caption: "Paste what you already have." },
+              { label: "Ask AI", caption: "Say the task and the format." },
+              { label: "Review and send", caption: "Fix anything off, then use it." },
             ],
           },
           {
-            type: "callout",
-            tone: "important",
-            heading: "Still review everything",
-            text: "AI can save time, but a person still needs to check the facts, tone, and final wording.",
+            type: "example",
+            heading: "See it",
+            input: {
+              label: "What you send",
+              text: "Turn these rough notes into a short team update:\n\nteam mtg - budget approved, hiring paused till q3, launch moved to aug.",
+            },
+            output: {
+              label: "AI draft",
+              text: "Hi team,\n\nQuick update from today's meeting:\n- Budget is approved\n- Hiring is paused until Q3\n- Launch moved to August\n\nMore detail to follow.",
+            },
           },
         ],
       },
@@ -252,43 +253,48 @@ export const courses: Course[] = [
         title: "Writing a better prompt",
         summary: "A simple way to ask ChatGPT or Claude for better results.",
         contentStatus: "available",
-        // Design pass: reads like a simple prompt recipe. The prompt parts sit
-        // as compact notes with a reusable-template example, and the screenshot
-        // placeholder sits beside the recipe instead of dropped below it.
-        layoutVariant: "media-right",
+        // Design pass: show, don't explain. A labeled "four parts" breakdown
+        // and a vague-vs-clear example.
         sections: [
           {
-            type: "paragraph",
-            displayVariant: "plain",
-            heading: "Give context first",
-            text: "A good prompt tells the AI what the task is, who the output is for, what information to use, and what format you want back.",
-          },
-          {
-            type: "keyNotes",
-            displayVariant: "compact",
-            heading: "What a good prompt includes",
-            notes: [
-              "Say what you need",
-              "Explain who will read it",
-              "Paste the rough notes",
-              "Ask for a specific format",
-              "Tell it what not to add",
+            type: "labeledList",
+            heading: "A good prompt says four things",
+            items: [
+              {
+                label: "Task",
+                text: "What you want done. \"Turn these notes into an email.\"",
+              },
+              {
+                label: "Audience",
+                text: "Who reads it. \"For a busy manager.\"",
+              },
+              {
+                label: "Source",
+                text: "The notes to use - paste them in.",
+              },
+              {
+                label: "Format",
+                text: "The shape back. \"Five short bullets.\"",
+              },
             ],
           },
           {
-            type: "callout",
-            tone: "tip",
-            displayVariant: "highlight",
-            heading: "Reusable prompt template",
-            text: "Turn these rough notes into a short staff checklist. Keep it clear, practical, and do not add anything that is not in the notes.",
-          },
-          {
-            type: "image",
-            // Real screenshot, saved in public/images/ and shown beside the
-            // recipe via the media-right layout.
-            src: "/images/ai-prompt-example.png",
-            alt: "Example of a staff prompt template",
-            caption: "Example of a staff prompt template.",
+            type: "compare",
+            heading: "Vague vs clear",
+            columns: [
+              {
+                label: "Vague",
+                tone: "bad",
+                items: ["Write something about onboarding."],
+              },
+              {
+                label: "Clear",
+                tone: "good",
+                items: [
+                  "Turn these onboarding notes into a 5-step checklist for new staff. Keep it under 100 words and use only what is in the notes.",
+                ],
+              },
+            ],
           },
         ],
       },

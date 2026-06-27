@@ -1,5 +1,12 @@
+import { Fragment } from "react";
 import type { LessonSection, SectionLayoutVariant } from "../../data/types";
-import { CheckCircleIcon, PlayIcon, SparkIcon } from "../icons";
+import {
+  ArrowRightIcon,
+  CheckCircleIcon,
+  CloseIcon,
+  PlayIcon,
+  SparkIcon,
+} from "../icons";
 
 // Renders a guide section's content blocks. Two layers of presentation, both
 // set during the publishing/design pass (never in the Builder) and both
@@ -337,6 +344,130 @@ function SectionBlock({ section }: { section: LessonSection }) {
                 )}
               </figure>
             ))}
+          </div>
+        </section>
+      );
+
+    case "labeledList":
+      return (
+        <section>
+          {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {section.items.map((item, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-card"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-700">
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+
+    case "compare": {
+      const toneCard: Record<string, string> = {
+        good: "border-emerald-200 bg-emerald-50/60",
+        bad: "border-amber-200 bg-amber-50/60",
+        neutral: "border-slate-200 bg-slate-50",
+      };
+      const toneLabel: Record<string, string> = {
+        good: "text-emerald-700",
+        bad: "text-amber-800",
+        neutral: "text-slate-700",
+      };
+      return (
+        <section>
+          {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
+          <div
+            className={`grid gap-3 ${section.columns.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"}`}
+          >
+            {section.columns.map((col, ci) => {
+              const tone = col.tone ?? "neutral";
+              return (
+                <div key={ci} className={`rounded-2xl border p-4 ${toneCard[tone]}`}>
+                  <p className={`text-sm font-semibold ${toneLabel[tone]}`}>
+                    {col.label}
+                  </p>
+                  <ul className="mt-2.5 space-y-2">
+                    {col.items.map((it, ii) => (
+                      <li key={ii} className="flex gap-2 text-sm text-slate-700">
+                        {tone === "good" ? (
+                          <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                        ) : tone === "bad" ? (
+                          <CloseIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                        ) : (
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" />
+                        )}
+                        <span className="leading-relaxed">{it}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    case "flow":
+      return (
+        <section>
+          {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
+          <div className="flex flex-col items-stretch gap-2 sm:flex-row">
+            {section.steps.map((step, i) => (
+              <Fragment key={i}>
+                <div className="flex-1 rounded-2xl border border-slate-200/80 bg-white p-4 text-center shadow-card">
+                  <p className="text-sm font-semibold text-slate-900">
+                    {step.label}
+                  </p>
+                  {step.caption && (
+                    <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                      {step.caption}
+                    </p>
+                  )}
+                </div>
+                {i < section.steps.length - 1 && (
+                  <div
+                    className="flex items-center justify-center text-accent"
+                    aria-hidden="true"
+                  >
+                    <ArrowRightIcon className="flow-arrow h-5 w-5 rotate-90 sm:rotate-0" />
+                  </div>
+                )}
+              </Fragment>
+            ))}
+          </div>
+        </section>
+      );
+
+    case "example":
+      return (
+        <section>
+          {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                {section.input.label}
+              </p>
+              <p className="mt-1.5 whitespace-pre-line font-mono text-[13px] leading-relaxed text-slate-600">
+                {section.input.text}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-600">
+                {section.output.label}
+              </p>
+              <p className="mt-1.5 whitespace-pre-line text-[13px] leading-relaxed text-slate-700">
+                {section.output.text}
+              </p>
+            </div>
           </div>
         </section>
       );

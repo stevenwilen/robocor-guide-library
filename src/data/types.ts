@@ -93,6 +93,41 @@ export type LessonSection = (
   | { type: "gallery"; heading?: string; images: ImageRef[] }
   | { type: "divider" }
   | { type: "pendingNote"; text: string }
+  // Creative blocks added during the publishing/design pass (not collected by
+  // the Builder). They give Claude expressive components to design real,
+  // non-generic lessons.
+  | {
+      // A labeled breakdown / "anatomy" — each item is a named part with an
+      // explanation. Good for "the parts of X" style teaching.
+      type: "labeledList";
+      heading?: string;
+      items: { label: string; text: string }[];
+    }
+  | {
+      // Side-by-side comparison (do/don't, good fit/keep human, before/after).
+      type: "compare";
+      heading?: string;
+      columns: {
+        label: string;
+        tone?: "good" | "bad" | "neutral";
+        items: string[];
+      }[];
+    }
+  | {
+      // A small, lightly-animated flow diagram: labeled nodes joined by arrows.
+      // For showing a process at a glance instead of describing it.
+      type: "flow";
+      heading?: string;
+      steps: { label: string; caption?: string }[];
+    }
+  | {
+      // A concrete worked example: a real input next to the result. Shows
+      // rather than tells.
+      type: "example";
+      heading?: string;
+      input: { label: string; text: string };
+      output: { label: string; text: string };
+    }
 ) & { displayVariant?: BlockDisplayVariant };
 
 export interface Lesson {

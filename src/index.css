@@ -72,6 +72,20 @@
     );
     background-size: 18px 18px;
   }
+
+  /* Gentle pulse on flow-diagram arrows (neutralized by .reduce-motion). */
+  .flow-arrow {
+    animation: flow-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes flow-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
 }
 
 /* Print: isolate the certificate completion card. */
