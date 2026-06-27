@@ -68,9 +68,11 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div>
-        <SectionLabel>Guide library overview</SectionLabel>
-        <SystemOverview />
+      <div className="grid gap-6 lg:grid-cols-3">
+        <section className="lg:col-span-2">
+          <SectionLabel>Guide library overview</SectionLabel>
+          <SystemOverview />
+        </section>
       </div>
     </div>
   );
