@@ -4,6 +4,7 @@ import ProgressBar from "../components/ProgressBar";
 import {
   ArrowRightIcon,
   CertificateIcon,
+  CheckCircleIcon,
   CourseIcon,
   QuizIcon,
 } from "../components/icons";
@@ -73,8 +74,86 @@ export default function DashboardPage() {
           <SectionLabel>Guide library overview</SectionLabel>
           <SystemOverview />
         </section>
+        {activeGuide && (
+          <section>
+            <SectionLabel>Next steps</SectionLabel>
+            <NextSteps guide={activeGuide} />
+          </section>
+        )}
       </div>
     </div>
+  );
+}
+
+function NextSteps({ guide }: { guide: Course }) {
+  const { isComplete } = useProgress();
+  const [quizScore] = usePersistentState<QuizScore>(
+    guide.quizId ? quizScoreKey(guide.quizId) : `robocor-quiz-noquiz:${guide.id}`,
+    null,
+  );
+
+  const available = guide.lessons.filter((l) => l.contentStatus === "available");
+  const pending = guide.lessons.filter((l) => l.contentStatus === "pending");
+  const firstLesson = available[0];
+  const firstDone = firstLesson ? isComplete(guide.id, firstLesson.id) : false;
+
+  const cert = getCertificatesForCourse(guide.id)[0];
+  const certUnlocked = cert
+    ? cert.requiredLessonIds.every((id) => isComplete(guide.id, id)) &&
+      (cert.requiresQuiz ? !!quizScore : true)
+    : false;
+
+  return (
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+      <ol className="space-y-3 text-sm">
+        {firstLesson && (
+          <NextStep done={firstDone}>Complete {firstLesson.title}</NextStep>
+        )}
+        {guide.quizId && (
+          <NextStep done={!!quizScore}>Take the knowledge check</NextStep>
+        )}
+        {cert && (
+          <NextStep done={certUnlocked}>Open your completion card</NextStep>
+        )}
+      </ol>
+      {pending.length > 0 && (
+        <p className="mt-4 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          {pending.length} {pending.length === 1 ? "lesson is" : "lessons are"}{" "}
+          pending the updated app workflow.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function NextStep({
+  done,
+  children,
+}: {
+  done: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex items-start gap-3">
+      <span
+        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
+          done
+            ? "bg-emerald-500 text-white"
+            : "border border-slate-300 bg-white text-transparent dark:border-slate-600 dark:bg-slate-700"
+        }`}
+      >
+        {done && <CheckCircleIcon className="h-3.5 w-3.5" />}
+      </span>
+      <span
+        className={
+          done
+            ? "text-slate-400 line-through dark:text-slate-500"
+            : "text-slate-700 dark:text-slate-300"
+        }
+      >
+        {children}
+      </span>
+    </li>
   );
 }
 
