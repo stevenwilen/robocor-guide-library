@@ -180,6 +180,7 @@ export const courses: Course[] = [
   },
   {
     id: "using-ai-for-repeated-staff-work",
+    quizId: "using-ai-for-repeated-staff-work-knowledge-check",
     title: "Using AI for Repeated Staff Work",
     subtitle: "Using AI to speed up repeated staff tasks",
     // Intended reader came from the draft (staff). Duration was not provided by

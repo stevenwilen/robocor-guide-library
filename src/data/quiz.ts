@@ -84,9 +84,75 @@ export const morpheusQuiz: Quiz = {
   ],
 };
 
+// Knowledge check for the "Using AI for Repeated Staff Work" guide. Questions
+// are grounded ONLY in that guide's two sections (finding work AI can help with,
+// and writing a better prompt). No invented details.
+export const aiStaffWorkQuiz: Quiz = {
+  id: "using-ai-for-repeated-staff-work-knowledge-check",
+  title: "Using AI for Repeated Staff Work Knowledge Check",
+  description: "Confirms you can spot good AI tasks and write a clearer prompt.",
+  questions: [
+    {
+      id: "q1",
+      question: "What kind of work is AI most useful for in this guide?",
+      options: [
+        "Tasks staff repeat often",
+        "One-time creative projects",
+        "Decisions that need a manager's approval",
+        "Anything involving money",
+      ],
+      answerIndex: 0,
+    },
+    {
+      id: "q2",
+      question: "Which of these is a good task to start with?",
+      options: [
+        "Approving budgets",
+        "Hiring decisions",
+        "Drafting emails",
+        "Signing contracts",
+      ],
+      answerIndex: 2,
+    },
+    {
+      id: "q3",
+      question: "After AI produces a result, what should a person still do?",
+      options: [
+        "Publish it right away",
+        "Check the facts, tone, and final wording",
+        "Delete the original notes",
+        "Skip review to save time",
+      ],
+      answerIndex: 1,
+    },
+    {
+      id: "q4",
+      question: "What does a good prompt tell the AI?",
+      options: [
+        "Only the topic",
+        "Your personal opinion of the task",
+        "What the task is, who it is for, what information to use, and the format you want back",
+        "Nothing, because AI figures it out on its own",
+      ],
+      answerIndex: 2,
+    },
+    {
+      id: "q5",
+      question: "According to the guide, a good prompt should also:",
+      options: [
+        "Tell the AI what not to add",
+        "Require at least 500 words",
+        "Include several unrelated tasks at once",
+        "Leave out the rough notes",
+      ],
+      answerIndex: 0,
+    },
+  ],
+};
+
 /** All knowledge-check quizzes, keyed implicitly by id. Future courses add
  *  their quizzes here; the Quizzes page is data-driven off this registry. */
-export const quizzes: Quiz[] = [morpheusQuiz];
+export const quizzes: Quiz[] = [morpheusQuiz, aiStaffWorkQuiz];
 
 /** Look up a quiz by id (e.g. a course's `quizId`). */
 export function getQuiz(id?: string): Quiz | undefined {
