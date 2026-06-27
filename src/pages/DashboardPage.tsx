@@ -53,7 +53,7 @@ export default function DashboardPage() {
             <SectionLabel>Continue learning</SectionLabel>
             <ContinueCard guide={activeGuide} />
           </section>
-          <section className="flex flex-col">
+          <section>
             <SectionLabel>This guide</SectionLabel>
             <SideStats guide={activeGuide} />
           </section>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
           <SystemOverview />
         </section>
         {activeGuide && (
-          <section className="flex flex-col">
+          <section>
             <SectionLabel>Next steps</SectionLabel>
             <NextSteps guide={activeGuide} />
           </section>
@@ -86,38 +86,23 @@ export default function DashboardPage() {
 }
 
 function NextSteps({ guide }: { guide: Course }) {
+  // The lesson path. Quiz / completion-card status lives in the "This guide"
+  // card, so this stays focused on lessons and does not repeat it.
   const { isComplete } = useProgress();
-  const [quizScore] = usePersistentState<QuizScore>(
-    guide.quizId ? quizScoreKey(guide.quizId) : `robocor-quiz-noquiz:${guide.id}`,
-    null,
-  );
-
   const available = guide.lessons.filter((l) => l.contentStatus === "available");
   const pending = guide.lessons.filter((l) => l.contentStatus === "pending");
-  const firstLesson = available[0];
-  const firstDone = firstLesson ? isComplete(guide.id, firstLesson.id) : false;
-
-  const cert = getCertificatesForCourse(guide.id)[0];
-  const certUnlocked = cert
-    ? cert.requiredLessonIds.every((id) => isComplete(guide.id, id)) &&
-      (cert.requiresQuiz ? !!quizScore : true)
-    : false;
 
   return (
-    <div className="flex h-full flex-1 flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
       <ol className="space-y-3 text-sm">
-        {firstLesson && (
-          <NextStep done={firstDone}>Complete {firstLesson.title}</NextStep>
-        )}
-        {guide.quizId && (
-          <NextStep done={!!quizScore}>Take the knowledge check</NextStep>
-        )}
-        {cert && (
-          <NextStep done={certUnlocked}>Open your completion card</NextStep>
-        )}
+        {available.map((l) => (
+          <NextStep key={l.id} done={isComplete(guide.id, l.id)}>
+            Complete {l.title}
+          </NextStep>
+        ))}
       </ol>
       {pending.length > 0 && (
-        <p className="mt-auto border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
+        <p className="mt-4 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-500 dark:border-slate-700 dark:text-slate-400">
           {pending.length} {pending.length === 1 ? "lesson is" : "lessons are"}{" "}
           pending the updated app workflow.
         </p>
@@ -244,7 +229,7 @@ function SideStats({ guide }: { guide: Course }) {
   const hasRows = !!guide.quizId || !!cert;
 
   return (
-    <div className="flex h-full flex-1 flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card dark:border-slate-800 dark:bg-slate-800/50">
       {hasRows ? (
         <dl className="space-y-2.5 text-sm">
           {guide.quizId && (
@@ -277,7 +262,7 @@ function SideStats({ guide }: { guide: Course }) {
           No knowledge check or completion card for this guide yet.
         </p>
       )}
-      <p className="mt-auto border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-400 dark:border-slate-700">
+      <p className="mt-3 border-t border-slate-100 pt-3 text-xs leading-relaxed text-slate-400 dark:border-slate-700">
         Progress is saved on this device only.
       </p>
     </div>
