@@ -13,3 +13,8 @@ export function certificateKey(certificateId: string): string {
 
 /** Shape of a stored quiz score. */
 export type QuizScore = { score: number; total: number; date: string } | null;
+
+/** The guide the learner last opened (drives the Dashboard "Continue learning"
+ *  card). Stored on this device only. */
+export const LAST_OPENED_GUIDE = "robocor-last-opened-guide";
+export type LastOpenedGuide = { id: string; at: string } | null;

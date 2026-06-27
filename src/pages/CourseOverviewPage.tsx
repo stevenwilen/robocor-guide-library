@@ -17,6 +17,7 @@ import { getQuiz } from "../data/quiz";
 import type { Lesson } from "../data/types";
 import { useProgress } from "../hooks/useProgress";
 import { usePersistentState } from "../hooks/usePersistentState";
+import { useRecordLastOpened } from "../hooks/useRecordLastOpened";
 import { quizScoreKey, type QuizScore } from "../data/storageKeys";
 
 export default function CourseOverviewPage() {
@@ -27,6 +28,7 @@ export default function CourseOverviewPage() {
     course?.quizId ? quizScoreKey(course.quizId) : "robocor-quiz-score:none",
     null,
   );
+  useRecordLastOpened(course?.id);
 
   if (!course) {
     return <NotFound />;

@@ -13,12 +13,14 @@ import {
 import { getCourse, getLesson } from "../data/courses";
 import { getQuiz } from "../data/quiz";
 import { useProgress } from "../hooks/useProgress";
+import { useRecordLastOpened } from "../hooks/useRecordLastOpened";
 
 export default function LessonPage() {
   const { courseId, lessonId } = useParams();
   const course = getCourse(courseId);
   const { lesson } = getLesson(courseId, lessonId);
   const { isComplete, toggleComplete } = useProgress();
+  useRecordLastOpened(course?.id);
 
   if (!course || !lesson) {
     return <NotFound />;
