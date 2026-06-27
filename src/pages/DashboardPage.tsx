@@ -58,10 +58,14 @@ export default function DashboardPage() {
           </section>
         </div>
       ) : (
-        <section>
-          <SectionLabel>Continue learning</SectionLabel>
-          <EmptyContinue />
-        </section>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <section className="lg:col-span-2">
+            <SectionLabel>Continue learning</SectionLabel>
+            <EmptyContinue />
+          </section>
+          {/* Right column (progress / this-guide) intentionally left empty
+              until a guide is opened. */}
+        </div>
       )}
 
       <div>
