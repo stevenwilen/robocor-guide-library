@@ -52,7 +52,7 @@ function CreatorTools() {
       {/* Outer tabs */}
       <div className="mt-6 flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-800/50">
         <TabButton active={tab === "new"} onClick={() => setTab("new")}>
-          New Guide Draft
+          New Guide
         </TabButton>
         <TabButton active={tab === "update"} onClick={() => setTab("update")}>
           Update Existing Guide

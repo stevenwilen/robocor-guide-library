@@ -54,24 +54,17 @@ lightweight 4-digit passcode gate (`VITE_CREATOR_PASSCODE`, local fallback
 `2468`) keeps learners out; the unlocked flag is stored in `localStorage`. This
 is a gate, not authentication. There are two tools:
 
-**New Guide Draft** - draft a whole new guide locally:
-**Guide Basics** (title, description, intended reader, optional banner),
-**Sections and Blocks** (sections that are "Ready to include" or "Needs more
-info", each with ordered content blocks), then **Review and Submit**. Drafts are
-saved on the device and auto-load on return. Export with **Copy JSON** /
-**Download JSON** and send it (with any local image files) to Steven. Claude
-integrates it with the `publish-guide-draft` skill.
-
-```json
-{
-  "_type": "robocor_guide_draft",
-  "schemaVersion": "2.0",
-  "submissionStatus": "pending_approval",
-  "intendedAction": "review_and_publish_to_guide_library",
-  "claudeSkill": "publish-guide-draft",
-  "guide": { "title": "...", "sections": [ ... ] }
-}
-```
+**New Guide** - brief a whole new guide as a *commission*, not a block editor.
+The creator captures intent (**title**, **intended reader**, **goal**), lists
+the **topics to cover**, and drops a pile of **materials** (links Claude can
+fetch, plus local files). A live **scope summary** (topics / links / files, with
+gap flags) doubles as a quotable scope sheet. One **Send brief** button submits
+everything - the structured brief plus the actual file attachments - to Steven
+via a hosted form service ([Web3Forms](https://web3forms.com); public key,
+`VITE_WEB3FORMS_KEY`). No JSON to copy and no email to assemble; if a send fails
+it falls back to downloading a copy to email manually. The creator does not write
+lessons - Steven and Claude scope, section, and design the guide from the
+materials with the `publish-guide-draft` skill (show, don't tell).
 
 **Update Existing Guide** - request a small change (replace a paragraph, swap an
 image, update a checklist, mark a section as needing more info, etc.) to an
@@ -92,15 +85,14 @@ with the `publish-guide-update` skill:
 }
 ```
 
-Both JSON types are self-identifying so they can be handed to Claude with no
-context. There is no automatic submit: the creator uses **Copy JSON** or
-**Download JSON** and emails it (with any image files) to Steven, who reviews
-and publishes it. Nothing goes live automatically.
+The update-request JSON is self-identifying so it can be handed to Claude with no
+context; the creator copies or downloads it and emails it to Steven. A **New
+Guide** brief instead submits in one click via the form service. Either way,
+nothing goes live automatically - Steven reviews and publishes.
 
-Images: a public URL or `/images/...` path is treated as a provided reference. A
-locally picked file is previewed in the browser only. It is never uploaded and
-never stored as base64. The JSON records its metadata and flags it as needing the
-file sent separately.
+Files and images are never uploaded to the app or stored as base64. A brief's
+local files are held in memory only and attached to the one-click submission; a
+public URL or `/images/...` path is treated as a provided reference.
 
 **Publishing is a design pass, not a copy-paste.** Creator Tools collect
 structured draft content only; the submitted JSON is not the final design. When

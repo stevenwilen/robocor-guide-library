@@ -1,28 +1,58 @@
 ---
 name: publish-guide-draft
-description: Use this skill when the user provides JSON with `_type: "robocor_guide_draft"` (or the older `_type: "robocor_course_draft"`), produced by the Guide Builder. It reviews an unpublished guide draft and integrates it into the Robocor Guide Library safely.
+description: Use this skill when the user provides a new-guide commission from Creator Tools — a "ROBOCOR GUIDE BRIEF" submission (title/audience/goal/topics/materials, usually emailed with file attachments via the form service), or older guide-creation JSON (`_type: "robocor_guide_brief"` / `"robocor_guide_draft"` / `"robocor_course_draft"`). It scopes, designs, and integrates a new guide into the Robocor Guide Library safely.
 ---
 
 # Publish Guide Draft
 
-Use this skill when the user provides a submitted guide draft JSON, even with
-no other context.
+Use this skill when the user provides a submitted guide brief, even with no other
+context.
 
 ## Accepted formats
 
-- **Primary:** `_type: "robocor_guide_draft"` (`claudeSkill: "publish-guide-draft"`).
-- **Legacy:** `_type: "robocor_course_draft"` (`claudeSkill: "publish-course-draft"`),
-  an older export of the same idea. Still fully supported; map it the same way
-  (it uses `course`/`lessons`/`contentStatus` instead of `guide`/`sections`/`state`).
+- **Primary (a brief submission)** — from **Creator Tools > New Guide**. The
+  creator sends a structured **"ROBOCOR GUIDE BRIEF"** message (via the form
+  service, usually as an email) with `Title`, `For` (audience), `Goal`, a
+  `Topics to cover` list, and `Materials` split into **Links** (URLs you fetch)
+  and **Files** (attached to the email). It does NOT contain finished sections
+  or blocks — **you scope it, section it, and design it from the materials.**
+  See "Building from a brief" below. There is no JSON file by design.
+- **Older JSON brief: `_type: "robocor_guide_brief"`** — same idea in JSON
+  (`guide` + `materials` + `scope`). Handle it the same way.
+- **Structured draft: `_type: "robocor_guide_draft"`** — an older export where
+  the creator pre-structured `guide` + `sections` + content blocks. Redesign it
+  with the Design Pass.
+- **Legacy: `_type: "robocor_course_draft"`** (`claudeSkill: "publish-course-draft"`)
+  — oldest, uses `course`/`lessons`/`contentStatus`. Map it the same way.
 
-Both come from **Creator Tools > New Guide Draft** (`/creator`). A draft is a
-structured starting point, not a finished guide. Steven and Claude turn drafts
-into polished published guides.
+A brief is a starting point, not a finished guide. Steven and Claude turn it
+into a polished published guide.
 
-**Do not confuse a full guide draft with an update request.** Small changes to
-an already-published guide come from **Creator Tools > Update Existing Guide**
-with `_type: "robocor_guide_update_request"`; those use the `publish-guide-update`
+**Do not confuse a new guide with an update request.** Small changes to an
+already-published guide come from **Creator Tools > Update Existing Guide** with
+`_type: "robocor_guide_update_request"`; those use the `publish-guide-update`
 skill, not this one.
+
+## Building from a brief
+
+The brief is raw intent + materials, deliberately not pre-structured. Build it
+like a commission:
+
+1. **Read the brief**: `Goal` (what it must help the reader do), `For`
+   (audience), `Topics to cover` (the requested scope), the Links/Files, and any
+   feel/notes.
+2. **Ingest the materials.** Fetch each **Link** URL (webpage, doc, or video)
+   and read/watch it. For each **File**, use the attachment the creator emailed
+   — **do not assume a file exists if it was not provided**; flag it instead.
+3. **Assess scope FIRST, before building.** Propose a section breakdown from the
+   topics and what the materials actually support. List any topic with no
+   supporting material, and anything thin or missing. Surface this so the scope
+   (and price) can be confirmed.
+4. **Design each section** with the Design Pass below — show, don't tell: lead
+   with a `flow` diagram or a real `example`, use `compare`/`labeledList`, cut
+   obvious caveats. Ground every claim in the materials; do not invent.
+5. A video material can become a published `video` (YouTube) block; other
+   materials are sources to author from, not hosted assets.
 
 ## Goal
 
