@@ -262,7 +262,7 @@ function CompletionCard({
           </p>
         )}
 
-        <div className="mt-6 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2">
           <Field label="Completed by">
             {name.trim() || <span className="text-slate-400">Add your name</span>}
           </Field>

@@ -117,13 +117,13 @@ export default function CourseOverviewPage() {
                 icon={ListChecksIcon}
                 title="What this guide helps with"
               />
-              <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+              <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
                 {course.helpsWith.map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/20">
                       <CheckIcon className="h-3.5 w-3.5" />
                     </span>
-                    <span className="text-sm font-medium leading-snug text-slate-700">
+                    <span className="min-w-0 text-sm font-medium leading-snug text-slate-700">
                       {item}
                     </span>
                   </li>

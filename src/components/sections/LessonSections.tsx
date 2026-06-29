@@ -208,7 +208,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
       return (
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
-          <ul className="grid gap-2.5 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {section.notes.map((note, i) => (
               <li
                 key={i}
@@ -324,7 +324,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
       return (
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {section.images.map((img, i) => (
               <figure
                 key={i}
@@ -352,7 +352,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
       return (
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {section.items.map((item, i) => (
               <div
                 key={i}
@@ -451,7 +451,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
       return (
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                 {section.input.label}

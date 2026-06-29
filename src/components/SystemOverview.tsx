@@ -34,7 +34,7 @@ export default function SystemOverview() {
         </h2>
       </div>
 
-      <ul className="mt-4 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+      <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
         {items.map((item) => (
           <li
             key={item}

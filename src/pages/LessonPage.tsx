@@ -231,7 +231,7 @@ function PendingState({
             Once these are provided, this lesson can be written and marked
             available.
           </p>
-          <ul className="mt-4 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+          <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
             {contentNeeded.map((item) => (
               <li
                 key={item}
