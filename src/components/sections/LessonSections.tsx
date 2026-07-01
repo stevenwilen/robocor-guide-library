@@ -49,7 +49,7 @@ export default function LessonSections({
       </div>
     );
     return (
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         {layoutVariant === "media-left" ? (
           <>
             {mediaCol}
@@ -147,7 +147,9 @@ function SectionBlock({ section }: { section: LessonSection }) {
             )}
             <ul
               className={
-                dv === "grid" ? "grid gap-2.5 sm:grid-cols-2" : "space-y-2"
+                dv === "grid"
+                  ? "grid grid-cols-1 gap-2.5 sm:grid-cols-2"
+                  : "space-y-2"
               }
             >
               {section.steps.map((step, i) => (
@@ -385,7 +387,7 @@ function SectionBlock({ section }: { section: LessonSection }) {
         <section>
           {section.heading && <SectionHeading>{section.heading}</SectionHeading>}
           <div
-            className={`grid gap-3 ${section.columns.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"}`}
+            className={`grid grid-cols-1 gap-3 ${section.columns.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"}`}
           >
             {section.columns.map((col, ci) => {
               const tone = col.tone ?? "neutral";

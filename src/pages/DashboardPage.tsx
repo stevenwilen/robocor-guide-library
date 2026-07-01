@@ -48,7 +48,7 @@ export default function DashboardPage() {
       </header>
 
       {activeGuide ? (
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <section className="lg:col-span-2">
             <SectionLabel>Continue learning</SectionLabel>
             <ContinueCard guide={activeGuide} />
@@ -59,7 +59,7 @@ export default function DashboardPage() {
           </section>
         </div>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <section className="lg:col-span-2">
             <SectionLabel>Continue learning</SectionLabel>
             <EmptyContinue />
@@ -69,7 +69,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <section className="lg:col-span-2">
           <SectionLabel>Guide library overview</SectionLabel>
           <SystemOverview />
