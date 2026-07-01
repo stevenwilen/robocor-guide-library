@@ -58,7 +58,7 @@ export function scopeOf(brief: GuideBrief): BriefScope {
   }
   if (materials.length > 0 && materials.length < topics.length) {
     flags.push(
-      "Fewer materials than topics — confirm every topic has a source.",
+      "Fewer materials than topics - confirm every topic has a source.",
     );
   }
   if (!brief.audience) flags.push("No intended reader chosen.");
@@ -94,13 +94,13 @@ export function buildSubmissionText(brief: GuideBrief): string {
   if (links.length > 0) {
     lines.push("  Links (Claude can open these directly):");
     links.forEach((m) =>
-      lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` — ${m.note.trim()}` : ""}`),
+      lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` - ${m.note.trim()}` : ""}`),
     );
   }
   if (files.length > 0) {
     lines.push("  Files (attached to this email):");
     files.forEach((m) =>
-      lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` — ${m.note.trim()}` : ""}`),
+      lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` - ${m.note.trim()}` : ""}`),
     );
   }
   lines.push("");

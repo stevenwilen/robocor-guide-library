@@ -11,7 +11,7 @@ import {
   StringListEditor,
   TextArea,
   TextInput,
-} from "../builder/components/fields";
+} from "./fields";
 import {
   SaveIndicator,
   Toast,
@@ -151,7 +151,7 @@ export default function NewGuideDraft() {
         <Field
           label="Topics to cover"
           required
-          hint="What the guide should cover. Steven decides how to section and design it."
+          hint="What the guide should cover. The admin decides how to section and design it."
         >
           <StringListEditor
             items={brief.topics}

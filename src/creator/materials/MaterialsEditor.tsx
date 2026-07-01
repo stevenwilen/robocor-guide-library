@@ -1,4 +1,4 @@
-import { TextInput } from "../../builder/components/fields";
+import { TextInput } from "../fields";
 import { newMaterial, type Material } from "./types";
 
 // Shared editor for a list of materials: each row is a Link (URL) or a File

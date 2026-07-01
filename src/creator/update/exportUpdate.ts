@@ -58,13 +58,13 @@ export function buildUpdateText(req: UpdateRequestDraft): string {
     if (links.length > 0) {
       lines.push("  Links (Claude can open these directly):");
       links.forEach((m) =>
-        lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` — ${m.note.trim()}` : ""}`),
+        lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` - ${m.note.trim()}` : ""}`),
       );
     }
     if (fileMaterials.length > 0) {
       lines.push("  Files (attached to this email):");
       fileMaterials.forEach((m) =>
-        lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` — ${m.note.trim()}` : ""}`),
+        lines.push(`    - ${m.ref.trim()}${m.note?.trim() ? ` - ${m.note.trim()}` : ""}`),
       );
     }
     lines.push("");

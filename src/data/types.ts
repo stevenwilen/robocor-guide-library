@@ -97,7 +97,7 @@ export type LessonSection = (
   // the Builder). They give Claude expressive components to design real,
   // non-generic lessons.
   | {
-      // A labeled breakdown / "anatomy" — each item is a named part with an
+      // A labeled breakdown / "anatomy" - each item is a named part with an
       // explanation. Good for "the parts of X" style teaching.
       type: "labeledList";
       heading?: string;

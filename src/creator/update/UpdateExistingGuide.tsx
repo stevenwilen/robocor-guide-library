@@ -6,7 +6,7 @@ import {
   DownloadIcon,
   InfoIcon,
 } from "../../components/icons";
-import { Field, Select, TextArea } from "../../builder/components/fields";
+import { Field, Select, TextArea } from "../fields";
 import {
   SaveIndicator,
   Toast,
