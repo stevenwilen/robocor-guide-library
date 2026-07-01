@@ -35,6 +35,19 @@ export const certificates: CertificateDef[] = [
     requiredLessonIds: ["hardware-setup"],
     requiresQuiz: true,
   },
+  // Using AI for Repeated Staff Work: both lessons are available, so this
+  // covers the full guide plus the knowledge check.
+  {
+    id: "using-ai-for-repeated-staff-work-completion",
+    courseId: "using-ai-for-repeated-staff-work",
+    title: "Using AI for Repeated Staff Work",
+    scopeLabel: "Core Lessons",
+    requiredLessonIds: [
+      "finding-work-ai-can-help-with",
+      "writing-a-better-prompt",
+    ],
+    requiresQuiz: true,
+  },
 ];
 
 export function getCertificatesForCourse(courseId: string): CertificateDef[] {
